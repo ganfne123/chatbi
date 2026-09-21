@@ -1,30 +1,47 @@
 from typing import List
+
+
 class ResultFormatter:
-    """结果格式化器"""
+    """将数据库结果格式化为文本表格。"""
+
     def format(self, columns: List[str], results: List[tuple]) -> str:
-        """将查询结果格式化为字符串表格"""
+        """按列宽格式化查询结果。"""
         if not results:
             return "查询结果为空"
-        # 计算每列最大宽度
-        col_widths = []
-        for i, col in enumerate(columns):
-            max_data_width = max(len(str(row[i])) for row in results)
-        col_widths.append(max(len(col), max_data_width) + 2)
-        # 构建表头
-        header = "|".join(col.ljust(col_widths[i]) for i, col in 
-        enumerate(columns))
-        separator = "+".join("-" * w for w in col_widths)
-        # 构建数据行
+        if not columns:
+            return "查询结果无列信息"
+
+        col_widths: list[int] = []
+        for index, column in enumerate(columns):
+            max_data_width = 0
+            for row in results:
+                if index < len(row):
+                    max_data_width = max(
+                        max_data_width,
+                        len(str(row[index])),
+                    )
+            col_widths.append(max(len(str(column)), max_data_width) + 2)
+
+        header = "|".join(
+            str(column).ljust(col_widths[index])
+            for index, column in enumerate(columns)
+        )
+        separator = "+".join("-" * width for width in col_widths)
+
         rows = []
         for row in results:
-            row_str = "|".join(str(val).ljust(col_widths[i]) for i, val in 
-        enumerate(row))
-        rows.append(row_str)
+            cells = []
+            for index in range(len(columns)):
+                value = row[index] if index < len(row) else ""
+                cells.append(str(value).ljust(col_widths[index]))
+            rows.append("|".join(cells))
+
         return (
-        f"{separator}\n{header}\n{separator}\n"
-        + "\n".join(rows)
-        + f"\n{separator}"
+            f"{separator}\n{header}\n{separator}\n"
+            + "\n".join(rows)
+            + f"\n{separator}"
         )
+
     def format_error(self, error_msg: str) -> str:
-        """格式化错误信息"""
+        """格式化错误信息。"""
         return f"执行出错：{error_msg}"
