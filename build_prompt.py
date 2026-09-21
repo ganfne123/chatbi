@@ -1,3 +1,4 @@
+from typing import Any
 SYSTEM_PROMPT = """你是一个数据分析助手，根据用户的自然语言查询生成对应的 MySQL SQL 语句。
 要求：
 1. 只输出一条可执行的 SQL 语句，不要输出任何解释或额外内容；
@@ -59,10 +60,14 @@ Schema="""
 """
 
 
-class BuildPrompt:
-    @staticmethod
-    def build_prompt( query: str,schema : str = Schema)-> list:
-        system= f"{SYSTEM_PROMPT} 数据库表的schema为：{schema}"
-        user=f"用户问题为：{query}"
-        message=[{"role":"system","content":system},{"role":"user","content":user}]
-        return message        
+
+def build_prompt(
+        query: str,
+        *,
+        schema : str = Schema,
+        konwledge : list[dict[str, Any]]|None=None
+        )-> list:
+    system= f"{SYSTEM_PROMPT} 数据库表的schema为：{schema} 知识库为：{konwledge}"
+    user=f"用户问题为：{query}"
+    message=[{"role":"system","content":system},{"role":"user","content":user}]
+    return message
