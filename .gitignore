@@ -6,6 +6,10 @@ dist/
 wheels/
 *.egg-info
 
+# Local agent skill symlinks
+.agents/
+.claude/
+
 # Virtual environments
 .venv
 
