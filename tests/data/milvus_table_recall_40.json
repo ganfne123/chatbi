@@ -1,0 +1,539 @@
+[
+  {
+    "id": 1,
+    "category": "medium",
+    "question": "查询所有客户的客户编号、客户名称、客户类型、所属行业和国家。",
+    "required_tables": [
+      "dim_customers"
+    ],
+    "test_points": [
+      "基础字段查询"
+    ]
+  },
+  {
+    "id": 2,
+    "category": "medium",
+    "question": "查询所有产品的产品名称、产品线、类别和技术路线。",
+    "required_tables": [
+      "dim_products"
+    ],
+    "test_points": [
+      "基础字段查询"
+    ]
+  },
+  {
+    "id": 3,
+    "category": "medium",
+    "question": "查询所有已完成订单的订单号、客户编号、产品编号、订单日期和订单金额。",
+    "required_tables": [
+      "sales_orders"
+    ],
+    "test_points": [
+      "订单状态过滤"
+    ]
+  },
+  {
+    "id": 4,
+    "category": "medium",
+    "question": "查询每种产品的材料成本和人工成本。",
+    "required_tables": [
+      "dim_products"
+    ],
+    "test_points": [
+      "产品成本字段"
+    ]
+  },
+  {
+    "id": 5,
+    "category": "medium",
+    "question": "查询每种产品的单位实际成本，实际成本定义为材料成本加人工成本。",
+    "required_tables": [
+      "dim_products"
+    ],
+    "test_points": [
+      "成本公式"
+    ]
+  },
+  {
+    "id": 6,
+    "category": "medium",
+    "question": "查询每个国家有多少客户。",
+    "required_tables": [
+      "dim_customers"
+    ],
+    "test_points": [
+      "客户维度分组",
+      "COUNT"
+    ]
+  },
+  {
+    "id": 7,
+    "category": "medium",
+    "question": "查询每个产品类别有多少种产品。",
+    "required_tables": [
+      "dim_products"
+    ],
+    "test_points": [
+      "产品维度分组"
+    ]
+  },
+  {
+    "id": 8,
+    "category": "medium",
+    "question": "查询已完成订单的总销售数量。",
+    "required_tables": [
+      "sales_orders"
+    ],
+    "test_points": [
+      "订单数量聚合"
+    ]
+  },
+  {
+    "id": 9,
+    "category": "medium",
+    "question": "查询2025年的已完成订单数量。",
+    "required_tables": [
+      "sales_orders"
+    ],
+    "test_points": [
+      "时间过滤",
+      "状态过滤"
+    ]
+  },
+  {
+    "id": 10,
+    "category": "medium",
+    "question": "查询2025年每个月的已完成订单数量。",
+    "required_tables": [
+      "sales_orders"
+    ],
+    "test_points": [
+      "月度分组"
+    ]
+  },
+  {
+    "id": 11,
+    "category": "medium",
+    "question": "查询2025年的销售收入，收入按照不含税销售收入计算，并统一换算成人民币。",
+    "required_tables": [
+      "sales_orders",
+      "exchange_rates"
+    ],
+    "test_points": [
+      "收入指标",
+      "汇率转换",
+      "完成订单过滤"
+    ]
+  },
+  {
+    "id": 12,
+    "category": "medium",
+    "question": "查询2025年每个销售区域的收入。",
+    "required_tables": [
+      "sales_orders",
+      "exchange_rates"
+    ],
+    "test_points": [
+      "收入",
+      "区域分组",
+      "汇率转换"
+    ]
+  },
+  {
+    "id": 13,
+    "category": "medium",
+    "question": "查询2025年每个产品的销售收入。",
+    "required_tables": [
+      "sales_orders",
+      "dim_products",
+      "exchange_rates"
+    ],
+    "test_points": [
+      "产品维度收入"
+    ]
+  },
+  {
+    "id": 14,
+    "category": "medium",
+    "question": "查询2025年每个产品的销售成本，销售成本定义为材料成本加人工成本后乘以销售数量。",
+    "required_tables": [
+      "sales_orders",
+      "dim_products"
+    ],
+    "test_points": [
+      "销售成本公式",
+      "成本字段识别"
+    ]
+  },
+  {
+    "id": 15,
+    "category": "medium",
+    "question": "查询2025年每个产品的收入和毛利。",
+    "required_tables": [
+      "sales_orders",
+      "dim_products",
+      "exchange_rates"
+    ],
+    "test_points": [
+      "毛利",
+      "收入",
+      "销售成本"
+    ]
+  },
+  {
+    "id": 16,
+    "category": "medium",
+    "question": "查询2025年每个产品的毛利率。",
+    "required_tables": [
+      "sales_orders",
+      "dim_products",
+      "exchange_rates"
+    ],
+    "test_points": [
+      "毛利率",
+      "除零处理"
+    ]
+  },
+  {
+    "id": 17,
+    "category": "medium",
+    "question": "查询2025年每个客户的销售收入。",
+    "required_tables": [
+      "sales_orders",
+      "dim_customers",
+      "exchange_rates"
+    ],
+    "test_points": [
+      "客户收入"
+    ]
+  },
+  {
+    "id": 18,
+    "category": "medium",
+    "question": "查询2025年每个客户的销售成本和毛利。",
+    "required_tables": [
+      "sales_orders",
+      "dim_customers",
+      "dim_products",
+      "exchange_rates"
+    ],
+    "test_points": [
+      "客户成本",
+      "客户毛利"
+    ]
+  },
+  {
+    "id": 19,
+    "category": "medium",
+    "question": "查询2025年每个客户类型的收入。",
+    "required_tables": [
+      "sales_orders",
+      "dim_customers",
+      "exchange_rates"
+    ],
+    "test_points": [
+      "客户类型分析"
+    ]
+  },
+  {
+    "id": 20,
+    "category": "medium",
+    "question": "查询2025年每个产品类别的收入和销售成本。",
+    "required_tables": [
+      "sales_orders",
+      "dim_products",
+      "exchange_rates"
+    ],
+    "test_points": [
+      "类别收入",
+      "类别成本"
+    ]
+  },
+  {
+    "id": 21,
+    "category": "medium",
+    "question": "查询2025年每个产品线的收入和毛利。",
+    "required_tables": [
+      "sales_orders",
+      "dim_products",
+      "exchange_rates"
+    ],
+    "test_points": [
+      "产品线分析"
+    ]
+  },
+  {
+    "id": 22,
+    "category": "medium",
+    "question": "查询2025年每个国家的销售收入。",
+    "required_tables": [
+      "sales_orders",
+      "dim_customers",
+      "exchange_rates"
+    ],
+    "test_points": [
+      "国家收入"
+    ]
+  },
+  {
+    "id": 23,
+    "category": "medium",
+    "question": "查询2025年期间费用总额，期间费用包括研发、销售、管理和财务四项费用。",
+    "required_tables": [
+      "finance_expenses"
+    ],
+    "test_points": [
+      "四项期间费用",
+      "费用口径"
+    ]
+  },
+  {
+    "id": 24,
+    "category": "medium",
+    "question": "查询2025年每个月的期间费用。",
+    "required_tables": [
+      "finance_expenses"
+    ],
+    "test_points": [
+      "月度费用",
+      "四项费用"
+    ]
+  },
+  {
+    "id": 25,
+    "category": "medium",
+    "question": "查询2025年每个部门的期间费用。",
+    "required_tables": [
+      "finance_expenses"
+    ],
+    "test_points": [
+      "部门费用",
+      "四项费用"
+    ]
+  },
+  {
+    "id": 26,
+    "category": "medium",
+    "question": "查询2025年的收入、销售成本和毛利。",
+    "required_tables": [
+      "sales_orders",
+      "dim_products",
+      "exchange_rates"
+    ],
+    "test_points": [
+      "核心三大指标"
+    ]
+  },
+  {
+    "id": 27,
+    "category": "medium",
+    "question": "查询2025年的利润，利润定义为毛利减去四项期间费用。",
+    "required_tables": [
+      "sales_orders",
+      "dim_products",
+      "exchange_rates",
+      "finance_expenses"
+    ],
+    "test_points": [
+      "利润",
+      "跨表指标",
+      "四项费用"
+    ]
+  },
+  {
+    "id": 28,
+    "category": "medium",
+    "question": "查询2025年收入超过100万元的产品。",
+    "required_tables": [
+      "sales_orders",
+      "dim_products",
+      "exchange_rates"
+    ],
+    "test_points": [
+      "HAVING",
+      "收入筛选"
+    ]
+  },
+  {
+    "id": 29,
+    "category": "medium",
+    "question": "查询2025年毛利率高于30%的产品。",
+    "required_tables": [
+      "sales_orders",
+      "dim_products",
+      "exchange_rates"
+    ],
+    "test_points": [
+      "毛利率",
+      "HAVING"
+    ]
+  },
+  {
+    "id": 30,
+    "category": "medium",
+    "question": "查询2025年销售数量最多的前10个产品。",
+    "required_tables": [
+      "sales_orders",
+      "dim_products"
+    ],
+    "test_points": [
+      "TOP N",
+      "数量聚合"
+    ]
+  },
+  {
+    "id": 31,
+    "category": "hard",
+    "question": "查询2025年每个月的收入、销售成本、毛利、四项期间费用和利润。",
+    "required_tables": [
+      "sales_orders",
+      "dim_products",
+      "exchange_rates",
+      "finance_expenses"
+    ],
+    "test_points": [
+      "CTE",
+      "跨表月度指标",
+      "四项费用",
+      "利润"
+    ]
+  },
+  {
+    "id": 32,
+    "category": "hard",
+    "question": "查询2025年每个月的收入环比增长率，并显示当月收入和上月收入。",
+    "required_tables": [
+      "sales_orders",
+      "exchange_rates"
+    ],
+    "test_points": [
+      "LAG",
+      "环比",
+      "窗口函数"
+    ]
+  },
+  {
+    "id": 33,
+    "category": "hard",
+    "question": "查询2025年每个产品类别的收入、销售成本、毛利和毛利率，并按照毛利率从高到低排名。",
+    "required_tables": [
+      "sales_orders",
+      "dim_products",
+      "exchange_rates"
+    ],
+    "test_points": [
+      "CTE",
+      "窗口排名",
+      "毛利率"
+    ]
+  },
+  {
+    "id": 34,
+    "category": "hard",
+    "question": "查询2025年每个产品类别收入最高的产品，并显示该产品的收入、成本和毛利。",
+    "required_tables": [
+      "sales_orders",
+      "dim_products",
+      "exchange_rates"
+    ],
+    "test_points": [
+      "分组TOP1",
+      "ROW_NUMBER",
+      "CTE"
+    ]
+  },
+  {
+    "id": 35,
+    "category": "hard",
+    "question": "查询2025年每个销售区域收入最高的客户，并显示该客户的收入和毛利。",
+    "required_tables": [
+      "sales_orders",
+      "dim_customers",
+      "dim_products",
+      "exchange_rates"
+    ],
+    "test_points": [
+      "分组TOP1",
+      "客户区域",
+      "窗口函数"
+    ]
+  },
+  {
+    "id": 36,
+    "category": "hard",
+    "question": "查询2025年每个客户的收入，并计算该客户收入占公司总收入的比例，只保留收入占比超过5%的客户。",
+    "required_tables": [
+      "sales_orders",
+      "dim_customers",
+      "exchange_rates"
+    ],
+    "test_points": [
+      "总计占比",
+      "CTE",
+      "HAVING替代逻辑"
+    ]
+  },
+  {
+    "id": 37,
+    "category": "hard",
+    "question": "查询2025年每个产品的毛利率，并找出每个产品类别毛利率最高的产品。",
+    "required_tables": [
+      "sales_orders",
+      "dim_products",
+      "exchange_rates"
+    ],
+    "test_points": [
+      "分组最高",
+      "毛利率",
+      "ROW_NUMBER"
+    ]
+  },
+  {
+    "id": 38,
+    "category": "hard",
+    "question": "查询2025年每个月的利润，并计算利润环比增长率。",
+    "required_tables": [
+      "sales_orders",
+      "dim_products",
+      "exchange_rates",
+      "finance_expenses"
+    ],
+    "test_points": [
+      "利润",
+      "环比",
+      "四项费用",
+      "LAG"
+    ]
+  },
+  {
+    "id": 39,
+    "category": "hard",
+    "question": "查询2025年每个产品类别的收入，并计算每个类别收入占公司总收入的比例，同时按照收入排名。",
+    "required_tables": [
+      "sales_orders",
+      "dim_products",
+      "exchange_rates"
+    ],
+    "test_points": [
+      "占比",
+      "排名",
+      "CTE"
+    ]
+  },
+  {
+    "id": 40,
+    "category": "hard",
+    "question": "查询2025年收入最高的10个客户，并显示每个客户的收入、销售成本、毛利、毛利率以及收入排名。",
+    "required_tables": [
+      "sales_orders",
+      "dim_customers",
+      "dim_products",
+      "exchange_rates"
+    ],
+    "test_points": [
+      "TOP N",
+      "窗口函数",
+      "客户毛利"
+    ]
+  }
+]
