@@ -65,7 +65,7 @@ def build_prompt(
         query: str,
         *,
         schema : str = Schema,
-        konwledge : list[dict[str, Any]]|None=None
+        konwledge : list[dict[str, Any]] | None = None
         )-> list:
     system= f"{SYSTEM_PROMPT} 数据库表的schema为：{schema} 知识库为：{konwledge}"
     user=f"用户问题为：{query}"
