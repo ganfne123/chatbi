@@ -1,0 +1,236 @@
+============================================================
+ChatBI Text2SQL 评估报告
+============================================================
+总用例数：40
+Execution Accuracy：32/40 = 80.0%
+Exact Match Accuracy：3/40 = 7.5%
+执行失败数：0
+
+按难度分类统计：
+ medium  : 25/30 = 83.3% (失败 0)
+ hard    : 7/10 = 70.0% (失败 0)
+
+详细结果：
+
+[1] medium   | 通过
+ 问题：查询所有客户的客户编号、客户名称、客户类型、所属行业和国家。
+ 生成 SQL：SELECT customer_id, customer_name, customer_type, industry, country FROM dim_cus...
+
+[2] medium   | 通过
+ 问题：查询所有产品的产品名称、产品线、类别和技术路线。
+ 生成 SQL：SELECT product_name, product_line, category, tech_route FROM dim_products;...
+
+[3] medium   | 不匹配
+ 问题：查询所有已完成订单的订单号、客户编号、产品编号、订单日期和订单金额。
+ 生成 SQL：SELECT order_no, customer_id, product_id, order_date, net_amount FROM sales_orde...
+ 预期行数：198, 生成行数：0
+
+[4] medium   | 通过
+ 问题：查询每种产品的材料成本和人工成本。
+ 生成 SQL：SELECT product_name, material_cost, labor_cost FROM dim_products;...
+
+[5] medium   | 通过
+ 问题：查询每种产品的单位实际成本，实际成本定义为材料成本加人工成本。
+ 生成 SQL：SELECT product_id, product_name, material_cost + labor_cost AS unit_actual_cost ...
+
+[6] medium   | 通过
+ 问题：查询每个国家有多少客户。
+ 生成 SQL：SELECT country, COUNT(customer_id) AS customer_count FROM dim_customers GROUP BY...
+
+[7] medium   | 通过
+ 问题：查询每个产品类别有多少种产品。
+ 生成 SQL：SELECT category, COUNT(product_id) AS product_count FROM dim_products GROUP BY c...
+
+[8] medium   | 不匹配
+ 问题：查询已完成订单的总销售数量。
+ 生成 SQL：SELECT SUM(quantity) AS total_quantity FROM sales_orders WHERE order_status = '已...
+ 预期行数：1, 生成行数：1
+
+[9] medium   | 不匹配
+ 问题：查询2025年的已完成订单数量。
+ 生成 SQL：SELECT COUNT(order_id) FROM sales_orders WHERE YEAR(order_date) = 2025 AND order...
+ 预期行数：1, 生成行数：1
+
+[10] medium   | 不匹配
+ 问题：查询2025年每个月的已完成订单数量。
+ 生成 SQL：SELECT MONTH(order_date) AS month, COUNT(order_id) AS order_count
+FROM sales_ord...
+ 预期行数：12, 生成行数：0
+
+[11] medium   | 通过
+ 问题：查询2025年的销售收入，收入按照不含税销售收入计算，并统一换算成人民币。
+ 生成 SQL：SELECT SUM(o.net_amount * r.rate_to_cny) AS total_revenue
+FROM sales_orders o
+JO...
+
+[12] medium   | 通过
+ 问题：查询2025年每个销售区域的收入。
+ 生成 SQL：SELECT o.region, SUM(o.net_amount * r.rate_to_cny) AS revenue FROM sales_orders ...
+
+[13] medium   | 通过
+ 问题：查询2025年每个产品的销售收入。
+ 生成 SQL：SELECT
+  p.product_name,
+  SUM(o.net_amount * r.rate_to_cny) AS sales_revenue
+FR...
+
+[14] medium   | 通过
+ 问题：查询2025年每个产品的销售成本，销售成本定义为材料成本加人工成本后乘以销售数量。
+ 生成 SQL：SELECT p.product_id, p.product_name, SUM((p.material_cost + p.labor_cost) * o.qu...
+
+[15] medium   | 通过
+ 问题：查询2025年每个产品的收入和毛利。
+ 生成 SQL：SELECT 
+    p.product_id,
+    p.product_name,
+    SUM(o.net_amount * r.rate_to_c...
+
+[16] medium   | 通过
+ 问题：查询2025年每个产品的毛利率。
+ 生成 SQL：SELECT 
+    p.product_name,
+    (SUM(o.net_amount * r.rate_to_cny) - SUM((p.mate...
+
+[17] medium   | 通过
+ 问题：查询2025年每个客户的销售收入。
+ 生成 SQL：SELECT c.customer_id, c.customer_name, SUM(o.net_amount * r.rate_to_cny) AS sale...
+
+[18] medium   | 通过
+ 问题：查询2025年每个客户的销售成本和毛利。
+ 生成 SQL：SELECT 
+    c.customer_name,
+    SUM((p.material_cost + p.labor_cost) * o.quanti...
+
+[19] medium   | 通过
+ 问题：查询2025年每个客户类型的收入。
+ 生成 SQL：SELECT c.customer_type, SUM(o.net_amount * r.rate_to_cny) AS revenue FROM sales_...
+
+[20] medium   | 通过
+ 问题：查询2025年每个产品类别的收入和销售成本。
+ 生成 SQL：SELECT
+  p.category,
+  SUM(o.net_amount * r.rate_to_cny) AS revenue,
+  SUM((p.ma...
+
+[21] medium   | 通过
+ 问题：查询2025年每个产品线的收入和毛利。
+ 生成 SQL：SELECT 
+    p.product_line,
+    SUM(o.net_amount * r.rate_to_cny) AS revenue,
+  ...
+
+[22] medium   | 通过
+ 问题：查询2025年每个国家的销售收入。
+ 生成 SQL：SELECT c.country, SUM(o.net_amount * r.rate_to_cny) AS revenue FROM sales_orders...
+
+[23] medium   | 通过
+ 问题：查询2025年期间费用总额，期间费用包括研发、销售、管理和财务四项费用。
+ 生成 SQL：SELECT SUM(rd_expense + selling_expense + admin_expense + finance_expense) AS to...
+
+[24] medium   | 通过
+ 问题：查询2025年每个月的期间费用。
+ 生成 SQL：SELECT
+  DATE_FORMAT(expense_date, '%Y-%m') AS month,
+  SUM(rd_expense + selling...
+
+[25] medium   | 通过
+ 问题：查询2025年每个部门的期间费用。
+ 生成 SQL：SELECT department, SUM(rd_expense + selling_expense + admin_expense + finance_ex...
+
+[26] medium   | 通过
+ 问题：查询2025年的收入、销售成本和毛利。
+ 生成 SQL：SELECT 
+    SUM(o.net_amount * r.rate_to_cny) AS revenue,
+    SUM((p.material_co...
+
+[27] medium   | 通过
+ 问题：查询2025年的利润，利润定义为毛利减去四项期间费用。
+ 生成 SQL：SELECT (SELECT SUM(o.net_amount * r.rate_to_cny - (p.material_cost + p.labor_cos...
+
+[28] medium   | 通过
+ 问题：查询2025年收入超过100万元的产品。
+ 生成 SQL：SELECT p.product_name, SUM(o.net_amount * r.rate_to_cny) AS total_revenue
+FROM s...
+
+[29] medium   | 通过
+ 问题：查询2025年毛利率高于30%的产品。
+ 生成 SQL：SELECT 
+    p.product_name 
+FROM sales_orders o 
+JOIN dim_products p ON o.produc...
+
+[30] medium   | 不匹配
+ 问题：查询2025年销售数量最多的前10个产品。
+ 生成 SQL：SELECT p.product_id, p.product_name, SUM(s.quantity) AS total_quantity FROM sale...
+ 预期行数：10, 生成行数：10
+
+[31] hard     | 通过
+ 问题：查询2025年每个月的收入、销售成本、毛利、四项期间费用和利润。
+ 生成 SQL：WITH monthly_sales AS (
+    SELECT 
+        DATE_FORMAT(o.order_date, '%Y-%m') A...
+
+[32] hard     | 通过
+ 问题：查询2025年每个月的收入环比增长率，并显示当月收入和上月收入。
+ 生成 SQL：WITH MonthlyRevenue AS (
+    SELECT 
+        DATE_FORMAT(o.order_date, '%Y-%m') ...
+
+[33] hard     | 不匹配
+ 问题：查询2025年每个产品类别的收入、销售成本、毛利和毛利率，并按照毛利率从高到低排名。
+ 生成 SQL：SELECT 
+    p.category AS 产品类别,
+    SUM(o.net_amount * r.rate_to_cny) AS 收入,
+   ...
+ 预期行数：12, 生成行数：12
+
+[34] hard     | 通过
+ 问题：查询2025年每个产品类别收入最高的产品，并显示该产品的收入、成本和毛利。
+ 生成 SQL：WITH ProductMetrics AS (
+    SELECT 
+        p.category,
+        p.product_name,...
+
+[35] hard     | 不匹配
+ 问题：查询2025年每个销售区域收入最高的客户，并显示该客户的收入和毛利。
+ 生成 SQL：WITH CustomerMetrics AS (
+    SELECT 
+        o.region AS sales_region,
+        ...
+ 预期行数：8, 生成行数：8
+
+[36] hard     | 通过
+ 问题：查询2025年每个客户的收入，并计算该客户收入占公司总收入的比例，只保留收入占比超过5%的客户。
+ 生成 SQL：SELECT 
+    c.customer_id,
+    c.customer_name,
+    SUM(o.net_amount * r.rate_to...
+
+[37] hard     | 通过
+ 问题：查询2025年每个产品的毛利率，并找出每个产品类别毛利率最高的产品。
+ 生成 SQL：WITH ProductMetrics AS (
+    SELECT 
+        p.category,
+        p.product_id,
+ ...
+
+[38] hard     | 通过
+ 问题：查询2025年每个月的利润，并计算利润环比增长率。
+ 生成 SQL：WITH MonthlyGrossProfit AS (
+    SELECT 
+        DATE_FORMAT(o.order_date, '%Y-%...
+
+[39] hard     | 通过
+ 问题：查询2025年每个产品类别的收入，并计算每个类别收入占公司总收入的比例，同时按照收入排名。
+ 生成 SQL：WITH CategoryRevenue AS (
+    SELECT 
+        p.category,
+        SUM(o.net_amou...
+
+[40] hard     | 不匹配
+ 问题：查询2025年收入最高的10个客户，并显示每个客户的收入、销售成本、毛利、毛利率以及收入排名。
+ 生成 SQL：WITH CustomerMetrics AS (
+    SELECT 
+        c.customer_id,
+        c.customer_...
+ 预期行数：10, 生成行数：10
