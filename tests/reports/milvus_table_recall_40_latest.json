@@ -1,33 +1,31 @@
 {
   "metadata": {
-    "generated_at": "2026-09-26T17:54:01+08:00",
+    "generated_at": "2026-09-28T18:19:39+08:00",
     "case_count": 40,
     "embedding_model": "text-embedding-v3",
     "collection_name": "table_schema_docs",
-    "search_limit": 11,
+    "search_limit": 9,
     "real_tables": [
       "dim_customers",
       "dim_products",
       "sales_orders",
-      "finance_expenses",
-      "exchange_rates"
+      "exchange_rates",
+      "finance_expenses"
     ],
     "distractor_tables": [
-      "dim_employees",
-      "hr_attendance",
-      "it_assets",
-      "office_supplies",
-      "website_logs",
-      "weather_data"
+      "hr_attendance_records",
+      "iot_device_alerts",
+      "legal_contract_archive",
+      "warehouse_temperature_logs"
     ]
   },
   "summary": {
     "case_count": 40,
-    "top_k": 5,
-    "mean_recall_at_k": 100.0,
-    "all_required_hit_rate": 100.0,
-    "mrr_at_k": 0.975,
-    "distractor_count_in_top_k": 35,
+    "top_k": 4,
+    "mean_recall_at_k": 92.5,
+    "all_required_hit_rate": 75.0,
+    "mrr_at_k": 0.925,
+    "distractor_count_in_top_k": 9,
     "required_table_stats": {
       "dim_customers": {
         "required_cases": 9,
@@ -37,9 +35,9 @@
       },
       "dim_products": {
         "required_cases": 24,
-        "hit_cases": 24,
-        "missing_cases": 0,
-        "recall_percent": 100.0
+        "hit_cases": 23,
+        "missing_cases": 1,
+        "recall_percent": 95.8
       },
       "sales_orders": {
         "required_cases": 31,
@@ -47,15 +45,15 @@
         "missing_cases": 0,
         "recall_percent": 100.0
       },
+      "exchange_rates": {
+        "required_cases": 25,
+        "hit_cases": 16,
+        "missing_cases": 9,
+        "recall_percent": 64.0
+      },
       "finance_expenses": {
         "required_cases": 6,
         "hit_cases": 6,
-        "missing_cases": 0,
-        "recall_percent": 100.0
-      },
-      "exchange_rates": {
-        "required_cases": 25,
-        "hit_cases": 25,
         "missing_cases": 0,
         "recall_percent": 100.0
       }
@@ -69,13 +67,12 @@
       "required_tables": [
         "dim_customers"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
         "dim_customers",
         "sales_orders",
-        "dim_employees",
-        "hr_attendance",
-        "website_logs"
+        "dim_products",
+        "legal_contract_archive"
       ],
       "hit_required_tables": [
         "dim_customers"
@@ -85,12 +82,12 @@
       "all_required_recalled": true,
       "reciprocal_rank": 1.0,
       "first_required_rank": 1,
-      "distractor_count_in_top_k": 3,
+      "distractor_count_in_top_k": 1,
       "results": [
         {
           "rank": 1,
           "table_name": "dim_customers",
-          "score": 0.7068081498146057,
+          "score": 0.7083796262741089,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -107,17 +104,17 @@
         },
         {
           "rank": 3,
-          "table_name": "dim_employees",
-          "score": 0.5518569350242615,
+          "table_name": "dim_products",
+          "score": 0.5322290658950806,
           "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
+          "is_real": true,
+          "marker": "真实表-非必需",
           "in_top_k": true
         },
         {
           "rank": 4,
-          "table_name": "hr_attendance",
-          "score": 0.5299424529075623,
+          "table_name": "legal_contract_archive",
+          "score": 0.5244163274765015,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -125,26 +122,26 @@
         },
         {
           "rank": 5,
-          "table_name": "website_logs",
-          "score": 0.5274438261985779,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": true
-        },
-        {
-          "rank": 6,
-          "table_name": "dim_products",
-          "score": 0.5222883224487305,
+          "table_name": "finance_expenses",
+          "score": 0.5152577757835388,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
           "in_top_k": false
         },
         {
+          "rank": 6,
+          "table_name": "hr_attendance_records",
+          "score": 0.5032427906990051,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
+          "in_top_k": false
+        },
+        {
           "rank": 7,
-          "table_name": "weather_data",
-          "score": 0.5193915367126465,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.49327248334884644,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -152,38 +149,20 @@
         },
         {
           "rank": 8,
-          "table_name": "office_supplies",
-          "score": 0.5178906321525574,
+          "table_name": "exchange_rates",
+          "score": 0.4747520387172699,
           "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
+          "is_real": true,
+          "marker": "真实表-非必需",
           "in_top_k": false
         },
         {
           "rank": 9,
-          "table_name": "finance_expenses",
-          "score": 0.501987874507904,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "it_assets",
-          "score": 0.49548548460006714,
+          "table_name": "iot_device_alerts",
+          "score": 0.4383707046508789,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "exchange_rates",
-          "score": 0.46403270959854126,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
           "in_top_k": false
         }
       ]
@@ -195,13 +174,12 @@
       "required_tables": [
         "dim_products"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
         "dim_products",
         "dim_customers",
-        "finance_expenses",
         "sales_orders",
-        "office_supplies"
+        "finance_expenses"
       ],
       "hit_required_tables": [
         "dim_products"
@@ -211,12 +189,12 @@
       "all_required_recalled": true,
       "reciprocal_rank": 1.0,
       "first_required_rank": 1,
-      "distractor_count_in_top_k": 1,
+      "distractor_count_in_top_k": 0,
       "results": [
         {
           "rank": 1,
           "table_name": "dim_products",
-          "score": 0.6419866681098938,
+          "score": 0.6407018899917603,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -225,7 +203,7 @@
         {
           "rank": 2,
           "table_name": "dim_customers",
-          "score": 0.5561659932136536,
+          "score": 0.5566112995147705,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
@@ -233,15 +211,6 @@
         },
         {
           "rank": 3,
-          "table_name": "finance_expenses",
-          "score": 0.5287771821022034,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": true
-        },
-        {
-          "rank": 4,
           "table_name": "sales_orders",
           "score": 0.5287129282951355,
           "is_required": false,
@@ -250,18 +219,27 @@
           "in_top_k": true
         },
         {
-          "rank": 5,
-          "table_name": "office_supplies",
-          "score": 0.49677175283432007,
+          "rank": 4,
+          "table_name": "finance_expenses",
+          "score": 0.5152639150619507,
           "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
+          "is_real": true,
+          "marker": "真实表-非必需",
           "in_top_k": true
         },
         {
+          "rank": 5,
+          "table_name": "iot_device_alerts",
+          "score": 0.4993099570274353,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
+          "in_top_k": false
+        },
+        {
           "rank": 6,
-          "table_name": "it_assets",
-          "score": 0.48564618825912476,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.48465120792388916,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -269,8 +247,8 @@
         },
         {
           "rank": 7,
-          "table_name": "website_logs",
-          "score": 0.47414860129356384,
+          "table_name": "hr_attendance_records",
+          "score": 0.4499862790107727,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -278,8 +256,8 @@
         },
         {
           "rank": 8,
-          "table_name": "dim_employees",
-          "score": 0.47344455122947693,
+          "table_name": "legal_contract_archive",
+          "score": 0.411797434091568,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -287,26 +265,8 @@
         },
         {
           "rank": 9,
-          "table_name": "weather_data",
-          "score": 0.4554239511489868,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "hr_attendance",
-          "score": 0.44742536544799805,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
           "table_name": "exchange_rates",
-          "score": 0.4036726653575897,
+          "score": 0.3795149624347687,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
@@ -321,13 +281,12 @@
       "required_tables": [
         "sales_orders"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
         "sales_orders",
-        "hr_attendance",
         "dim_customers",
-        "office_supplies",
-        "dim_products"
+        "dim_products",
+        "hr_attendance_records"
       ],
       "hit_required_tables": [
         "sales_orders"
@@ -337,7 +296,7 @@
       "all_required_recalled": true,
       "reciprocal_rank": 1.0,
       "first_required_rank": 1,
-      "distractor_count_in_top_k": 2,
+      "distractor_count_in_top_k": 1,
       "results": [
         {
           "rank": 1,
@@ -350,17 +309,17 @@
         },
         {
           "rank": 2,
-          "table_name": "hr_attendance",
-          "score": 0.5905218720436096,
+          "table_name": "dim_customers",
+          "score": 0.5889334082603455,
           "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
+          "is_real": true,
+          "marker": "真实表-非必需",
           "in_top_k": true
         },
         {
           "rank": 3,
-          "table_name": "dim_customers",
-          "score": 0.5896891355514526,
+          "table_name": "dim_products",
+          "score": 0.5507422685623169,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
@@ -368,8 +327,8 @@
         },
         {
           "rank": 4,
-          "table_name": "office_supplies",
-          "score": 0.5590289235115051,
+          "table_name": "hr_attendance_records",
+          "score": 0.5468148589134216,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -377,26 +336,26 @@
         },
         {
           "rank": 5,
-          "table_name": "dim_products",
-          "score": 0.549593448638916,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": true
-        },
-        {
-          "rank": 6,
-          "table_name": "website_logs",
-          "score": 0.5469304919242859,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.5411761403083801,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
           "in_top_k": false
         },
         {
+          "rank": 6,
+          "table_name": "finance_expenses",
+          "score": 0.527099609375,
+          "is_required": false,
+          "is_real": true,
+          "marker": "真实表-非必需",
+          "in_top_k": false
+        },
+        {
           "rank": 7,
-          "table_name": "dim_employees",
-          "score": 0.5386247634887695,
+          "table_name": "legal_contract_archive",
+          "score": 0.5041638016700745,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -404,8 +363,8 @@
         },
         {
           "rank": 8,
-          "table_name": "finance_expenses",
-          "score": 0.5382998585700989,
+          "table_name": "exchange_rates",
+          "score": 0.48740607500076294,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
@@ -413,26 +372,8 @@
         },
         {
           "rank": 9,
-          "table_name": "it_assets",
-          "score": 0.48379001021385193,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "exchange_rates",
-          "score": 0.48056212067604065,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "weather_data",
-          "score": 0.4696059226989746,
+          "table_name": "iot_device_alerts",
+          "score": 0.47753697633743286,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -447,139 +388,12 @@
       "required_tables": [
         "dim_products"
       ],
-      "top_k": 5,
-      "top_k_tables": [
-        "dim_products",
-        "finance_expenses",
-        "sales_orders",
-        "office_supplies",
-        "hr_attendance"
-      ],
-      "hit_required_tables": [
-        "dim_products"
-      ],
-      "missing_required_tables": [],
-      "recall": 1.0,
-      "all_required_recalled": true,
-      "reciprocal_rank": 1.0,
-      "first_required_rank": 1,
-      "distractor_count_in_top_k": 2,
-      "results": [
-        {
-          "rank": 1,
-          "table_name": "dim_products",
-          "score": 0.6600234508514404,
-          "is_required": true,
-          "is_real": true,
-          "marker": "必须召回",
-          "in_top_k": true
-        },
-        {
-          "rank": 2,
-          "table_name": "finance_expenses",
-          "score": 0.6531535983085632,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": true
-        },
-        {
-          "rank": 3,
-          "table_name": "sales_orders",
-          "score": 0.5543426275253296,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": true
-        },
-        {
-          "rank": 4,
-          "table_name": "office_supplies",
-          "score": 0.5502031445503235,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": true
-        },
-        {
-          "rank": 5,
-          "table_name": "hr_attendance",
-          "score": 0.512809693813324,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": true
-        },
-        {
-          "rank": 6,
-          "table_name": "exchange_rates",
-          "score": 0.5097038745880127,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": false
-        },
-        {
-          "rank": 7,
-          "table_name": "it_assets",
-          "score": 0.49037402868270874,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 8,
-          "table_name": "website_logs",
-          "score": 0.4866762161254883,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 9,
-          "table_name": "dim_customers",
-          "score": 0.4794449210166931,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "dim_employees",
-          "score": 0.4734418988227844,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "weather_data",
-          "score": 0.44704946875572205,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        }
-      ]
-    },
-    {
-      "id": 5,
-      "category": "medium",
-      "question": "查询每种产品的单位实际成本，实际成本定义为材料成本加人工成本。",
-      "required_tables": [
-        "dim_products"
-      ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
         "finance_expenses",
         "dim_products",
         "sales_orders",
-        "office_supplies",
-        "exchange_rates"
+        "hr_attendance_records"
       ],
       "hit_required_tables": [
         "dim_products"
@@ -594,7 +408,7 @@
         {
           "rank": 1,
           "table_name": "finance_expenses",
-          "score": 0.6412246823310852,
+          "score": 0.6481634378433228,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
@@ -603,7 +417,114 @@
         {
           "rank": 2,
           "table_name": "dim_products",
-          "score": 0.6229314804077148,
+          "score": 0.6009348034858704,
+          "is_required": true,
+          "is_real": true,
+          "marker": "必须召回",
+          "in_top_k": true
+        },
+        {
+          "rank": 3,
+          "table_name": "sales_orders",
+          "score": 0.5543426275253296,
+          "is_required": false,
+          "is_real": true,
+          "marker": "真实表-非必需",
+          "in_top_k": true
+        },
+        {
+          "rank": 4,
+          "table_name": "hr_attendance_records",
+          "score": 0.5405322313308716,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
+          "in_top_k": true
+        },
+        {
+          "rank": 5,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.528268575668335,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
+          "in_top_k": false
+        },
+        {
+          "rank": 6,
+          "table_name": "iot_device_alerts",
+          "score": 0.5036062598228455,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
+          "in_top_k": false
+        },
+        {
+          "rank": 7,
+          "table_name": "dim_customers",
+          "score": 0.47904497385025024,
+          "is_required": false,
+          "is_real": true,
+          "marker": "真实表-非必需",
+          "in_top_k": false
+        },
+        {
+          "rank": 8,
+          "table_name": "exchange_rates",
+          "score": 0.4593701958656311,
+          "is_required": false,
+          "is_real": true,
+          "marker": "真实表-非必需",
+          "in_top_k": false
+        },
+        {
+          "rank": 9,
+          "table_name": "legal_contract_archive",
+          "score": 0.4142686128616333,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
+          "in_top_k": false
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "category": "medium",
+      "question": "查询每种产品的单位实际成本，实际成本定义为材料成本加人工成本。",
+      "required_tables": [
+        "dim_products"
+      ],
+      "top_k": 4,
+      "top_k_tables": [
+        "finance_expenses",
+        "dim_products",
+        "sales_orders",
+        "hr_attendance_records"
+      ],
+      "hit_required_tables": [
+        "dim_products"
+      ],
+      "missing_required_tables": [],
+      "recall": 1.0,
+      "all_required_recalled": true,
+      "reciprocal_rank": 0.5,
+      "first_required_rank": 2,
+      "distractor_count_in_top_k": 1,
+      "results": [
+        {
+          "rank": 1,
+          "table_name": "finance_expenses",
+          "score": 0.6452298760414124,
+          "is_required": false,
+          "is_real": true,
+          "marker": "真实表-非必需",
+          "in_top_k": true
+        },
+        {
+          "rank": 2,
+          "table_name": "dim_products",
+          "score": 0.5714957118034363,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -620,8 +541,8 @@
         },
         {
           "rank": 4,
-          "table_name": "office_supplies",
-          "score": 0.5413727760314941,
+          "table_name": "hr_attendance_records",
+          "score": 0.5290805101394653,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -629,26 +550,26 @@
         },
         {
           "rank": 5,
-          "table_name": "exchange_rates",
-          "score": 0.5117601156234741,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": true
-        },
-        {
-          "rank": 6,
-          "table_name": "hr_attendance",
-          "score": 0.5060651898384094,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.5034216046333313,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
           "in_top_k": false
         },
         {
+          "rank": 6,
+          "table_name": "exchange_rates",
+          "score": 0.4848852753639221,
+          "is_required": false,
+          "is_real": true,
+          "marker": "真实表-非必需",
+          "in_top_k": false
+        },
+        {
           "rank": 7,
-          "table_name": "it_assets",
-          "score": 0.48703211545944214,
+          "table_name": "iot_device_alerts",
+          "score": 0.4648350775241852,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -656,35 +577,17 @@
         },
         {
           "rank": 8,
-          "table_name": "website_logs",
-          "score": 0.4848020672798157,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 9,
-          "table_name": "dim_employees",
-          "score": 0.47212499380111694,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
           "table_name": "dim_customers",
-          "score": 0.46391794085502625,
+          "score": 0.4631844460964203,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
           "in_top_k": false
         },
         {
-          "rank": 11,
-          "table_name": "weather_data",
-          "score": 0.45172032713890076,
+          "rank": 9,
+          "table_name": "legal_contract_archive",
+          "score": 0.41973310708999634,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -699,13 +602,12 @@
       "required_tables": [
         "dim_customers"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
         "dim_customers",
         "sales_orders",
-        "website_logs",
         "exchange_rates",
-        "dim_employees"
+        "warehouse_temperature_logs"
       ],
       "hit_required_tables": [
         "dim_customers"
@@ -715,12 +617,12 @@
       "all_required_recalled": true,
       "reciprocal_rank": 1.0,
       "first_required_rank": 1,
-      "distractor_count_in_top_k": 2,
+      "distractor_count_in_top_k": 1,
       "results": [
         {
           "rank": 1,
           "table_name": "dim_customers",
-          "score": 0.622833251953125,
+          "score": 0.6247392296791077,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -737,35 +639,35 @@
         },
         {
           "rank": 3,
-          "table_name": "website_logs",
-          "score": 0.4947066009044647,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": true
-        },
-        {
-          "rank": 4,
           "table_name": "exchange_rates",
-          "score": 0.4777529835700989,
+          "score": 0.5227152705192566,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
           "in_top_k": true
         },
         {
-          "rank": 5,
-          "table_name": "dim_employees",
-          "score": 0.4777495861053467,
+          "rank": 4,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.4661099314689636,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
           "in_top_k": true
         },
         {
+          "rank": 5,
+          "table_name": "dim_products",
+          "score": 0.4511018395423889,
+          "is_required": false,
+          "is_real": true,
+          "marker": "真实表-非必需",
+          "in_top_k": false
+        },
+        {
           "rank": 6,
-          "table_name": "weather_data",
-          "score": 0.46428099274635315,
+          "table_name": "hr_attendance_records",
+          "score": 0.44637787342071533,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -773,8 +675,8 @@
         },
         {
           "rank": 7,
-          "table_name": "hr_attendance",
-          "score": 0.44849592447280884,
+          "table_name": "iot_device_alerts",
+          "score": 0.4356996417045593,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -782,38 +684,20 @@
         },
         {
           "rank": 8,
-          "table_name": "office_supplies",
-          "score": 0.43434345722198486,
+          "table_name": "finance_expenses",
+          "score": 0.427986741065979,
           "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
+          "is_real": true,
+          "marker": "真实表-非必需",
           "in_top_k": false
         },
         {
           "rank": 9,
-          "table_name": "dim_products",
-          "score": 0.4339885115623474,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "it_assets",
-          "score": 0.4184979796409607,
+          "table_name": "legal_contract_archive",
+          "score": 0.39660531282424927,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "finance_expenses",
-          "score": 0.4100148677825928,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
           "in_top_k": false
         }
       ]
@@ -825,11 +709,10 @@
       "required_tables": [
         "dim_products"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
         "dim_products",
         "sales_orders",
-        "office_supplies",
         "dim_customers",
         "finance_expenses"
       ],
@@ -841,12 +724,12 @@
       "all_required_recalled": true,
       "reciprocal_rank": 1.0,
       "first_required_rank": 1,
-      "distractor_count_in_top_k": 1,
+      "distractor_count_in_top_k": 0,
       "results": [
         {
           "rank": 1,
           "table_name": "dim_products",
-          "score": 0.6014136075973511,
+          "score": 0.5980688333511353,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -863,17 +746,17 @@
         },
         {
           "rank": 3,
-          "table_name": "office_supplies",
-          "score": 0.5236809253692627,
+          "table_name": "dim_customers",
+          "score": 0.5235408544540405,
           "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
+          "is_real": true,
+          "marker": "真实表-非必需",
           "in_top_k": true
         },
         {
           "rank": 4,
-          "table_name": "dim_customers",
-          "score": 0.5234805941581726,
+          "table_name": "finance_expenses",
+          "score": 0.4854874908924103,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
@@ -881,26 +764,26 @@
         },
         {
           "rank": 5,
-          "table_name": "finance_expenses",
-          "score": 0.49122968316078186,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.4809051752090454,
           "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": true
+          "is_real": false,
+          "marker": "干扰表",
+          "in_top_k": false
         },
         {
           "rank": 6,
-          "table_name": "exchange_rates",
-          "score": 0.46647143363952637,
+          "table_name": "iot_device_alerts",
+          "score": 0.4724675416946411,
           "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
+          "is_real": false,
+          "marker": "干扰表",
           "in_top_k": false
         },
         {
           "rank": 7,
-          "table_name": "dim_employees",
-          "score": 0.4632314443588257,
+          "table_name": "hr_attendance_records",
+          "score": 0.4459381401538849,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -908,35 +791,17 @@
         },
         {
           "rank": 8,
-          "table_name": "it_assets",
-          "score": 0.45135945081710815,
+          "table_name": "exchange_rates",
+          "score": 0.4202658534049988,
           "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
+          "is_real": true,
+          "marker": "真实表-非必需",
           "in_top_k": false
         },
         {
           "rank": 9,
-          "table_name": "hr_attendance",
-          "score": 0.4488914906978607,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "website_logs",
-          "score": 0.4386419653892517,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "weather_data",
-          "score": 0.4342738389968872,
+          "table_name": "legal_contract_archive",
+          "score": 0.3977980315685272,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -951,13 +816,12 @@
       "required_tables": [
         "sales_orders"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
         "sales_orders",
         "dim_customers",
-        "hr_attendance",
-        "office_supplies",
-        "website_logs"
+        "dim_products",
+        "hr_attendance_records"
       ],
       "hit_required_tables": [
         "sales_orders"
@@ -967,7 +831,7 @@
       "all_required_recalled": true,
       "reciprocal_rank": 1.0,
       "first_required_rank": 1,
-      "distractor_count_in_top_k": 3,
+      "distractor_count_in_top_k": 1,
       "results": [
         {
           "rank": 1,
@@ -981,7 +845,7 @@
         {
           "rank": 2,
           "table_name": "dim_customers",
-          "score": 0.5416830778121948,
+          "score": 0.5416126251220703,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
@@ -989,17 +853,17 @@
         },
         {
           "rank": 3,
-          "table_name": "hr_attendance",
-          "score": 0.5163971781730652,
+          "table_name": "dim_products",
+          "score": 0.48888009786605835,
           "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
+          "is_real": true,
+          "marker": "真实表-非必需",
           "in_top_k": true
         },
         {
           "rank": 4,
-          "table_name": "office_supplies",
-          "score": 0.4968928098678589,
+          "table_name": "hr_attendance_records",
+          "score": 0.4863659143447876,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -1007,35 +871,35 @@
         },
         {
           "rank": 5,
-          "table_name": "website_logs",
-          "score": 0.4830513596534729,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": true
-        },
-        {
-          "rank": 6,
-          "table_name": "dim_employees",
-          "score": 0.47596096992492676,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.4811779856681824,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
           "in_top_k": false
         },
         {
-          "rank": 7,
-          "table_name": "dim_products",
-          "score": 0.47454625368118286,
+          "rank": 6,
+          "table_name": "exchange_rates",
+          "score": 0.47051218152046204,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
           "in_top_k": false
         },
         {
+          "rank": 7,
+          "table_name": "iot_device_alerts",
+          "score": 0.44673603773117065,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
+          "in_top_k": false
+        },
+        {
           "rank": 8,
-          "table_name": "exchange_rates",
-          "score": 0.4694533944129944,
+          "table_name": "finance_expenses",
+          "score": 0.44294506311416626,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
@@ -1043,26 +907,8 @@
         },
         {
           "rank": 9,
-          "table_name": "finance_expenses",
-          "score": 0.4445732831954956,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "weather_data",
-          "score": 0.4363556504249573,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "it_assets",
-          "score": 0.4212247133255005,
+          "table_name": "legal_contract_archive",
+          "score": 0.41478756070137024,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -1077,13 +923,12 @@
       "required_tables": [
         "sales_orders"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
         "sales_orders",
         "dim_customers",
-        "website_logs",
-        "office_supplies",
-        "hr_attendance"
+        "dim_products",
+        "warehouse_temperature_logs"
       ],
       "hit_required_tables": [
         "sales_orders"
@@ -1093,7 +938,7 @@
       "all_required_recalled": true,
       "reciprocal_rank": 1.0,
       "first_required_rank": 1,
-      "distractor_count_in_top_k": 3,
+      "distractor_count_in_top_k": 1,
       "results": [
         {
           "rank": 1,
@@ -1107,7 +952,7 @@
         {
           "rank": 2,
           "table_name": "dim_customers",
-          "score": 0.5293766260147095,
+          "score": 0.5292621850967407,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
@@ -1115,17 +960,17 @@
         },
         {
           "rank": 3,
-          "table_name": "website_logs",
-          "score": 0.4857603907585144,
+          "table_name": "dim_products",
+          "score": 0.4764743149280548,
           "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
+          "is_real": true,
+          "marker": "真实表-非必需",
           "in_top_k": true
         },
         {
           "rank": 4,
-          "table_name": "office_supplies",
-          "score": 0.4751822352409363,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.45563122630119324,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -1133,26 +978,26 @@
         },
         {
           "rank": 5,
-          "table_name": "hr_attendance",
-          "score": 0.47212669253349304,
+          "table_name": "hr_attendance_records",
+          "score": 0.45044755935668945,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
-          "in_top_k": true
+          "in_top_k": false
         },
         {
           "rank": 6,
-          "table_name": "dim_products",
-          "score": 0.4684421420097351,
+          "table_name": "iot_device_alerts",
+          "score": 0.44882702827453613,
           "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
+          "is_real": false,
+          "marker": "干扰表",
           "in_top_k": false
         },
         {
           "rank": 7,
           "table_name": "exchange_rates",
-          "score": 0.45844346284866333,
+          "score": 0.4445548951625824,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
@@ -1160,35 +1005,17 @@
         },
         {
           "rank": 8,
-          "table_name": "dim_employees",
-          "score": 0.4478987455368042,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 9,
-          "table_name": "it_assets",
-          "score": 0.42009276151657104,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
           "table_name": "finance_expenses",
-          "score": 0.4193849563598633,
+          "score": 0.4375453293323517,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
           "in_top_k": false
         },
         {
-          "rank": 11,
-          "table_name": "weather_data",
-          "score": 0.40670037269592285,
+          "rank": 9,
+          "table_name": "legal_contract_archive",
+          "score": 0.4094814658164978,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -1203,13 +1030,12 @@
       "required_tables": [
         "sales_orders"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
         "sales_orders",
         "dim_customers",
-        "website_logs",
-        "hr_attendance",
-        "office_supplies"
+        "warehouse_temperature_logs",
+        "dim_products"
       ],
       "hit_required_tables": [
         "sales_orders"
@@ -1219,7 +1045,7 @@
       "all_required_recalled": true,
       "reciprocal_rank": 1.0,
       "first_required_rank": 1,
-      "distractor_count_in_top_k": 3,
+      "distractor_count_in_top_k": 1,
       "results": [
         {
           "rank": 1,
@@ -1233,7 +1059,7 @@
         {
           "rank": 2,
           "table_name": "dim_customers",
-          "score": 0.5457921028137207,
+          "score": 0.5460343360900879,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
@@ -1241,8 +1067,8 @@
         },
         {
           "rank": 3,
-          "table_name": "website_logs",
-          "score": 0.5005952715873718,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.49029022455215454,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -1250,26 +1076,26 @@
         },
         {
           "rank": 4,
-          "table_name": "hr_attendance",
-          "score": 0.48764529824256897,
+          "table_name": "dim_products",
+          "score": 0.48882365226745605,
           "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
+          "is_real": true,
+          "marker": "真实表-非必需",
           "in_top_k": true
         },
         {
           "rank": 5,
-          "table_name": "office_supplies",
-          "score": 0.4788593053817749,
+          "table_name": "hr_attendance_records",
+          "score": 0.47078704833984375,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
-          "in_top_k": true
+          "in_top_k": false
         },
         {
           "rank": 6,
-          "table_name": "dim_products",
-          "score": 0.4771827459335327,
+          "table_name": "finance_expenses",
+          "score": 0.4660530388355255,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
@@ -1277,44 +1103,26 @@
         },
         {
           "rank": 7,
-          "table_name": "dim_employees",
-          "score": 0.4717356562614441,
+          "table_name": "exchange_rates",
+          "score": 0.46114563941955566,
           "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
+          "is_real": true,
+          "marker": "真实表-非必需",
           "in_top_k": false
         },
         {
           "rank": 8,
-          "table_name": "exchange_rates",
-          "score": 0.4631689488887787,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": false
-        },
-        {
-          "rank": 9,
-          "table_name": "finance_expenses",
-          "score": 0.4584735035896301,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "weather_data",
-          "score": 0.4381738305091858,
+          "table_name": "iot_device_alerts",
+          "score": 0.45815417170524597,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
           "in_top_k": false
         },
         {
-          "rank": 11,
-          "table_name": "it_assets",
-          "score": 0.42786312103271484,
+          "rank": 9,
+          "table_name": "legal_contract_archive",
+          "score": 0.41884273290634155,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -1330,13 +1138,12 @@
         "sales_orders",
         "exchange_rates"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
         "sales_orders",
         "exchange_rates",
         "dim_customers",
-        "finance_expenses",
-        "office_supplies"
+        "finance_expenses"
       ],
       "hit_required_tables": [
         "sales_orders",
@@ -1347,7 +1154,7 @@
       "all_required_recalled": true,
       "reciprocal_rank": 1.0,
       "first_required_rank": 1,
-      "distractor_count_in_top_k": 1,
+      "distractor_count_in_top_k": 0,
       "results": [
         {
           "rank": 1,
@@ -1361,7 +1168,7 @@
         {
           "rank": 2,
           "table_name": "exchange_rates",
-          "score": 0.5940643548965454,
+          "score": 0.5579147934913635,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -1370,7 +1177,7 @@
         {
           "rank": 3,
           "table_name": "dim_customers",
-          "score": 0.5023894309997559,
+          "score": 0.5041136145591736,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
@@ -1379,7 +1186,7 @@
         {
           "rank": 4,
           "table_name": "finance_expenses",
-          "score": 0.4910764694213867,
+          "score": 0.49997806549072266,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
@@ -1387,17 +1194,17 @@
         },
         {
           "rank": 5,
-          "table_name": "office_supplies",
-          "score": 0.47281989455223083,
+          "table_name": "dim_products",
+          "score": 0.4752652943134308,
           "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": true
+          "is_real": true,
+          "marker": "真实表-非必需",
+          "in_top_k": false
         },
         {
           "rank": 6,
-          "table_name": "hr_attendance",
-          "score": 0.46803706884384155,
+          "table_name": "hr_attendance_records",
+          "score": 0.4476797580718994,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -1405,17 +1212,17 @@
         },
         {
           "rank": 7,
-          "table_name": "dim_products",
-          "score": 0.4668579697608948,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.4269133508205414,
           "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
+          "is_real": false,
+          "marker": "干扰表",
           "in_top_k": false
         },
         {
           "rank": 8,
-          "table_name": "dim_employees",
-          "score": 0.46009835600852966,
+          "table_name": "iot_device_alerts",
+          "score": 0.39324742555618286,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -1423,26 +1230,8 @@
         },
         {
           "rank": 9,
-          "table_name": "website_logs",
-          "score": 0.44654300808906555,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "weather_data",
-          "score": 0.4462979733943939,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "it_assets",
-          "score": 0.43159782886505127,
+          "table_name": "legal_contract_archive",
+          "score": 0.38090044260025024,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -1453,17 +1242,16 @@
     {
       "id": 12,
       "category": "medium",
-      "question": "查询2025年每个销售区域的收入。",
+      "question": "查询2025年每个销售区域的收入，并换算成人民币。",
       "required_tables": [
         "sales_orders",
         "exchange_rates"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
         "sales_orders",
         "exchange_rates",
         "dim_customers",
-        "dim_products",
         "finance_expenses"
       ],
       "hit_required_tables": [
@@ -1480,7 +1268,7 @@
         {
           "rank": 1,
           "table_name": "sales_orders",
-          "score": 0.5609889626502991,
+          "score": 0.5618054866790771,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -1489,7 +1277,7 @@
         {
           "rank": 2,
           "table_name": "exchange_rates",
-          "score": 0.5298609137535095,
+          "score": 0.5394735932350159,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -1498,7 +1286,7 @@
         {
           "rank": 3,
           "table_name": "dim_customers",
-          "score": 0.5226869583129883,
+          "score": 0.5296515822410583,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
@@ -1506,8 +1294,8 @@
         },
         {
           "rank": 4,
-          "table_name": "dim_products",
-          "score": 0.45999935269355774,
+          "table_name": "finance_expenses",
+          "score": 0.4859839379787445,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
@@ -1515,17 +1303,17 @@
         },
         {
           "rank": 5,
-          "table_name": "finance_expenses",
-          "score": 0.45718255639076233,
+          "table_name": "dim_products",
+          "score": 0.4856237471103668,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
-          "in_top_k": true
+          "in_top_k": false
         },
         {
           "rank": 6,
-          "table_name": "dim_employees",
-          "score": 0.4291277527809143,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.4458876848220825,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -1533,8 +1321,8 @@
         },
         {
           "rank": 7,
-          "table_name": "office_supplies",
-          "score": 0.418273389339447,
+          "table_name": "hr_attendance_records",
+          "score": 0.4155477285385132,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -1542,8 +1330,8 @@
         },
         {
           "rank": 8,
-          "table_name": "hr_attendance",
-          "score": 0.4179098606109619,
+          "table_name": "iot_device_alerts",
+          "score": 0.4072929620742798,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -1551,26 +1339,8 @@
         },
         {
           "rank": 9,
-          "table_name": "website_logs",
-          "score": 0.4098348915576935,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "weather_data",
-          "score": 0.40798985958099365,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "it_assets",
-          "score": 0.37271907925605774,
+          "table_name": "legal_contract_archive",
+          "score": 0.33188962936401367,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -1581,276 +1351,17 @@
     {
       "id": 13,
       "category": "medium",
-      "question": "查询2025年每个产品的销售收入。",
+      "question": "查询2025年每个产品的销售收入，并换算成人民币。",
       "required_tables": [
         "sales_orders",
         "dim_products",
         "exchange_rates"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
         "sales_orders",
         "dim_products",
         "exchange_rates",
-        "dim_customers",
-        "finance_expenses"
-      ],
-      "hit_required_tables": [
-        "sales_orders",
-        "dim_products",
-        "exchange_rates"
-      ],
-      "missing_required_tables": [],
-      "recall": 1.0,
-      "all_required_recalled": true,
-      "reciprocal_rank": 1.0,
-      "first_required_rank": 1,
-      "distractor_count_in_top_k": 0,
-      "results": [
-        {
-          "rank": 1,
-          "table_name": "sales_orders",
-          "score": 0.5955685973167419,
-          "is_required": true,
-          "is_real": true,
-          "marker": "必须召回",
-          "in_top_k": true
-        },
-        {
-          "rank": 2,
-          "table_name": "dim_products",
-          "score": 0.5470679998397827,
-          "is_required": true,
-          "is_real": true,
-          "marker": "必须召回",
-          "in_top_k": true
-        },
-        {
-          "rank": 3,
-          "table_name": "exchange_rates",
-          "score": 0.517214834690094,
-          "is_required": true,
-          "is_real": true,
-          "marker": "必须召回",
-          "in_top_k": true
-        },
-        {
-          "rank": 4,
-          "table_name": "dim_customers",
-          "score": 0.5106762051582336,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": true
-        },
-        {
-          "rank": 5,
-          "table_name": "finance_expenses",
-          "score": 0.49017271399497986,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": true
-        },
-        {
-          "rank": 6,
-          "table_name": "office_supplies",
-          "score": 0.47512057423591614,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 7,
-          "table_name": "website_logs",
-          "score": 0.4477154612541199,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 8,
-          "table_name": "hr_attendance",
-          "score": 0.43545296788215637,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 9,
-          "table_name": "it_assets",
-          "score": 0.42695972323417664,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "dim_employees",
-          "score": 0.4192768633365631,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "weather_data",
-          "score": 0.41569796204566956,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        }
-      ]
-    },
-    {
-      "id": 14,
-      "category": "medium",
-      "question": "查询2025年每个产品的销售成本，销售成本定义为材料成本加人工成本后乘以销售数量。",
-      "required_tables": [
-        "sales_orders",
-        "dim_products"
-      ],
-      "top_k": 5,
-      "top_k_tables": [
-        "finance_expenses",
-        "dim_products",
-        "sales_orders",
-        "exchange_rates",
-        "office_supplies"
-      ],
-      "hit_required_tables": [
-        "sales_orders",
-        "dim_products"
-      ],
-      "missing_required_tables": [],
-      "recall": 1.0,
-      "all_required_recalled": true,
-      "reciprocal_rank": 0.5,
-      "first_required_rank": 2,
-      "distractor_count_in_top_k": 1,
-      "results": [
-        {
-          "rank": 1,
-          "table_name": "finance_expenses",
-          "score": 0.6178223490715027,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": true
-        },
-        {
-          "rank": 2,
-          "table_name": "dim_products",
-          "score": 0.6083835363388062,
-          "is_required": true,
-          "is_real": true,
-          "marker": "必须召回",
-          "in_top_k": true
-        },
-        {
-          "rank": 3,
-          "table_name": "sales_orders",
-          "score": 0.6073353886604309,
-          "is_required": true,
-          "is_real": true,
-          "marker": "必须召回",
-          "in_top_k": true
-        },
-        {
-          "rank": 4,
-          "table_name": "exchange_rates",
-          "score": 0.5010262727737427,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": true
-        },
-        {
-          "rank": 5,
-          "table_name": "office_supplies",
-          "score": 0.48740240931510925,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": true
-        },
-        {
-          "rank": 6,
-          "table_name": "dim_customers",
-          "score": 0.4793475568294525,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": false
-        },
-        {
-          "rank": 7,
-          "table_name": "hr_attendance",
-          "score": 0.4582173228263855,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 8,
-          "table_name": "it_assets",
-          "score": 0.4285622239112854,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 9,
-          "table_name": "dim_employees",
-          "score": 0.42817214131355286,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "website_logs",
-          "score": 0.42006510496139526,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "weather_data",
-          "score": 0.4091978073120117,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        }
-      ]
-    },
-    {
-      "id": 15,
-      "category": "medium",
-      "question": "查询2025年每个产品的收入和毛利。",
-      "required_tables": [
-        "sales_orders",
-        "dim_products",
-        "exchange_rates"
-      ],
-      "top_k": 5,
-      "top_k_tables": [
-        "dim_products",
-        "sales_orders",
-        "exchange_rates",
-        "finance_expenses",
         "dim_customers"
       ],
       "hit_required_tables": [
@@ -1867,8 +1378,8 @@
       "results": [
         {
           "rank": 1,
-          "table_name": "dim_products",
-          "score": 0.5790483951568604,
+          "table_name": "sales_orders",
+          "score": 0.5880244970321655,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -1876,8 +1387,8 @@
         },
         {
           "rank": 2,
-          "table_name": "sales_orders",
-          "score": 0.547653317451477,
+          "table_name": "dim_products",
+          "score": 0.5544601678848267,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -1886,7 +1397,7 @@
         {
           "rank": 3,
           "table_name": "exchange_rates",
-          "score": 0.5344282984733582,
+          "score": 0.5409463047981262,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -1894,8 +1405,8 @@
         },
         {
           "rank": 4,
-          "table_name": "finance_expenses",
-          "score": 0.5130870938301086,
+          "table_name": "dim_customers",
+          "score": 0.5179398059844971,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
@@ -1903,17 +1414,17 @@
         },
         {
           "rank": 5,
-          "table_name": "dim_customers",
-          "score": 0.496786504983902,
+          "table_name": "finance_expenses",
+          "score": 0.5157144665718079,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
-          "in_top_k": true
+          "in_top_k": false
         },
         {
           "rank": 6,
-          "table_name": "office_supplies",
-          "score": 0.4678364396095276,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.46306276321411133,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -1921,8 +1432,8 @@
         },
         {
           "rank": 7,
-          "table_name": "website_logs",
-          "score": 0.45193755626678467,
+          "table_name": "iot_device_alerts",
+          "score": 0.4292941987514496,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -1930,8 +1441,8 @@
         },
         {
           "rank": 8,
-          "table_name": "it_assets",
-          "score": 0.4332243502140045,
+          "table_name": "hr_attendance_records",
+          "score": 0.42612940073013306,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -1939,26 +1450,228 @@
         },
         {
           "rank": 9,
-          "table_name": "hr_attendance",
-          "score": 0.41574352979660034,
+          "table_name": "legal_contract_archive",
+          "score": 0.36113113164901733,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
+          "in_top_k": false
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "category": "medium",
+      "question": "查询2025年每个产品的销售成本，销售成本定义为材料成本加人工成本后乘以销售数量。",
+      "required_tables": [
+        "sales_orders",
+        "dim_products"
+      ],
+      "top_k": 4,
+      "top_k_tables": [
+        "finance_expenses",
+        "sales_orders",
+        "dim_products",
+        "dim_customers"
+      ],
+      "hit_required_tables": [
+        "sales_orders",
+        "dim_products"
+      ],
+      "missing_required_tables": [],
+      "recall": 1.0,
+      "all_required_recalled": true,
+      "reciprocal_rank": 0.5,
+      "first_required_rank": 2,
+      "distractor_count_in_top_k": 0,
+      "results": [
+        {
+          "rank": 1,
+          "table_name": "finance_expenses",
+          "score": 0.6311540007591248,
+          "is_required": false,
+          "is_real": true,
+          "marker": "真实表-非必需",
+          "in_top_k": true
+        },
+        {
+          "rank": 2,
+          "table_name": "sales_orders",
+          "score": 0.6073353886604309,
+          "is_required": true,
+          "is_real": true,
+          "marker": "必须召回",
+          "in_top_k": true
+        },
+        {
+          "rank": 3,
+          "table_name": "dim_products",
+          "score": 0.5687644481658936,
+          "is_required": true,
+          "is_real": true,
+          "marker": "必须召回",
+          "in_top_k": true
+        },
+        {
+          "rank": 4,
+          "table_name": "dim_customers",
+          "score": 0.4799908697605133,
+          "is_required": false,
+          "is_real": true,
+          "marker": "真实表-非必需",
+          "in_top_k": true
+        },
+        {
+          "rank": 5,
+          "table_name": "hr_attendance_records",
+          "score": 0.4600856304168701,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
           "in_top_k": false
         },
         {
-          "rank": 10,
-          "table_name": "dim_employees",
-          "score": 0.4071332514286041,
+          "rank": 6,
+          "table_name": "exchange_rates",
+          "score": 0.4524286687374115,
+          "is_required": false,
+          "is_real": true,
+          "marker": "真实表-非必需",
+          "in_top_k": false
+        },
+        {
+          "rank": 7,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.4195394515991211,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
           "in_top_k": false
         },
         {
-          "rank": 11,
-          "table_name": "weather_data",
-          "score": 0.40701982378959656,
+          "rank": 8,
+          "table_name": "iot_device_alerts",
+          "score": 0.3882816731929779,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
+          "in_top_k": false
+        },
+        {
+          "rank": 9,
+          "table_name": "legal_contract_archive",
+          "score": 0.3706014156341553,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
+          "in_top_k": false
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "category": "medium",
+      "question": "查询2025年每个产品的收入和毛利，并换算成人民币。",
+      "required_tables": [
+        "sales_orders",
+        "dim_products",
+        "exchange_rates"
+      ],
+      "top_k": 4,
+      "top_k_tables": [
+        "finance_expenses",
+        "dim_products",
+        "sales_orders",
+        "exchange_rates"
+      ],
+      "hit_required_tables": [
+        "sales_orders",
+        "dim_products",
+        "exchange_rates"
+      ],
+      "missing_required_tables": [],
+      "recall": 1.0,
+      "all_required_recalled": true,
+      "reciprocal_rank": 0.5,
+      "first_required_rank": 2,
+      "distractor_count_in_top_k": 0,
+      "results": [
+        {
+          "rank": 1,
+          "table_name": "finance_expenses",
+          "score": 0.5769879817962646,
+          "is_required": false,
+          "is_real": true,
+          "marker": "真实表-非必需",
+          "in_top_k": true
+        },
+        {
+          "rank": 2,
+          "table_name": "dim_products",
+          "score": 0.5755801200866699,
+          "is_required": true,
+          "is_real": true,
+          "marker": "必须召回",
+          "in_top_k": true
+        },
+        {
+          "rank": 3,
+          "table_name": "sales_orders",
+          "score": 0.5402773022651672,
+          "is_required": true,
+          "is_real": true,
+          "marker": "必须召回",
+          "in_top_k": true
+        },
+        {
+          "rank": 4,
+          "table_name": "exchange_rates",
+          "score": 0.521475613117218,
+          "is_required": true,
+          "is_real": true,
+          "marker": "必须召回",
+          "in_top_k": true
+        },
+        {
+          "rank": 5,
+          "table_name": "dim_customers",
+          "score": 0.5047180652618408,
+          "is_required": false,
+          "is_real": true,
+          "marker": "真实表-非必需",
+          "in_top_k": false
+        },
+        {
+          "rank": 6,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.49936389923095703,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
+          "in_top_k": false
+        },
+        {
+          "rank": 7,
+          "table_name": "iot_device_alerts",
+          "score": 0.4438026249408722,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
+          "in_top_k": false
+        },
+        {
+          "rank": 8,
+          "table_name": "hr_attendance_records",
+          "score": 0.41620007157325745,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
+          "in_top_k": false
+        },
+        {
+          "rank": 9,
+          "table_name": "legal_contract_archive",
+          "score": 0.36295080184936523,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -1969,19 +1682,18 @@
     {
       "id": 16,
       "category": "medium",
-      "question": "查询2025年每个产品的毛利率。",
+      "question": "查询2025年每个产品的毛利率，并换算成人民币。",
       "required_tables": [
         "sales_orders",
         "dim_products",
         "exchange_rates"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
         "dim_products",
-        "sales_orders",
         "finance_expenses",
-        "dim_customers",
-        "exchange_rates"
+        "exchange_rates",
+        "sales_orders"
       ],
       "hit_required_tables": [
         "sales_orders",
@@ -1998,7 +1710,7 @@
         {
           "rank": 1,
           "table_name": "dim_products",
-          "score": 0.5947372913360596,
+          "score": 0.5948489904403687,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -2006,44 +1718,44 @@
         },
         {
           "rank": 2,
-          "table_name": "sales_orders",
-          "score": 0.5159724950790405,
-          "is_required": true,
+          "table_name": "finance_expenses",
+          "score": 0.5587959289550781,
+          "is_required": false,
           "is_real": true,
-          "marker": "必须召回",
+          "marker": "真实表-非必需",
           "in_top_k": true
         },
         {
           "rank": 3,
-          "table_name": "finance_expenses",
-          "score": 0.5021439790725708,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": true
-        },
-        {
-          "rank": 4,
-          "table_name": "dim_customers",
-          "score": 0.5007510185241699,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": true
-        },
-        {
-          "rank": 5,
           "table_name": "exchange_rates",
-          "score": 0.47911736369132996,
+          "score": 0.5482956767082214,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
           "in_top_k": true
         },
         {
+          "rank": 4,
+          "table_name": "sales_orders",
+          "score": 0.5097663998603821,
+          "is_required": true,
+          "is_real": true,
+          "marker": "必须召回",
+          "in_top_k": true
+        },
+        {
+          "rank": 5,
+          "table_name": "dim_customers",
+          "score": 0.5016795992851257,
+          "is_required": false,
+          "is_real": true,
+          "marker": "真实表-非必需",
+          "in_top_k": false
+        },
+        {
           "rank": 6,
-          "table_name": "website_logs",
-          "score": 0.44087427854537964,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.4973762631416321,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -2051,8 +1763,8 @@
         },
         {
           "rank": 7,
-          "table_name": "weather_data",
-          "score": 0.42657893896102905,
+          "table_name": "iot_device_alerts",
+          "score": 0.41718989610671997,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -2060,8 +1772,8 @@
         },
         {
           "rank": 8,
-          "table_name": "office_supplies",
-          "score": 0.4246962368488312,
+          "table_name": "hr_attendance_records",
+          "score": 0.3917739987373352,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -2069,26 +1781,8 @@
         },
         {
           "rank": 9,
-          "table_name": "it_assets",
-          "score": 0.42246943712234497,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "dim_employees",
-          "score": 0.4021395146846771,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "hr_attendance",
-          "score": 0.4015246629714966,
+          "table_name": "legal_contract_archive",
+          "score": 0.3719103932380676,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -2099,155 +1793,22 @@
     {
       "id": 17,
       "category": "medium",
-      "question": "查询2025年每个客户的销售收入。",
+      "question": "查询2025年每个客户的销售收入，并换算成人民币。",
       "required_tables": [
         "sales_orders",
         "dim_customers",
         "exchange_rates"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
         "sales_orders",
         "dim_customers",
         "exchange_rates",
-        "dim_products",
-        "website_logs"
+        "finance_expenses"
       ],
       "hit_required_tables": [
         "sales_orders",
         "dim_customers",
-        "exchange_rates"
-      ],
-      "missing_required_tables": [],
-      "recall": 1.0,
-      "all_required_recalled": true,
-      "reciprocal_rank": 1.0,
-      "first_required_rank": 1,
-      "distractor_count_in_top_k": 1,
-      "results": [
-        {
-          "rank": 1,
-          "table_name": "sales_orders",
-          "score": 0.6250637173652649,
-          "is_required": true,
-          "is_real": true,
-          "marker": "必须召回",
-          "in_top_k": true
-        },
-        {
-          "rank": 2,
-          "table_name": "dim_customers",
-          "score": 0.5875330567359924,
-          "is_required": true,
-          "is_real": true,
-          "marker": "必须召回",
-          "in_top_k": true
-        },
-        {
-          "rank": 3,
-          "table_name": "exchange_rates",
-          "score": 0.5088368654251099,
-          "is_required": true,
-          "is_real": true,
-          "marker": "必须召回",
-          "in_top_k": true
-        },
-        {
-          "rank": 4,
-          "table_name": "dim_products",
-          "score": 0.4794565439224243,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": true
-        },
-        {
-          "rank": 5,
-          "table_name": "website_logs",
-          "score": 0.46953946352005005,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": true
-        },
-        {
-          "rank": 6,
-          "table_name": "finance_expenses",
-          "score": 0.4683847427368164,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": false
-        },
-        {
-          "rank": 7,
-          "table_name": "dim_employees",
-          "score": 0.4613558053970337,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 8,
-          "table_name": "hr_attendance",
-          "score": 0.45389723777770996,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 9,
-          "table_name": "office_supplies",
-          "score": 0.45095282793045044,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "weather_data",
-          "score": 0.4230039715766907,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "it_assets",
-          "score": 0.41401436924934387,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        }
-      ]
-    },
-    {
-      "id": 18,
-      "category": "medium",
-      "question": "查询2025年每个客户的销售成本和毛利。",
-      "required_tables": [
-        "sales_orders",
-        "dim_customers",
-        "dim_products",
-        "exchange_rates"
-      ],
-      "top_k": 5,
-      "top_k_tables": [
-        "sales_orders",
-        "dim_customers",
-        "dim_products",
-        "finance_expenses",
-        "exchange_rates"
-      ],
-      "hit_required_tables": [
-        "sales_orders",
-        "dim_customers",
-        "dim_products",
         "exchange_rates"
       ],
       "missing_required_tables": [],
@@ -2260,7 +1821,7 @@
         {
           "rank": 1,
           "table_name": "sales_orders",
-          "score": 0.5788894891738892,
+          "score": 0.6116875410079956,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -2269,7 +1830,7 @@
         {
           "rank": 2,
           "table_name": "dim_customers",
-          "score": 0.5502979755401611,
+          "score": 0.5839798450469971,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -2277,8 +1838,8 @@
         },
         {
           "rank": 3,
-          "table_name": "dim_products",
-          "score": 0.5388188362121582,
+          "table_name": "exchange_rates",
+          "score": 0.5549027323722839,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -2287,7 +1848,7 @@
         {
           "rank": 4,
           "table_name": "finance_expenses",
-          "score": 0.533117949962616,
+          "score": 0.4998130202293396,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
@@ -2295,17 +1856,17 @@
         },
         {
           "rank": 5,
-          "table_name": "exchange_rates",
-          "score": 0.4783567488193512,
-          "is_required": true,
+          "table_name": "dim_products",
+          "score": 0.49799060821533203,
+          "is_required": false,
           "is_real": true,
-          "marker": "必须召回",
-          "in_top_k": true
+          "marker": "真实表-非必需",
+          "in_top_k": false
         },
         {
           "rank": 6,
-          "table_name": "website_logs",
-          "score": 0.4455867409706116,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.4571138322353363,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -2313,8 +1874,8 @@
         },
         {
           "rank": 7,
-          "table_name": "office_supplies",
-          "score": 0.4179200530052185,
+          "table_name": "hr_attendance_records",
+          "score": 0.43622684478759766,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -2322,8 +1883,8 @@
         },
         {
           "rank": 8,
-          "table_name": "dim_employees",
-          "score": 0.4177701473236084,
+          "table_name": "iot_device_alerts",
+          "score": 0.4027652442455292,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -2331,26 +1892,122 @@
         },
         {
           "rank": 9,
-          "table_name": "hr_attendance",
-          "score": 0.4147009253501892,
+          "table_name": "legal_contract_archive",
+          "score": 0.38084688782691956,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
+          "in_top_k": false
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "category": "medium",
+      "question": "查询2025年每个客户的销售成本和毛利，并换算成人民币。",
+      "required_tables": [
+        "sales_orders",
+        "dim_customers",
+        "dim_products",
+        "exchange_rates"
+      ],
+      "top_k": 4,
+      "top_k_tables": [
+        "finance_expenses",
+        "sales_orders",
+        "dim_customers",
+        "dim_products"
+      ],
+      "hit_required_tables": [
+        "sales_orders",
+        "dim_customers",
+        "dim_products"
+      ],
+      "missing_required_tables": [
+        "exchange_rates"
+      ],
+      "recall": 0.75,
+      "all_required_recalled": false,
+      "reciprocal_rank": 0.5,
+      "first_required_rank": 2,
+      "distractor_count_in_top_k": 0,
+      "results": [
+        {
+          "rank": 1,
+          "table_name": "finance_expenses",
+          "score": 0.5963491797447205,
+          "is_required": false,
+          "is_real": true,
+          "marker": "真实表-非必需",
+          "in_top_k": true
+        },
+        {
+          "rank": 2,
+          "table_name": "sales_orders",
+          "score": 0.5679699778556824,
+          "is_required": true,
+          "is_real": true,
+          "marker": "必须召回",
+          "in_top_k": true
+        },
+        {
+          "rank": 3,
+          "table_name": "dim_customers",
+          "score": 0.5524985790252686,
+          "is_required": true,
+          "is_real": true,
+          "marker": "必须召回",
+          "in_top_k": true
+        },
+        {
+          "rank": 4,
+          "table_name": "dim_products",
+          "score": 0.5301604866981506,
+          "is_required": true,
+          "is_real": true,
+          "marker": "必须召回",
+          "in_top_k": true
+        },
+        {
+          "rank": 5,
+          "table_name": "exchange_rates",
+          "score": 0.5276898145675659,
+          "is_required": true,
+          "is_real": true,
+          "marker": "必须召回",
+          "in_top_k": false
+        },
+        {
+          "rank": 6,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.4721866250038147,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
           "in_top_k": false
         },
         {
-          "rank": 10,
-          "table_name": "weather_data",
-          "score": 0.405240535736084,
+          "rank": 7,
+          "table_name": "hr_attendance_records",
+          "score": 0.4088743329048157,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
           "in_top_k": false
         },
         {
-          "rank": 11,
-          "table_name": "it_assets",
-          "score": 0.3829631209373474,
+          "rank": 8,
+          "table_name": "iot_device_alerts",
+          "score": 0.3915432095527649,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
+          "in_top_k": false
+        },
+        {
+          "rank": 9,
+          "table_name": "legal_contract_archive",
+          "score": 0.37868088483810425,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -2367,30 +2024,30 @@
         "dim_customers",
         "exchange_rates"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
         "dim_customers",
         "sales_orders",
-        "exchange_rates",
-        "website_logs",
-        "dim_employees"
+        "dim_products",
+        "finance_expenses"
       ],
       "hit_required_tables": [
         "sales_orders",
-        "dim_customers",
+        "dim_customers"
+      ],
+      "missing_required_tables": [
         "exchange_rates"
       ],
-      "missing_required_tables": [],
-      "recall": 1.0,
-      "all_required_recalled": true,
+      "recall": 0.6666666666666666,
+      "all_required_recalled": false,
       "reciprocal_rank": 1.0,
       "first_required_rank": 1,
-      "distractor_count_in_top_k": 2,
+      "distractor_count_in_top_k": 0,
       "results": [
         {
           "rank": 1,
           "table_name": "dim_customers",
-          "score": 0.6090927720069885,
+          "score": 0.612478494644165,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -2407,53 +2064,53 @@
         },
         {
           "rank": 3,
-          "table_name": "exchange_rates",
-          "score": 0.5380727052688599,
-          "is_required": true,
+          "table_name": "dim_products",
+          "score": 0.4969356954097748,
+          "is_required": false,
           "is_real": true,
-          "marker": "必须召回",
+          "marker": "真实表-非必需",
           "in_top_k": true
         },
         {
           "rank": 4,
-          "table_name": "website_logs",
-          "score": 0.4888746440410614,
+          "table_name": "finance_expenses",
+          "score": 0.48953521251678467,
           "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
+          "is_real": true,
+          "marker": "真实表-非必需",
           "in_top_k": true
         },
         {
           "rank": 5,
-          "table_name": "dim_employees",
-          "score": 0.48186051845550537,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": true
+          "table_name": "exchange_rates",
+          "score": 0.44966840744018555,
+          "is_required": true,
+          "is_real": true,
+          "marker": "必须召回",
+          "in_top_k": false
         },
         {
           "rank": 6,
-          "table_name": "dim_products",
-          "score": 0.47859036922454834,
+          "table_name": "hr_attendance_records",
+          "score": 0.4462580680847168,
           "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
+          "is_real": false,
+          "marker": "干扰表",
           "in_top_k": false
         },
         {
           "rank": 7,
-          "table_name": "finance_expenses",
-          "score": 0.4693922996520996,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.44134557247161865,
           "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
+          "is_real": false,
+          "marker": "干扰表",
           "in_top_k": false
         },
         {
           "rank": 8,
-          "table_name": "office_supplies",
-          "score": 0.455707848072052,
+          "table_name": "iot_device_alerts",
+          "score": 0.4191829264163971,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -2461,26 +2118,8 @@
         },
         {
           "rank": 9,
-          "table_name": "hr_attendance",
-          "score": 0.4460650384426117,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "weather_data",
-          "score": 0.44107916951179504,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "it_assets",
-          "score": 0.42106491327285767,
+          "table_name": "legal_contract_archive",
+          "score": 0.3873291611671448,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -2491,28 +2130,28 @@
     {
       "id": 20,
       "category": "medium",
-      "question": "查询2025年每个产品类别的收入和销售成本。",
+      "question": "查询2025年每个产品类别的收入和销售成本，并换算成人民币。",
       "required_tables": [
         "sales_orders",
         "dim_products",
         "exchange_rates"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
         "dim_products",
         "finance_expenses",
         "sales_orders",
-        "exchange_rates",
         "dim_customers"
       ],
       "hit_required_tables": [
         "sales_orders",
-        "dim_products",
+        "dim_products"
+      ],
+      "missing_required_tables": [
         "exchange_rates"
       ],
-      "missing_required_tables": [],
-      "recall": 1.0,
-      "all_required_recalled": true,
+      "recall": 0.6666666666666666,
+      "all_required_recalled": false,
       "reciprocal_rank": 1.0,
       "first_required_rank": 1,
       "distractor_count_in_top_k": 0,
@@ -2520,7 +2159,7 @@
         {
           "rank": 1,
           "table_name": "dim_products",
-          "score": 0.610633909702301,
+          "score": 0.5829728841781616,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -2529,7 +2168,7 @@
         {
           "rank": 2,
           "table_name": "finance_expenses",
-          "score": 0.5650853514671326,
+          "score": 0.5760905742645264,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
@@ -2538,7 +2177,7 @@
         {
           "rank": 3,
           "table_name": "sales_orders",
-          "score": 0.5622650384902954,
+          "score": 0.5593513250350952,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -2546,26 +2185,26 @@
         },
         {
           "rank": 4,
-          "table_name": "exchange_rates",
-          "score": 0.5241385698318481,
-          "is_required": true,
-          "is_real": true,
-          "marker": "必须召回",
-          "in_top_k": true
-        },
-        {
-          "rank": 5,
           "table_name": "dim_customers",
-          "score": 0.5013476014137268,
+          "score": 0.509306788444519,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
           "in_top_k": true
         },
         {
+          "rank": 5,
+          "table_name": "exchange_rates",
+          "score": 0.5017694234848022,
+          "is_required": true,
+          "is_real": true,
+          "marker": "必须召回",
+          "in_top_k": false
+        },
+        {
           "rank": 6,
-          "table_name": "office_supplies",
-          "score": 0.4576604962348938,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.43877866864204407,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -2573,8 +2212,8 @@
         },
         {
           "rank": 7,
-          "table_name": "website_logs",
-          "score": 0.4175674319267273,
+          "table_name": "iot_device_alerts",
+          "score": 0.41261380910873413,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -2582,8 +2221,8 @@
         },
         {
           "rank": 8,
-          "table_name": "hr_attendance",
-          "score": 0.406691312789917,
+          "table_name": "hr_attendance_records",
+          "score": 0.4075416922569275,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -2591,26 +2230,8 @@
         },
         {
           "rank": 9,
-          "table_name": "dim_employees",
-          "score": 0.4029267430305481,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "weather_data",
-          "score": 0.38933736085891724,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "it_assets",
-          "score": 0.3845789134502411,
+          "table_name": "legal_contract_archive",
+          "score": 0.3392796516418457,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -2621,28 +2242,28 @@
     {
       "id": 21,
       "category": "medium",
-      "question": "查询2025年每个产品线的收入和毛利。",
+      "question": "查询2025年每个产品线的收入和毛利，并换算成人民币。",
       "required_tables": [
         "sales_orders",
         "dim_products",
         "exchange_rates"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
         "dim_products",
-        "sales_orders",
-        "exchange_rates",
         "finance_expenses",
+        "sales_orders",
         "dim_customers"
       ],
       "hit_required_tables": [
         "sales_orders",
-        "dim_products",
+        "dim_products"
+      ],
+      "missing_required_tables": [
         "exchange_rates"
       ],
-      "missing_required_tables": [],
-      "recall": 1.0,
-      "all_required_recalled": true,
+      "recall": 0.6666666666666666,
+      "all_required_recalled": false,
       "reciprocal_rank": 1.0,
       "first_required_rank": 1,
       "distractor_count_in_top_k": 0,
@@ -2650,7 +2271,7 @@
         {
           "rank": 1,
           "table_name": "dim_products",
-          "score": 0.5813562273979187,
+          "score": 0.5838577747344971,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -2658,17 +2279,17 @@
         },
         {
           "rank": 2,
-          "table_name": "sales_orders",
-          "score": 0.5260289311408997,
-          "is_required": true,
+          "table_name": "finance_expenses",
+          "score": 0.5640401840209961,
+          "is_required": false,
           "is_real": true,
-          "marker": "必须召回",
+          "marker": "真实表-非必需",
           "in_top_k": true
         },
         {
           "rank": 3,
-          "table_name": "exchange_rates",
-          "score": 0.5107554197311401,
+          "table_name": "sales_orders",
+          "score": 0.5255119204521179,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -2676,8 +2297,8 @@
         },
         {
           "rank": 4,
-          "table_name": "finance_expenses",
-          "score": 0.5008182525634766,
+          "table_name": "dim_customers",
+          "score": 0.4999393820762634,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
@@ -2685,17 +2306,17 @@
         },
         {
           "rank": 5,
-          "table_name": "dim_customers",
-          "score": 0.490104615688324,
-          "is_required": false,
+          "table_name": "exchange_rates",
+          "score": 0.4975047707557678,
+          "is_required": true,
           "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": true
+          "marker": "必须召回",
+          "in_top_k": false
         },
         {
           "rank": 6,
-          "table_name": "office_supplies",
-          "score": 0.4225442409515381,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.47112125158309937,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -2703,8 +2324,8 @@
         },
         {
           "rank": 7,
-          "table_name": "website_logs",
-          "score": 0.42131179571151733,
+          "table_name": "iot_device_alerts",
+          "score": 0.4453246295452118,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -2712,8 +2333,8 @@
         },
         {
           "rank": 8,
-          "table_name": "it_assets",
-          "score": 0.40510138869285583,
+          "table_name": "hr_attendance_records",
+          "score": 0.39163899421691895,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -2721,26 +2342,8 @@
         },
         {
           "rank": 9,
-          "table_name": "dim_employees",
-          "score": 0.3964376449584961,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "hr_attendance",
-          "score": 0.3875550329685211,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "weather_data",
-          "score": 0.3755545914173126,
+          "table_name": "legal_contract_archive",
+          "score": 0.3331559896469116,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -2757,13 +2360,12 @@
         "dim_customers",
         "exchange_rates"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
         "sales_orders",
-        "exchange_rates",
         "dim_customers",
         "dim_products",
-        "finance_expenses"
+        "exchange_rates"
       ],
       "hit_required_tables": [
         "sales_orders",
@@ -2788,8 +2390,8 @@
         },
         {
           "rank": 2,
-          "table_name": "exchange_rates",
-          "score": 0.5032932758331299,
+          "table_name": "dim_customers",
+          "score": 0.49341216683387756,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -2797,35 +2399,35 @@
         },
         {
           "rank": 3,
-          "table_name": "dim_customers",
-          "score": 0.49078094959259033,
+          "table_name": "dim_products",
+          "score": 0.46682775020599365,
+          "is_required": false,
+          "is_real": true,
+          "marker": "真实表-非必需",
+          "in_top_k": true
+        },
+        {
+          "rank": 4,
+          "table_name": "exchange_rates",
+          "score": 0.45768433809280396,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
           "in_top_k": true
         },
         {
-          "rank": 4,
-          "table_name": "dim_products",
-          "score": 0.4429236352443695,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": true
-        },
-        {
           "rank": 5,
           "table_name": "finance_expenses",
-          "score": 0.42700329422950745,
+          "score": 0.43336910009384155,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
-          "in_top_k": true
+          "in_top_k": false
         },
         {
           "rank": 6,
-          "table_name": "weather_data",
-          "score": 0.403560072183609,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.4064134359359741,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -2833,8 +2435,8 @@
         },
         {
           "rank": 7,
-          "table_name": "website_logs",
-          "score": 0.40072205662727356,
+          "table_name": "iot_device_alerts",
+          "score": 0.38055896759033203,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -2842,8 +2444,8 @@
         },
         {
           "rank": 8,
-          "table_name": "office_supplies",
-          "score": 0.38870444893836975,
+          "table_name": "hr_attendance_records",
+          "score": 0.3777187764644623,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -2851,26 +2453,8 @@
         },
         {
           "rank": 9,
-          "table_name": "dim_employees",
-          "score": 0.3833874762058258,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "hr_attendance",
-          "score": 0.37884747982025146,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "it_assets",
-          "score": 0.35577210783958435,
+          "table_name": "legal_contract_archive",
+          "score": 0.3109603524208069,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -2885,13 +2469,12 @@
       "required_tables": [
         "finance_expenses"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
         "finance_expenses",
         "dim_products",
-        "exchange_rates",
         "sales_orders",
-        "office_supplies"
+        "dim_customers"
       ],
       "hit_required_tables": [
         "finance_expenses"
@@ -2901,12 +2484,12 @@
       "all_required_recalled": true,
       "reciprocal_rank": 1.0,
       "first_required_rank": 1,
-      "distractor_count_in_top_k": 1,
+      "distractor_count_in_top_k": 0,
       "results": [
         {
           "rank": 1,
           "table_name": "finance_expenses",
-          "score": 0.7531038522720337,
+          "score": 0.7533478736877441,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -2915,7 +2498,7 @@
         {
           "rank": 2,
           "table_name": "dim_products",
-          "score": 0.6312472820281982,
+          "score": 0.6034771800041199,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
@@ -2923,15 +2506,6 @@
         },
         {
           "rank": 3,
-          "table_name": "exchange_rates",
-          "score": 0.5353171825408936,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": true
-        },
-        {
-          "rank": 4,
           "table_name": "sales_orders",
           "score": 0.532850444316864,
           "is_required": false,
@@ -2940,27 +2514,36 @@
           "in_top_k": true
         },
         {
-          "rank": 5,
-          "table_name": "office_supplies",
-          "score": 0.5193055868148804,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": true
-        },
-        {
-          "rank": 6,
+          "rank": 4,
           "table_name": "dim_customers",
-          "score": 0.5081675052642822,
+          "score": 0.5093883275985718,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
+          "in_top_k": true
+        },
+        {
+          "rank": 5,
+          "table_name": "hr_attendance_records",
+          "score": 0.4802737832069397,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
+          "in_top_k": false
+        },
+        {
+          "rank": 6,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.45469027757644653,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
           "in_top_k": false
         },
         {
           "rank": 7,
-          "table_name": "hr_attendance",
-          "score": 0.4932859539985657,
+          "table_name": "iot_device_alerts",
+          "score": 0.4540610611438751,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -2968,35 +2551,17 @@
         },
         {
           "rank": 8,
-          "table_name": "it_assets",
-          "score": 0.49139678478240967,
+          "table_name": "exchange_rates",
+          "score": 0.4532252550125122,
           "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
+          "is_real": true,
+          "marker": "真实表-非必需",
           "in_top_k": false
         },
         {
           "rank": 9,
-          "table_name": "website_logs",
-          "score": 0.4680286645889282,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "dim_employees",
-          "score": 0.4600743353366852,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "weather_data",
-          "score": 0.40764155983924866,
+          "table_name": "legal_contract_archive",
+          "score": 0.4417761564254761,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -3011,11 +2576,10 @@
       "required_tables": [
         "finance_expenses"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
         "finance_expenses",
         "dim_products",
-        "exchange_rates",
         "sales_orders",
         "dim_customers"
       ],
@@ -3032,7 +2596,7 @@
         {
           "rank": 1,
           "table_name": "finance_expenses",
-          "score": 0.5966212153434753,
+          "score": 0.6170779466629028,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -3041,7 +2605,7 @@
         {
           "rank": 2,
           "table_name": "dim_products",
-          "score": 0.5187388062477112,
+          "score": 0.5148380994796753,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
@@ -3049,15 +2613,6 @@
         },
         {
           "rank": 3,
-          "table_name": "exchange_rates",
-          "score": 0.5054231882095337,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": true
-        },
-        {
-          "rank": 4,
           "table_name": "sales_orders",
           "score": 0.48108160495758057,
           "is_required": false,
@@ -3066,18 +2621,27 @@
           "in_top_k": true
         },
         {
-          "rank": 5,
+          "rank": 4,
           "table_name": "dim_customers",
-          "score": 0.4774083197116852,
+          "score": 0.47797155380249023,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
           "in_top_k": true
         },
         {
+          "rank": 5,
+          "table_name": "exchange_rates",
+          "score": 0.47074416279792786,
+          "is_required": false,
+          "is_real": true,
+          "marker": "真实表-非必需",
+          "in_top_k": false
+        },
+        {
           "rank": 6,
-          "table_name": "website_logs",
-          "score": 0.466487318277359,
+          "table_name": "iot_device_alerts",
+          "score": 0.4534147083759308,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -3085,8 +2649,8 @@
         },
         {
           "rank": 7,
-          "table_name": "hr_attendance",
-          "score": 0.45373040437698364,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.451992005109787,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -3094,8 +2658,8 @@
         },
         {
           "rank": 8,
-          "table_name": "office_supplies",
-          "score": 0.4415114223957062,
+          "table_name": "hr_attendance_records",
+          "score": 0.44724881649017334,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -3103,26 +2667,8 @@
         },
         {
           "rank": 9,
-          "table_name": "dim_employees",
-          "score": 0.4260215759277344,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "weather_data",
-          "score": 0.4250912070274353,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "it_assets",
-          "score": 0.4238468408584595,
+          "table_name": "legal_contract_archive",
+          "score": 0.40174639225006104,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -3137,408 +2683,15 @@
       "required_tables": [
         "finance_expenses"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
         "finance_expenses",
         "dim_products",
-        "office_supplies",
-        "exchange_rates",
-        "hr_attendance"
+        "sales_orders",
+        "hr_attendance_records"
       ],
       "hit_required_tables": [
         "finance_expenses"
-      ],
-      "missing_required_tables": [],
-      "recall": 1.0,
-      "all_required_recalled": true,
-      "reciprocal_rank": 1.0,
-      "first_required_rank": 1,
-      "distractor_count_in_top_k": 2,
-      "results": [
-        {
-          "rank": 1,
-          "table_name": "finance_expenses",
-          "score": 0.6331627368927002,
-          "is_required": true,
-          "is_real": true,
-          "marker": "必须召回",
-          "in_top_k": true
-        },
-        {
-          "rank": 2,
-          "table_name": "dim_products",
-          "score": 0.5203381776809692,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": true
-        },
-        {
-          "rank": 3,
-          "table_name": "office_supplies",
-          "score": 0.4850761890411377,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": true
-        },
-        {
-          "rank": 4,
-          "table_name": "exchange_rates",
-          "score": 0.47005495429039,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": true
-        },
-        {
-          "rank": 5,
-          "table_name": "hr_attendance",
-          "score": 0.46702098846435547,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": true
-        },
-        {
-          "rank": 6,
-          "table_name": "sales_orders",
-          "score": 0.4632282257080078,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": false
-        },
-        {
-          "rank": 7,
-          "table_name": "website_logs",
-          "score": 0.4378308653831482,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 8,
-          "table_name": "dim_employees",
-          "score": 0.4360605776309967,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 9,
-          "table_name": "dim_customers",
-          "score": 0.4337141811847687,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "weather_data",
-          "score": 0.41478636860847473,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "it_assets",
-          "score": 0.4087889790534973,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        }
-      ]
-    },
-    {
-      "id": 26,
-      "category": "medium",
-      "question": "查询2025年的收入、销售成本和毛利。",
-      "required_tables": [
-        "sales_orders",
-        "dim_products",
-        "exchange_rates"
-      ],
-      "top_k": 5,
-      "top_k_tables": [
-        "sales_orders",
-        "dim_products",
-        "exchange_rates",
-        "finance_expenses",
-        "dim_customers"
-      ],
-      "hit_required_tables": [
-        "sales_orders",
-        "dim_products",
-        "exchange_rates"
-      ],
-      "missing_required_tables": [],
-      "recall": 1.0,
-      "all_required_recalled": true,
-      "reciprocal_rank": 1.0,
-      "first_required_rank": 1,
-      "distractor_count_in_top_k": 0,
-      "results": [
-        {
-          "rank": 1,
-          "table_name": "sales_orders",
-          "score": 0.5666850805282593,
-          "is_required": true,
-          "is_real": true,
-          "marker": "必须召回",
-          "in_top_k": true
-        },
-        {
-          "rank": 2,
-          "table_name": "dim_products",
-          "score": 0.5633190870285034,
-          "is_required": true,
-          "is_real": true,
-          "marker": "必须召回",
-          "in_top_k": true
-        },
-        {
-          "rank": 3,
-          "table_name": "exchange_rates",
-          "score": 0.5587413311004639,
-          "is_required": true,
-          "is_real": true,
-          "marker": "必须召回",
-          "in_top_k": true
-        },
-        {
-          "rank": 4,
-          "table_name": "finance_expenses",
-          "score": 0.5450345873832703,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": true
-        },
-        {
-          "rank": 5,
-          "table_name": "dim_customers",
-          "score": 0.5144931077957153,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": true
-        },
-        {
-          "rank": 6,
-          "table_name": "website_logs",
-          "score": 0.461052805185318,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 7,
-          "table_name": "office_supplies",
-          "score": 0.4391999840736389,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 8,
-          "table_name": "dim_employees",
-          "score": 0.43255311250686646,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 9,
-          "table_name": "hr_attendance",
-          "score": 0.43107834458351135,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "it_assets",
-          "score": 0.42075175046920776,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "weather_data",
-          "score": 0.4152977168560028,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        }
-      ]
-    },
-    {
-      "id": 27,
-      "category": "medium",
-      "question": "查询2025年的利润，利润定义为毛利减去四项期间费用。",
-      "required_tables": [
-        "sales_orders",
-        "dim_products",
-        "exchange_rates",
-        "finance_expenses"
-      ],
-      "top_k": 5,
-      "top_k_tables": [
-        "finance_expenses",
-        "exchange_rates",
-        "dim_products",
-        "sales_orders",
-        "dim_customers"
-      ],
-      "hit_required_tables": [
-        "sales_orders",
-        "dim_products",
-        "exchange_rates",
-        "finance_expenses"
-      ],
-      "missing_required_tables": [],
-      "recall": 1.0,
-      "all_required_recalled": true,
-      "reciprocal_rank": 1.0,
-      "first_required_rank": 1,
-      "distractor_count_in_top_k": 0,
-      "results": [
-        {
-          "rank": 1,
-          "table_name": "finance_expenses",
-          "score": 0.5762345194816589,
-          "is_required": true,
-          "is_real": true,
-          "marker": "必须召回",
-          "in_top_k": true
-        },
-        {
-          "rank": 2,
-          "table_name": "exchange_rates",
-          "score": 0.5511077642440796,
-          "is_required": true,
-          "is_real": true,
-          "marker": "必须召回",
-          "in_top_k": true
-        },
-        {
-          "rank": 3,
-          "table_name": "dim_products",
-          "score": 0.533568799495697,
-          "is_required": true,
-          "is_real": true,
-          "marker": "必须召回",
-          "in_top_k": true
-        },
-        {
-          "rank": 4,
-          "table_name": "sales_orders",
-          "score": 0.4924149513244629,
-          "is_required": true,
-          "is_real": true,
-          "marker": "必须召回",
-          "in_top_k": true
-        },
-        {
-          "rank": 5,
-          "table_name": "dim_customers",
-          "score": 0.49073123931884766,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": true
-        },
-        {
-          "rank": 6,
-          "table_name": "hr_attendance",
-          "score": 0.43552762269973755,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 7,
-          "table_name": "website_logs",
-          "score": 0.43343567848205566,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 8,
-          "table_name": "it_assets",
-          "score": 0.43054288625717163,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 9,
-          "table_name": "dim_employees",
-          "score": 0.4148111343383789,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "office_supplies",
-          "score": 0.41413185000419617,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "weather_data",
-          "score": 0.39725497364997864,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        }
-      ]
-    },
-    {
-      "id": 28,
-      "category": "medium",
-      "question": "查询2025年收入超过100万元的产品。",
-      "required_tables": [
-        "sales_orders",
-        "dim_products",
-        "exchange_rates"
-      ],
-      "top_k": 5,
-      "top_k_tables": [
-        "exchange_rates",
-        "sales_orders",
-        "dim_products",
-        "dim_customers",
-        "office_supplies"
-      ],
-      "hit_required_tables": [
-        "sales_orders",
-        "dim_products",
-        "exchange_rates"
       ],
       "missing_required_tables": [],
       "recall": 1.0,
@@ -3549,8 +2702,8 @@
       "results": [
         {
           "rank": 1,
-          "table_name": "exchange_rates",
-          "score": 0.5657491683959961,
+          "table_name": "finance_expenses",
+          "score": 0.6260511875152588,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -3558,62 +2711,62 @@
         },
         {
           "rank": 2,
-          "table_name": "sales_orders",
-          "score": 0.519507646560669,
-          "is_required": true,
+          "table_name": "dim_products",
+          "score": 0.4981587529182434,
+          "is_required": false,
           "is_real": true,
-          "marker": "必须召回",
+          "marker": "真实表-非必需",
           "in_top_k": true
         },
         {
           "rank": 3,
-          "table_name": "dim_products",
-          "score": 0.5137767791748047,
-          "is_required": true,
+          "table_name": "sales_orders",
+          "score": 0.4632282257080078,
+          "is_required": false,
           "is_real": true,
-          "marker": "必须召回",
+          "marker": "真实表-非必需",
           "in_top_k": true
         },
         {
           "rank": 4,
-          "table_name": "dim_customers",
-          "score": 0.4689807593822479,
+          "table_name": "hr_attendance_records",
+          "score": 0.4589973986148834,
           "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
+          "is_real": false,
+          "marker": "干扰表",
           "in_top_k": true
         },
         {
           "rank": 5,
-          "table_name": "office_supplies",
-          "score": 0.45839548110961914,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": true
-        },
-        {
-          "rank": 6,
-          "table_name": "finance_expenses",
-          "score": 0.4513653814792633,
+          "table_name": "exchange_rates",
+          "score": 0.43740785121917725,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
           "in_top_k": false
         },
         {
-          "rank": 7,
-          "table_name": "website_logs",
-          "score": 0.4392992854118347,
+          "rank": 6,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.4373972713947296,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
           "in_top_k": false
         },
         {
+          "rank": 7,
+          "table_name": "dim_customers",
+          "score": 0.43411412835121155,
+          "is_required": false,
+          "is_real": true,
+          "marker": "真实表-非必需",
+          "in_top_k": false
+        },
+        {
           "rank": 8,
-          "table_name": "hr_attendance",
-          "score": 0.4289977252483368,
+          "table_name": "iot_device_alerts",
+          "score": 0.4170607328414917,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -3621,26 +2774,8 @@
         },
         {
           "rank": 9,
-          "table_name": "it_assets",
-          "score": 0.4257541298866272,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "dim_employees",
-          "score": 0.4057433307170868,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "weather_data",
-          "score": 0.36940693855285645,
+          "table_name": "legal_contract_archive",
+          "score": 0.403971791267395,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -3649,20 +2784,243 @@
       ]
     },
     {
-      "id": 29,
+      "id": 26,
       "category": "medium",
-      "question": "查询2025年毛利率高于30%的产品。",
+      "question": "查询2025年的收入、销售成本和毛利，并换算成人民币。",
       "required_tables": [
         "sales_orders",
         "dim_products",
         "exchange_rates"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
+        "finance_expenses",
+        "sales_orders",
+        "dim_products",
+        "exchange_rates"
+      ],
+      "hit_required_tables": [
+        "sales_orders",
+        "dim_products",
+        "exchange_rates"
+      ],
+      "missing_required_tables": [],
+      "recall": 1.0,
+      "all_required_recalled": true,
+      "reciprocal_rank": 0.5,
+      "first_required_rank": 2,
+      "distractor_count_in_top_k": 0,
+      "results": [
+        {
+          "rank": 1,
+          "table_name": "finance_expenses",
+          "score": 0.6042397022247314,
+          "is_required": false,
+          "is_real": true,
+          "marker": "真实表-非必需",
+          "in_top_k": true
+        },
+        {
+          "rank": 2,
+          "table_name": "sales_orders",
+          "score": 0.5550572872161865,
+          "is_required": true,
+          "is_real": true,
+          "marker": "必须召回",
+          "in_top_k": true
+        },
+        {
+          "rank": 3,
+          "table_name": "dim_products",
+          "score": 0.5427790284156799,
+          "is_required": true,
+          "is_real": true,
+          "marker": "必须召回",
+          "in_top_k": true
+        },
+        {
+          "rank": 4,
+          "table_name": "exchange_rates",
+          "score": 0.5394811034202576,
+          "is_required": true,
+          "is_real": true,
+          "marker": "必须召回",
+          "in_top_k": true
+        },
+        {
+          "rank": 5,
+          "table_name": "dim_customers",
+          "score": 0.5167931914329529,
+          "is_required": false,
+          "is_real": true,
+          "marker": "真实表-非必需",
+          "in_top_k": false
+        },
+        {
+          "rank": 6,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.47285914421081543,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
+          "in_top_k": false
+        },
+        {
+          "rank": 7,
+          "table_name": "hr_attendance_records",
+          "score": 0.42629241943359375,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
+          "in_top_k": false
+        },
+        {
+          "rank": 8,
+          "table_name": "iot_device_alerts",
+          "score": 0.41641098260879517,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
+          "in_top_k": false
+        },
+        {
+          "rank": 9,
+          "table_name": "legal_contract_archive",
+          "score": 0.37141501903533936,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
+          "in_top_k": false
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "category": "medium",
+      "question": "查询2025年的利润，利润定义为毛利减去四项期间费用，并换算成人民币。",
+      "required_tables": [
+        "sales_orders",
         "dim_products",
         "exchange_rates",
+        "finance_expenses"
+      ],
+      "top_k": 4,
+      "top_k_tables": [
+        "finance_expenses",
+        "exchange_rates",
+        "dim_products",
+        "sales_orders"
+      ],
+      "hit_required_tables": [
         "sales_orders",
-        "dim_customers",
+        "dim_products",
+        "exchange_rates",
+        "finance_expenses"
+      ],
+      "missing_required_tables": [],
+      "recall": 1.0,
+      "all_required_recalled": true,
+      "reciprocal_rank": 1.0,
+      "first_required_rank": 1,
+      "distractor_count_in_top_k": 0,
+      "results": [
+        {
+          "rank": 1,
+          "table_name": "finance_expenses",
+          "score": 0.6592538356781006,
+          "is_required": true,
+          "is_real": true,
+          "marker": "必须召回",
+          "in_top_k": true
+        },
+        {
+          "rank": 2,
+          "table_name": "exchange_rates",
+          "score": 0.5363417267799377,
+          "is_required": true,
+          "is_real": true,
+          "marker": "必须召回",
+          "in_top_k": true
+        },
+        {
+          "rank": 3,
+          "table_name": "dim_products",
+          "score": 0.5019859075546265,
+          "is_required": true,
+          "is_real": true,
+          "marker": "必须召回",
+          "in_top_k": true
+        },
+        {
+          "rank": 4,
+          "table_name": "sales_orders",
+          "score": 0.4961585998535156,
+          "is_required": true,
+          "is_real": true,
+          "marker": "必须召回",
+          "in_top_k": true
+        },
+        {
+          "rank": 5,
+          "table_name": "dim_customers",
+          "score": 0.491834819316864,
+          "is_required": false,
+          "is_real": true,
+          "marker": "真实表-非必需",
+          "in_top_k": false
+        },
+        {
+          "rank": 6,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.46716392040252686,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
+          "in_top_k": false
+        },
+        {
+          "rank": 7,
+          "table_name": "hr_attendance_records",
+          "score": 0.4283357262611389,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
+          "in_top_k": false
+        },
+        {
+          "rank": 8,
+          "table_name": "iot_device_alerts",
+          "score": 0.4111765921115875,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
+          "in_top_k": false
+        },
+        {
+          "rank": 9,
+          "table_name": "legal_contract_archive",
+          "score": 0.36867639422416687,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
+          "in_top_k": false
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "category": "medium",
+      "question": "查询2025年收入超过100万元的产品，并换算成人民币。",
+      "required_tables": [
+        "sales_orders",
+        "dim_products",
+        "exchange_rates"
+      ],
+      "top_k": 4,
+      "top_k_tables": [
+        "exchange_rates",
+        "sales_orders",
+        "dim_products",
         "finance_expenses"
       ],
       "hit_required_tables": [
@@ -3679,8 +3037,119 @@
       "results": [
         {
           "rank": 1,
+          "table_name": "exchange_rates",
+          "score": 0.544388473033905,
+          "is_required": true,
+          "is_real": true,
+          "marker": "必须召回",
+          "in_top_k": true
+        },
+        {
+          "rank": 2,
+          "table_name": "sales_orders",
+          "score": 0.5297757983207703,
+          "is_required": true,
+          "is_real": true,
+          "marker": "必须召回",
+          "in_top_k": true
+        },
+        {
+          "rank": 3,
           "table_name": "dim_products",
-          "score": 0.561663031578064,
+          "score": 0.5287206768989563,
+          "is_required": true,
+          "is_real": true,
+          "marker": "必须召回",
+          "in_top_k": true
+        },
+        {
+          "rank": 4,
+          "table_name": "finance_expenses",
+          "score": 0.49657899141311646,
+          "is_required": false,
+          "is_real": true,
+          "marker": "真实表-非必需",
+          "in_top_k": true
+        },
+        {
+          "rank": 5,
+          "table_name": "dim_customers",
+          "score": 0.4822304844856262,
+          "is_required": false,
+          "is_real": true,
+          "marker": "真实表-非必需",
+          "in_top_k": false
+        },
+        {
+          "rank": 6,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.4503750503063202,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
+          "in_top_k": false
+        },
+        {
+          "rank": 7,
+          "table_name": "iot_device_alerts",
+          "score": 0.4360848069190979,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
+          "in_top_k": false
+        },
+        {
+          "rank": 8,
+          "table_name": "hr_attendance_records",
+          "score": 0.4316031038761139,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
+          "in_top_k": false
+        },
+        {
+          "rank": 9,
+          "table_name": "legal_contract_archive",
+          "score": 0.3650256395339966,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
+          "in_top_k": false
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "category": "medium",
+      "question": "查询2025年毛利率高于30%的产品，并换算成人民币。",
+      "required_tables": [
+        "sales_orders",
+        "dim_products",
+        "exchange_rates"
+      ],
+      "top_k": 4,
+      "top_k_tables": [
+        "dim_products",
+        "exchange_rates",
+        "finance_expenses",
+        "sales_orders"
+      ],
+      "hit_required_tables": [
+        "sales_orders",
+        "dim_products",
+        "exchange_rates"
+      ],
+      "missing_required_tables": [],
+      "recall": 1.0,
+      "all_required_recalled": true,
+      "reciprocal_rank": 1.0,
+      "first_required_rank": 1,
+      "distractor_count_in_top_k": 0,
+      "results": [
+        {
+          "rank": 1,
+          "table_name": "dim_products",
+          "score": 0.5717113018035889,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -3689,7 +3158,7 @@
         {
           "rank": 2,
           "table_name": "exchange_rates",
-          "score": 0.5003818273544312,
+          "score": 0.558704674243927,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -3697,35 +3166,35 @@
         },
         {
           "rank": 3,
+          "table_name": "finance_expenses",
+          "score": 0.5335386991500854,
+          "is_required": false,
+          "is_real": true,
+          "marker": "真实表-非必需",
+          "in_top_k": true
+        },
+        {
+          "rank": 4,
           "table_name": "sales_orders",
-          "score": 0.49672380089759827,
+          "score": 0.5024323463439941,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
           "in_top_k": true
         },
         {
-          "rank": 4,
-          "table_name": "dim_customers",
-          "score": 0.4956647455692291,
-          "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": true
-        },
-        {
           "rank": 5,
-          "table_name": "finance_expenses",
-          "score": 0.4632590413093567,
+          "table_name": "dim_customers",
+          "score": 0.4971691370010376,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
-          "in_top_k": true
+          "in_top_k": false
         },
         {
           "rank": 6,
-          "table_name": "it_assets",
-          "score": 0.41162875294685364,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.4577614665031433,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -3733,8 +3202,8 @@
         },
         {
           "rank": 7,
-          "table_name": "website_logs",
-          "score": 0.40856778621673584,
+          "table_name": "iot_device_alerts",
+          "score": 0.40871742367744446,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -3742,8 +3211,8 @@
         },
         {
           "rank": 8,
-          "table_name": "weather_data",
-          "score": 0.4019734859466553,
+          "table_name": "hr_attendance_records",
+          "score": 0.37535256147384644,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -3751,26 +3220,8 @@
         },
         {
           "rank": 9,
-          "table_name": "office_supplies",
-          "score": 0.39139148592948914,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "dim_employees",
-          "score": 0.3895786702632904,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "hr_attendance",
-          "score": 0.3806198537349701,
+          "table_name": "legal_contract_archive",
+          "score": 0.37097078561782837,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -3786,13 +3237,12 @@
         "sales_orders",
         "dim_products"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
-        "sales_orders",
         "dim_products",
-        "exchange_rates",
+        "sales_orders",
         "dim_customers",
-        "office_supplies"
+        "finance_expenses"
       ],
       "hit_required_tables": [
         "sales_orders",
@@ -3803,10 +3253,19 @@
       "all_required_recalled": true,
       "reciprocal_rank": 1.0,
       "first_required_rank": 1,
-      "distractor_count_in_top_k": 1,
+      "distractor_count_in_top_k": 0,
       "results": [
         {
           "rank": 1,
+          "table_name": "dim_products",
+          "score": 0.49546945095062256,
+          "is_required": true,
+          "is_real": true,
+          "marker": "必须召回",
+          "in_top_k": true
+        },
+        {
+          "rank": 2,
           "table_name": "sales_orders",
           "score": 0.4930664896965027,
           "is_required": true,
@@ -3815,18 +3274,9 @@
           "in_top_k": true
         },
         {
-          "rank": 2,
-          "table_name": "dim_products",
-          "score": 0.4617787003517151,
-          "is_required": true,
-          "is_real": true,
-          "marker": "必须召回",
-          "in_top_k": true
-        },
-        {
           "rank": 3,
-          "table_name": "exchange_rates",
-          "score": 0.4193824529647827,
+          "table_name": "dim_customers",
+          "score": 0.4127805233001709,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
@@ -3834,8 +3284,8 @@
         },
         {
           "rank": 4,
-          "table_name": "dim_customers",
-          "score": 0.41245561838150024,
+          "table_name": "finance_expenses",
+          "score": 0.36827075481414795,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
@@ -3843,26 +3293,26 @@
         },
         {
           "rank": 5,
-          "table_name": "office_supplies",
-          "score": 0.40133601427078247,
+          "table_name": "iot_device_alerts",
+          "score": 0.3543213903903961,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
-          "in_top_k": true
+          "in_top_k": false
         },
         {
           "rank": 6,
-          "table_name": "finance_expenses",
-          "score": 0.3535918891429901,
+          "table_name": "hr_attendance_records",
+          "score": 0.3525865972042084,
           "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
+          "is_real": false,
+          "marker": "干扰表",
           "in_top_k": false
         },
         {
           "rank": 7,
-          "table_name": "it_assets",
-          "score": 0.34756407141685486,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.34765592217445374,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -3870,35 +3320,17 @@
         },
         {
           "rank": 8,
-          "table_name": "website_logs",
-          "score": 0.346267968416214,
+          "table_name": "exchange_rates",
+          "score": 0.3232521712779999,
           "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
+          "is_real": true,
+          "marker": "真实表-非必需",
           "in_top_k": false
         },
         {
           "rank": 9,
-          "table_name": "dim_employees",
-          "score": 0.34457483887672424,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "hr_attendance",
-          "score": 0.34322071075439453,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "weather_data",
-          "score": 0.3365529179573059,
+          "table_name": "legal_contract_archive",
+          "score": 0.2750505805015564,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -3909,20 +3341,19 @@
     {
       "id": 31,
       "category": "hard",
-      "question": "查询2025年每个月的收入、销售成本、毛利、四项期间费用和利润。",
+      "question": "查询2025年每个月的收入、销售成本、毛利、四项期间费用和利润，并换算成人民币。",
       "required_tables": [
         "sales_orders",
         "dim_products",
         "exchange_rates",
         "finance_expenses"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
         "finance_expenses",
-        "dim_products",
         "sales_orders",
-        "exchange_rates",
-        "dim_customers"
+        "dim_products",
+        "exchange_rates"
       ],
       "hit_required_tables": [
         "sales_orders",
@@ -3940,7 +3371,7 @@
         {
           "rank": 1,
           "table_name": "finance_expenses",
-          "score": 0.6332287192344666,
+          "score": 0.6739264726638794,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -3948,8 +3379,8 @@
         },
         {
           "rank": 2,
-          "table_name": "dim_products",
-          "score": 0.6024469137191772,
+          "table_name": "sales_orders",
+          "score": 0.5836209654808044,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -3957,8 +3388,8 @@
         },
         {
           "rank": 3,
-          "table_name": "sales_orders",
-          "score": 0.5990559458732605,
+          "table_name": "dim_products",
+          "score": 0.5699861645698547,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -3967,7 +3398,7 @@
         {
           "rank": 4,
           "table_name": "exchange_rates",
-          "score": 0.562212347984314,
+          "score": 0.5496768951416016,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -3976,16 +3407,16 @@
         {
           "rank": 5,
           "table_name": "dim_customers",
-          "score": 0.5552080273628235,
+          "score": 0.5475361347198486,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
-          "in_top_k": true
+          "in_top_k": false
         },
         {
           "rank": 6,
-          "table_name": "website_logs",
-          "score": 0.49456045031547546,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.5023070573806763,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -3993,8 +3424,8 @@
         },
         {
           "rank": 7,
-          "table_name": "hr_attendance",
-          "score": 0.4816172420978546,
+          "table_name": "hr_attendance_records",
+          "score": 0.467133492231369,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -4002,8 +3433,8 @@
         },
         {
           "rank": 8,
-          "table_name": "dim_employees",
-          "score": 0.476722776889801,
+          "table_name": "iot_device_alerts",
+          "score": 0.43986010551452637,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -4011,26 +3442,8 @@
         },
         {
           "rank": 9,
-          "table_name": "office_supplies",
-          "score": 0.4750053286552429,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "it_assets",
-          "score": 0.46190497279167175,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "weather_data",
-          "score": 0.4533098340034485,
+          "table_name": "legal_contract_archive",
+          "score": 0.4043945372104645,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -4041,17 +3454,16 @@
     {
       "id": 32,
       "category": "hard",
-      "question": "查询2025年每个月的收入环比增长率，并显示当月收入和上月收入。",
+      "question": "查询2025年每个月的收入环比增长率，并显示当月收入和上月收入，并换算成人民币。",
       "required_tables": [
         "sales_orders",
         "exchange_rates"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
         "exchange_rates",
         "sales_orders",
         "dim_customers",
-        "website_logs",
         "finance_expenses"
       ],
       "hit_required_tables": [
@@ -4063,12 +3475,12 @@
       "all_required_recalled": true,
       "reciprocal_rank": 1.0,
       "first_required_rank": 1,
-      "distractor_count_in_top_k": 1,
+      "distractor_count_in_top_k": 0,
       "results": [
         {
           "rank": 1,
           "table_name": "exchange_rates",
-          "score": 0.6081218123435974,
+          "score": 0.5304808616638184,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -4077,7 +3489,7 @@
         {
           "rank": 2,
           "table_name": "sales_orders",
-          "score": 0.5146366953849792,
+          "score": 0.5097517371177673,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -4086,7 +3498,7 @@
         {
           "rank": 3,
           "table_name": "dim_customers",
-          "score": 0.47855329513549805,
+          "score": 0.47815802693367004,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
@@ -4094,35 +3506,35 @@
         },
         {
           "rank": 4,
-          "table_name": "website_logs",
-          "score": 0.46883589029312134,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": true
-        },
-        {
-          "rank": 5,
           "table_name": "finance_expenses",
-          "score": 0.46775877475738525,
+          "score": 0.47209781408309937,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
           "in_top_k": true
         },
         {
-          "rank": 6,
-          "table_name": "dim_employees",
-          "score": 0.4627414047718048,
+          "rank": 5,
+          "table_name": "hr_attendance_records",
+          "score": 0.46319207549095154,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
           "in_top_k": false
         },
         {
+          "rank": 6,
+          "table_name": "dim_products",
+          "score": 0.45567625761032104,
+          "is_required": false,
+          "is_real": true,
+          "marker": "真实表-非必需",
+          "in_top_k": false
+        },
+        {
           "rank": 7,
-          "table_name": "hr_attendance",
-          "score": 0.46029597520828247,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.44220080971717834,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -4130,35 +3542,17 @@
         },
         {
           "rank": 8,
-          "table_name": "dim_products",
-          "score": 0.44621068239212036,
+          "table_name": "iot_device_alerts",
+          "score": 0.3818138837814331,
           "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
+          "is_real": false,
+          "marker": "干扰表",
           "in_top_k": false
         },
         {
           "rank": 9,
-          "table_name": "weather_data",
-          "score": 0.42789196968078613,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "office_supplies",
-          "score": 0.396453320980072,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "it_assets",
-          "score": 0.3802127242088318,
+          "table_name": "legal_contract_archive",
+          "score": 0.31460893154144287,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -4169,28 +3563,28 @@
     {
       "id": 33,
       "category": "hard",
-      "question": "查询2025年每个产品类别的收入、销售成本、毛利和毛利率，并按照毛利率从高到低排名。",
+      "question": "查询2025年每个产品类别的收入、销售成本、毛利和毛利率，并按照毛利率从高到低排名，并换算成人民币。",
       "required_tables": [
         "sales_orders",
         "dim_products",
         "exchange_rates"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
         "dim_products",
         "finance_expenses",
         "sales_orders",
-        "exchange_rates",
         "dim_customers"
       ],
       "hit_required_tables": [
         "sales_orders",
-        "dim_products",
+        "dim_products"
+      ],
+      "missing_required_tables": [
         "exchange_rates"
       ],
-      "missing_required_tables": [],
-      "recall": 1.0,
-      "all_required_recalled": true,
+      "recall": 0.6666666666666666,
+      "all_required_recalled": false,
       "reciprocal_rank": 1.0,
       "first_required_rank": 1,
       "distractor_count_in_top_k": 0,
@@ -4198,7 +3592,7 @@
         {
           "rank": 1,
           "table_name": "dim_products",
-          "score": 0.6367638111114502,
+          "score": 0.6269423365592957,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -4207,7 +3601,7 @@
         {
           "rank": 2,
           "table_name": "finance_expenses",
-          "score": 0.5496460795402527,
+          "score": 0.6225903630256653,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
@@ -4216,7 +3610,7 @@
         {
           "rank": 3,
           "table_name": "sales_orders",
-          "score": 0.5469545722007751,
+          "score": 0.558834969997406,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -4224,26 +3618,26 @@
         },
         {
           "rank": 4,
-          "table_name": "exchange_rates",
-          "score": 0.5300284028053284,
-          "is_required": true,
-          "is_real": true,
-          "marker": "必须召回",
-          "in_top_k": true
-        },
-        {
-          "rank": 5,
           "table_name": "dim_customers",
-          "score": 0.5238841772079468,
+          "score": 0.5371130704879761,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
           "in_top_k": true
         },
         {
+          "rank": 5,
+          "table_name": "exchange_rates",
+          "score": 0.5252377986907959,
+          "is_required": true,
+          "is_real": true,
+          "marker": "必须召回",
+          "in_top_k": false
+        },
+        {
           "rank": 6,
-          "table_name": "office_supplies",
-          "score": 0.4462193250656128,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.4931045472621918,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -4251,8 +3645,8 @@
         },
         {
           "rank": 7,
-          "table_name": "website_logs",
-          "score": 0.4341273307800293,
+          "table_name": "iot_device_alerts",
+          "score": 0.41876694560050964,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -4260,8 +3654,8 @@
         },
         {
           "rank": 8,
-          "table_name": "dim_employees",
-          "score": 0.4233227074146271,
+          "table_name": "hr_attendance_records",
+          "score": 0.41861116886138916,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -4269,26 +3663,8 @@
         },
         {
           "rank": 9,
-          "table_name": "weather_data",
-          "score": 0.40909096598625183,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "hr_attendance",
-          "score": 0.4050096571445465,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "it_assets",
-          "score": 0.39670079946517944,
+          "table_name": "legal_contract_archive",
+          "score": 0.3674638271331787,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -4299,28 +3675,28 @@
     {
       "id": 34,
       "category": "hard",
-      "question": "查询2025年每个产品类别收入最高的产品，并显示该产品的收入、成本和毛利。",
+      "question": "查询2025年每个产品类别收入最高的产品，并显示该产品的收入、成本和毛利，并换算成人民币。",
       "required_tables": [
         "sales_orders",
         "dim_products",
         "exchange_rates"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
         "dim_products",
-        "sales_orders",
-        "exchange_rates",
         "finance_expenses",
+        "sales_orders",
         "dim_customers"
       ],
       "hit_required_tables": [
         "sales_orders",
-        "dim_products",
+        "dim_products"
+      ],
+      "missing_required_tables": [
         "exchange_rates"
       ],
-      "missing_required_tables": [],
-      "recall": 1.0,
-      "all_required_recalled": true,
+      "recall": 0.6666666666666666,
+      "all_required_recalled": false,
       "reciprocal_rank": 1.0,
       "first_required_rank": 1,
       "distractor_count_in_top_k": 0,
@@ -4328,7 +3704,7 @@
         {
           "rank": 1,
           "table_name": "dim_products",
-          "score": 0.6022924780845642,
+          "score": 0.5986756682395935,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -4336,17 +3712,17 @@
         },
         {
           "rank": 2,
-          "table_name": "sales_orders",
-          "score": 0.5298032164573669,
-          "is_required": true,
+          "table_name": "finance_expenses",
+          "score": 0.5615520477294922,
+          "is_required": false,
           "is_real": true,
-          "marker": "必须召回",
+          "marker": "真实表-非必需",
           "in_top_k": true
         },
         {
           "rank": 3,
-          "table_name": "exchange_rates",
-          "score": 0.5249189734458923,
+          "table_name": "sales_orders",
+          "score": 0.5279622673988342,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -4354,8 +3730,8 @@
         },
         {
           "rank": 4,
-          "table_name": "finance_expenses",
-          "score": 0.5076910257339478,
+          "table_name": "dim_customers",
+          "score": 0.48524731397628784,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
@@ -4363,17 +3739,17 @@
         },
         {
           "rank": 5,
-          "table_name": "dim_customers",
-          "score": 0.47987526655197144,
-          "is_required": false,
+          "table_name": "exchange_rates",
+          "score": 0.45960891246795654,
+          "is_required": true,
           "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": true
+          "marker": "必须召回",
+          "in_top_k": false
         },
         {
           "rank": 6,
-          "table_name": "office_supplies",
-          "score": 0.4415839612483978,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.45223039388656616,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -4381,8 +3757,8 @@
         },
         {
           "rank": 7,
-          "table_name": "website_logs",
-          "score": 0.406141072511673,
+          "table_name": "iot_device_alerts",
+          "score": 0.4173651933670044,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -4390,8 +3766,8 @@
         },
         {
           "rank": 8,
-          "table_name": "dim_employees",
-          "score": 0.3836677670478821,
+          "table_name": "hr_attendance_records",
+          "score": 0.3961358666419983,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -4399,26 +3775,8 @@
         },
         {
           "rank": 9,
-          "table_name": "hr_attendance",
-          "score": 0.38165825605392456,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "it_assets",
-          "score": 0.3718589246273041,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "weather_data",
-          "score": 0.3617249131202698,
+          "table_name": "legal_contract_archive",
+          "score": 0.3185705542564392,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -4429,38 +3787,38 @@
     {
       "id": 35,
       "category": "hard",
-      "question": "查询2025年每个销售区域收入最高的客户，并显示该客户的收入和毛利。",
+      "question": "查询2025年每个销售区域收入最高的客户，并显示该客户的收入和毛利，并换算成人民币。",
       "required_tables": [
         "sales_orders",
         "dim_customers",
         "dim_products",
         "exchange_rates"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
         "dim_customers",
         "sales_orders",
-        "exchange_rates",
-        "dim_products",
-        "dim_employees"
+        "finance_expenses",
+        "dim_products"
       ],
       "hit_required_tables": [
         "sales_orders",
         "dim_customers",
-        "dim_products",
+        "dim_products"
+      ],
+      "missing_required_tables": [
         "exchange_rates"
       ],
-      "missing_required_tables": [],
-      "recall": 1.0,
-      "all_required_recalled": true,
+      "recall": 0.75,
+      "all_required_recalled": false,
       "reciprocal_rank": 1.0,
       "first_required_rank": 1,
-      "distractor_count_in_top_k": 1,
+      "distractor_count_in_top_k": 0,
       "results": [
         {
           "rank": 1,
           "table_name": "dim_customers",
-          "score": 0.5724264979362488,
+          "score": 0.5791677236557007,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -4469,7 +3827,7 @@
         {
           "rank": 2,
           "table_name": "sales_orders",
-          "score": 0.5544899106025696,
+          "score": 0.5619975924491882,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -4477,17 +3835,17 @@
         },
         {
           "rank": 3,
-          "table_name": "exchange_rates",
-          "score": 0.502263069152832,
-          "is_required": true,
+          "table_name": "finance_expenses",
+          "score": 0.500725269317627,
+          "is_required": false,
           "is_real": true,
-          "marker": "必须召回",
+          "marker": "真实表-非必需",
           "in_top_k": true
         },
         {
           "rank": 4,
           "table_name": "dim_products",
-          "score": 0.4455345869064331,
+          "score": 0.4919813871383667,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -4495,26 +3853,26 @@
         },
         {
           "rank": 5,
-          "table_name": "dim_employees",
-          "score": 0.41794371604919434,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": true
+          "table_name": "exchange_rates",
+          "score": 0.48668673634529114,
+          "is_required": true,
+          "is_real": true,
+          "marker": "必须召回",
+          "in_top_k": false
         },
         {
           "rank": 6,
-          "table_name": "finance_expenses",
-          "score": 0.4164043664932251,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.43547317385673523,
           "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
+          "is_real": false,
+          "marker": "干扰表",
           "in_top_k": false
         },
         {
           "rank": 7,
-          "table_name": "website_logs",
-          "score": 0.3929603397846222,
+          "table_name": "hr_attendance_records",
+          "score": 0.3930830955505371,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -4522,8 +3880,8 @@
         },
         {
           "rank": 8,
-          "table_name": "hr_attendance",
-          "score": 0.3779650926589966,
+          "table_name": "iot_device_alerts",
+          "score": 0.3677352964878082,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -4531,26 +3889,8 @@
         },
         {
           "rank": 9,
-          "table_name": "weather_data",
-          "score": 0.3717903792858124,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "office_supplies",
-          "score": 0.3573547303676605,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "it_assets",
-          "score": 0.31800398230552673,
+          "table_name": "legal_contract_archive",
+          "score": 0.3358784019947052,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -4561,19 +3901,18 @@
     {
       "id": 36,
       "category": "hard",
-      "question": "查询2025年每个客户的收入，并计算该客户收入占公司总收入的比例，只保留收入占比超过5%的客户。",
+      "question": "查询2025年每个客户的收入，并计算该客户收入占公司总收入的比例，只保留收入占比超过5%的客户，并换算成人民币。",
       "required_tables": [
         "sales_orders",
         "dim_customers",
         "exchange_rates"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
         "dim_customers",
         "sales_orders",
         "exchange_rates",
-        "website_logs",
-        "dim_employees"
+        "finance_expenses"
       ],
       "hit_required_tables": [
         "sales_orders",
@@ -4585,12 +3924,12 @@
       "all_required_recalled": true,
       "reciprocal_rank": 1.0,
       "first_required_rank": 1,
-      "distractor_count_in_top_k": 2,
+      "distractor_count_in_top_k": 0,
       "results": [
         {
           "rank": 1,
           "table_name": "dim_customers",
-          "score": 0.601889967918396,
+          "score": 0.6041510105133057,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -4599,7 +3938,7 @@
         {
           "rank": 2,
           "table_name": "sales_orders",
-          "score": 0.5808677077293396,
+          "score": 0.5912604928016663,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -4608,7 +3947,7 @@
         {
           "rank": 3,
           "table_name": "exchange_rates",
-          "score": 0.5613205432891846,
+          "score": 0.5538402795791626,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -4616,44 +3955,44 @@
         },
         {
           "rank": 4,
-          "table_name": "website_logs",
-          "score": 0.4839705526828766,
+          "table_name": "finance_expenses",
+          "score": 0.5322978496551514,
           "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
+          "is_real": true,
+          "marker": "真实表-非必需",
           "in_top_k": true
         },
         {
           "rank": 5,
-          "table_name": "dim_employees",
-          "score": 0.4829496145248413,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": true
-        },
-        {
-          "rank": 6,
-          "table_name": "finance_expenses",
-          "score": 0.4821555018424988,
+          "table_name": "dim_products",
+          "score": 0.4825906753540039,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
+          "in_top_k": false
+        },
+        {
+          "rank": 6,
+          "table_name": "hr_attendance_records",
+          "score": 0.46450933814048767,
+          "is_required": false,
+          "is_real": false,
+          "marker": "干扰表",
           "in_top_k": false
         },
         {
           "rank": 7,
-          "table_name": "dim_products",
-          "score": 0.4747597277164459,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.4563368558883667,
           "is_required": false,
-          "is_real": true,
-          "marker": "真实表-非必需",
+          "is_real": false,
+          "marker": "干扰表",
           "in_top_k": false
         },
         {
           "rank": 8,
-          "table_name": "hr_attendance",
-          "score": 0.4640759229660034,
+          "table_name": "legal_contract_archive",
+          "score": 0.3939948081970215,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -4661,26 +4000,8 @@
         },
         {
           "rank": 9,
-          "table_name": "office_supplies",
-          "score": 0.4480730891227722,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "weather_data",
-          "score": 0.4271191954612732,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "it_assets",
-          "score": 0.42096152901649475,
+          "table_name": "iot_device_alerts",
+          "score": 0.3794023394584656,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -4691,19 +4012,18 @@
     {
       "id": 37,
       "category": "hard",
-      "question": "查询2025年每个产品的毛利率，并找出每个产品类别毛利率最高的产品。",
+      "question": "查询2025年每个产品的毛利率，并找出每个产品类别毛利率最高的产品，并换算成人民币。",
       "required_tables": [
         "sales_orders",
         "dim_products",
         "exchange_rates"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
         "dim_products",
-        "sales_orders",
-        "dim_customers",
+        "finance_expenses",
         "exchange_rates",
-        "finance_expenses"
+        "sales_orders"
       ],
       "hit_required_tables": [
         "sales_orders",
@@ -4720,7 +4040,7 @@
         {
           "rank": 1,
           "table_name": "dim_products",
-          "score": 0.5734648108482361,
+          "score": 0.5836986899375916,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -4728,26 +4048,26 @@
         },
         {
           "rank": 2,
-          "table_name": "sales_orders",
-          "score": 0.47197553515434265,
-          "is_required": true,
-          "is_real": true,
-          "marker": "必须召回",
-          "in_top_k": true
-        },
-        {
-          "rank": 3,
-          "table_name": "dim_customers",
-          "score": 0.46842509508132935,
+          "table_name": "finance_expenses",
+          "score": 0.5261267423629761,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
           "in_top_k": true
         },
         {
-          "rank": 4,
+          "rank": 3,
           "table_name": "exchange_rates",
-          "score": 0.4639069139957428,
+          "score": 0.501583456993103,
+          "is_required": true,
+          "is_real": true,
+          "marker": "必须召回",
+          "in_top_k": true
+        },
+        {
+          "rank": 4,
+          "table_name": "sales_orders",
+          "score": 0.47686851024627686,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -4755,17 +4075,17 @@
         },
         {
           "rank": 5,
-          "table_name": "finance_expenses",
-          "score": 0.45905405282974243,
+          "table_name": "dim_customers",
+          "score": 0.47223320603370667,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
-          "in_top_k": true
+          "in_top_k": false
         },
         {
           "rank": 6,
-          "table_name": "office_supplies",
-          "score": 0.3825782537460327,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.45170727372169495,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -4773,8 +4093,8 @@
         },
         {
           "rank": 7,
-          "table_name": "weather_data",
-          "score": 0.37607306241989136,
+          "table_name": "iot_device_alerts",
+          "score": 0.3789784014225006,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -4782,8 +4102,8 @@
         },
         {
           "rank": 8,
-          "table_name": "website_logs",
-          "score": 0.3730129599571228,
+          "table_name": "hr_attendance_records",
+          "score": 0.36250850558280945,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -4791,26 +4111,8 @@
         },
         {
           "rank": 9,
-          "table_name": "dim_employees",
-          "score": 0.36623328924179077,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "it_assets",
-          "score": 0.3616245687007904,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "hr_attendance",
-          "score": 0.35384759306907654,
+          "table_name": "legal_contract_archive",
+          "score": 0.324530690908432,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -4821,38 +4123,38 @@
     {
       "id": 38,
       "category": "hard",
-      "question": "查询2025年每个月的利润，并计算利润环比增长率。",
+      "question": "查询2025年每个月的利润，并计算利润环比增长率，并换算成人民币。",
       "required_tables": [
         "sales_orders",
         "dim_products",
         "exchange_rates",
         "finance_expenses"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
-        "exchange_rates",
         "finance_expenses",
-        "dim_customers",
+        "exchange_rates",
         "sales_orders",
-        "dim_products"
+        "dim_customers"
       ],
       "hit_required_tables": [
         "sales_orders",
-        "dim_products",
         "exchange_rates",
         "finance_expenses"
       ],
-      "missing_required_tables": [],
-      "recall": 1.0,
-      "all_required_recalled": true,
+      "missing_required_tables": [
+        "dim_products"
+      ],
+      "recall": 0.75,
+      "all_required_recalled": false,
       "reciprocal_rank": 1.0,
       "first_required_rank": 1,
       "distractor_count_in_top_k": 0,
       "results": [
         {
           "rank": 1,
-          "table_name": "exchange_rates",
-          "score": 0.5405628085136414,
+          "table_name": "finance_expenses",
+          "score": 0.5392091274261475,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -4860,8 +4162,8 @@
         },
         {
           "rank": 2,
-          "table_name": "finance_expenses",
-          "score": 0.49466103315353394,
+          "table_name": "exchange_rates",
+          "score": 0.518785297870636,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -4869,35 +4171,35 @@
         },
         {
           "rank": 3,
+          "table_name": "sales_orders",
+          "score": 0.49488717317581177,
+          "is_required": true,
+          "is_real": true,
+          "marker": "必须召回",
+          "in_top_k": true
+        },
+        {
+          "rank": 4,
           "table_name": "dim_customers",
-          "score": 0.486995667219162,
+          "score": 0.49396249651908875,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
           "in_top_k": true
         },
         {
-          "rank": 4,
-          "table_name": "sales_orders",
-          "score": 0.48644590377807617,
-          "is_required": true,
-          "is_real": true,
-          "marker": "必须召回",
-          "in_top_k": true
-        },
-        {
           "rank": 5,
           "table_name": "dim_products",
-          "score": 0.47925865650177,
+          "score": 0.481427401304245,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
-          "in_top_k": true
+          "in_top_k": false
         },
         {
           "rank": 6,
-          "table_name": "website_logs",
-          "score": 0.42119938135147095,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.46624597907066345,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -4905,8 +4207,8 @@
         },
         {
           "rank": 7,
-          "table_name": "hr_attendance",
-          "score": 0.4160879850387573,
+          "table_name": "hr_attendance_records",
+          "score": 0.4235997200012207,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -4914,8 +4216,8 @@
         },
         {
           "rank": 8,
-          "table_name": "dim_employees",
-          "score": 0.4122443199157715,
+          "table_name": "iot_device_alerts",
+          "score": 0.38369500637054443,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -4923,26 +4225,8 @@
         },
         {
           "rank": 9,
-          "table_name": "weather_data",
-          "score": 0.4055408835411072,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "it_assets",
-          "score": 0.38341185450553894,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "office_supplies",
-          "score": 0.33007940649986267,
+          "table_name": "legal_contract_archive",
+          "score": 0.33899927139282227,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -4953,36 +4237,36 @@
     {
       "id": 39,
       "category": "hard",
-      "question": "查询2025年每个产品类别的收入，并计算每个类别收入占公司总收入的比例，同时按照收入排名。",
+      "question": "查询2025年每个产品类别的收入，并计算每个类别收入占公司总收入的比例，同时按照收入排名，并换算成人民币。",
       "required_tables": [
         "sales_orders",
         "dim_products",
         "exchange_rates"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
-        "exchange_rates",
         "dim_products",
         "sales_orders",
-        "dim_customers",
-        "finance_expenses"
+        "finance_expenses",
+        "dim_customers"
       ],
       "hit_required_tables": [
         "sales_orders",
-        "dim_products",
+        "dim_products"
+      ],
+      "missing_required_tables": [
         "exchange_rates"
       ],
-      "missing_required_tables": [],
-      "recall": 1.0,
-      "all_required_recalled": true,
+      "recall": 0.6666666666666666,
+      "all_required_recalled": false,
       "reciprocal_rank": 1.0,
       "first_required_rank": 1,
       "distractor_count_in_top_k": 0,
       "results": [
         {
           "rank": 1,
-          "table_name": "exchange_rates",
-          "score": 0.5833132266998291,
+          "table_name": "dim_products",
+          "score": 0.566455066204071,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -4990,8 +4274,8 @@
         },
         {
           "rank": 2,
-          "table_name": "dim_products",
-          "score": 0.5696826577186584,
+          "table_name": "sales_orders",
+          "score": 0.5630378127098083,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -4999,17 +4283,17 @@
         },
         {
           "rank": 3,
-          "table_name": "sales_orders",
-          "score": 0.5576002597808838,
-          "is_required": true,
+          "table_name": "finance_expenses",
+          "score": 0.546819806098938,
+          "is_required": false,
           "is_real": true,
-          "marker": "必须召回",
+          "marker": "真实表-非必需",
           "in_top_k": true
         },
         {
           "rank": 4,
           "table_name": "dim_customers",
-          "score": 0.5341415405273438,
+          "score": 0.5385385751724243,
           "is_required": false,
           "is_real": true,
           "marker": "真实表-非必需",
@@ -5017,17 +4301,17 @@
         },
         {
           "rank": 5,
-          "table_name": "finance_expenses",
-          "score": 0.5176265835762024,
-          "is_required": false,
+          "table_name": "exchange_rates",
+          "score": 0.510394275188446,
+          "is_required": true,
           "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": true
+          "marker": "必须召回",
+          "in_top_k": false
         },
         {
           "rank": 6,
-          "table_name": "office_supplies",
-          "score": 0.47393184900283813,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.4658958315849304,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -5035,8 +4319,8 @@
         },
         {
           "rank": 7,
-          "table_name": "dim_employees",
-          "score": 0.4417340159416199,
+          "table_name": "hr_attendance_records",
+          "score": 0.44490864872932434,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -5044,8 +4328,8 @@
         },
         {
           "rank": 8,
-          "table_name": "website_logs",
-          "score": 0.43420255184173584,
+          "table_name": "iot_device_alerts",
+          "score": 0.4146811068058014,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -5053,26 +4337,8 @@
         },
         {
           "rank": 9,
-          "table_name": "hr_attendance",
-          "score": 0.4340134561061859,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "weather_data",
-          "score": 0.40001094341278076,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "it_assets",
-          "score": 0.3955720067024231,
+          "table_name": "legal_contract_archive",
+          "score": 0.34560340642929077,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -5083,30 +4349,30 @@
     {
       "id": 40,
       "category": "hard",
-      "question": "查询2025年收入最高的10个客户，并显示每个客户的收入、销售成本、毛利、毛利率以及收入排名。",
+      "question": "查询2025年收入最高的10个客户，并显示每个客户的收入、销售成本、毛利、毛利率以及收入排名，并换算成人民币。",
       "required_tables": [
         "sales_orders",
         "dim_customers",
         "dim_products",
         "exchange_rates"
       ],
-      "top_k": 5,
+      "top_k": 4,
       "top_k_tables": [
         "sales_orders",
         "dim_customers",
-        "exchange_rates",
-        "dim_products",
-        "finance_expenses"
+        "finance_expenses",
+        "dim_products"
       ],
       "hit_required_tables": [
         "sales_orders",
         "dim_customers",
-        "dim_products",
+        "dim_products"
+      ],
+      "missing_required_tables": [
         "exchange_rates"
       ],
-      "missing_required_tables": [],
-      "recall": 1.0,
-      "all_required_recalled": true,
+      "recall": 0.75,
+      "all_required_recalled": false,
       "reciprocal_rank": 1.0,
       "first_required_rank": 1,
       "distractor_count_in_top_k": 0,
@@ -5114,7 +4380,7 @@
         {
           "rank": 1,
           "table_name": "sales_orders",
-          "score": 0.5997943878173828,
+          "score": 0.5943910479545593,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -5123,7 +4389,7 @@
         {
           "rank": 2,
           "table_name": "dim_customers",
-          "score": 0.5945863723754883,
+          "score": 0.5869577527046204,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -5131,17 +4397,17 @@
         },
         {
           "rank": 3,
-          "table_name": "exchange_rates",
-          "score": 0.5210216045379639,
-          "is_required": true,
+          "table_name": "finance_expenses",
+          "score": 0.5487381815910339,
+          "is_required": false,
           "is_real": true,
-          "marker": "必须召回",
+          "marker": "真实表-非必需",
           "in_top_k": true
         },
         {
           "rank": 4,
           "table_name": "dim_products",
-          "score": 0.5129894018173218,
+          "score": 0.5264878273010254,
           "is_required": true,
           "is_real": true,
           "marker": "必须召回",
@@ -5149,17 +4415,17 @@
         },
         {
           "rank": 5,
-          "table_name": "finance_expenses",
-          "score": 0.48273542523384094,
-          "is_required": false,
+          "table_name": "exchange_rates",
+          "score": 0.49932974576950073,
+          "is_required": true,
           "is_real": true,
-          "marker": "真实表-非必需",
-          "in_top_k": true
+          "marker": "必须召回",
+          "in_top_k": false
         },
         {
           "rank": 6,
-          "table_name": "dim_employees",
-          "score": 0.47509413957595825,
+          "table_name": "warehouse_temperature_logs",
+          "score": 0.4481763541698456,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -5167,8 +4433,8 @@
         },
         {
           "rank": 7,
-          "table_name": "website_logs",
-          "score": 0.4726974666118622,
+          "table_name": "hr_attendance_records",
+          "score": 0.43452298641204834,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -5176,8 +4442,8 @@
         },
         {
           "rank": 8,
-          "table_name": "hr_attendance",
-          "score": 0.43812477588653564,
+          "table_name": "iot_device_alerts",
+          "score": 0.37292125821113586,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",
@@ -5185,26 +4451,8 @@
         },
         {
           "rank": 9,
-          "table_name": "office_supplies",
-          "score": 0.4194170832633972,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 10,
-          "table_name": "weather_data",
-          "score": 0.40697020292282104,
-          "is_required": false,
-          "is_real": false,
-          "marker": "干扰表",
-          "in_top_k": false
-        },
-        {
-          "rank": 11,
-          "table_name": "it_assets",
-          "score": 0.3892807960510254,
+          "table_name": "legal_contract_archive",
+          "score": 0.35500651597976685,
           "is_required": false,
           "is_real": false,
           "marker": "干扰表",

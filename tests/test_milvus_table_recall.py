@@ -30,17 +30,21 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from milvus_client import ClientMilvus, teble_schema
+from json_schema.table_scheam import TABLE_METADATA
+from milvus_client import ClientMilvus
 
 
 CASE_PATH = Path(__file__).resolve().parent / "data" / "milvus_table_recall_40.json"
 REPORT_DIR = Path(__file__).resolve().parent / "reports"
 JSON_REPORT_PATH = REPORT_DIR / "milvus_table_recall_40_latest.json"
 MARKDOWN_REPORT_PATH = REPORT_DIR / "milvus_table_recall_40_report.md"
-TOP_K = 5
-SEARCH_LIMIT = len(teble_schema)
-REAL_TABLES = tuple(item["table_name"] for item in teble_schema[:5])
-DISTRACTOR_TABLES = tuple(item["table_name"] for item in teble_schema[5:])
+TOP_K = 4
+
+# TABLE_METADATA 是 {表名: 表描述} 的有序字典，前 5 张为真实表，其余为干扰表
+TABLE_NAMES = tuple(TABLE_METADATA)
+SEARCH_LIMIT = len(TABLE_NAMES)
+REAL_TABLES = TABLE_NAMES[:5]
+DISTRACTOR_TABLES = TABLE_NAMES[5:]
 
 
 class TableRecallEvaluator:
@@ -204,7 +208,7 @@ def _search_once(
 ) -> list[dict[str, Any]]:
     embedding = client.embedding.get_embedding(question)
     raw = client.client.search(
-        collection_name=client.COLLECTION_NAME,
+        collection_name=client.COLLECTION_TABLE_NAME,
         data=[embedding],
         limit=limit,
         output_fields=["table_name", "domain", "page_content", "key_fields"],
@@ -358,7 +362,7 @@ def run_recall_evaluation(
             "generated_at": datetime.now().astimezone().isoformat(timespec="seconds"),
             "case_count": len(cases),
             "embedding_model": os.getenv("EMBEDDING_MODEL_NAME", ""),
-            "collection_name": client.COLLECTION_NAME,
+            "collection_name": client.COLLECTION_TABLE_NAME,
             "search_limit": SEARCH_LIMIT,
             "real_tables": list(REAL_TABLES),
             "distractor_tables": list(DISTRACTOR_TABLES),

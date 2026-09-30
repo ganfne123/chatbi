@@ -128,7 +128,7 @@
   {
     "id": 12,
     "category": "medium",
-    "question": "查询2025年每个销售区域的收入。",
+    "question": "查询2025年每个销售区域的收入，并换算成人民币。",
     "required_tables": [
       "sales_orders",
       "exchange_rates"
@@ -142,7 +142,7 @@
   {
     "id": 13,
     "category": "medium",
-    "question": "查询2025年每个产品的销售收入。",
+    "question": "查询2025年每个产品的销售收入，并换算成人民币。",
     "required_tables": [
       "sales_orders",
       "dim_products",
@@ -168,7 +168,7 @@
   {
     "id": 15,
     "category": "medium",
-    "question": "查询2025年每个产品的收入和毛利。",
+    "question": "查询2025年每个产品的收入和毛利，并换算成人民币。",
     "required_tables": [
       "sales_orders",
       "dim_products",
@@ -183,7 +183,7 @@
   {
     "id": 16,
     "category": "medium",
-    "question": "查询2025年每个产品的毛利率。",
+    "question": "查询2025年每个产品的毛利率，并换算成人民币。",
     "required_tables": [
       "sales_orders",
       "dim_products",
@@ -197,7 +197,7 @@
   {
     "id": 17,
     "category": "medium",
-    "question": "查询2025年每个客户的销售收入。",
+    "question": "查询2025年每个客户的销售收入，并换算成人民币。",
     "required_tables": [
       "sales_orders",
       "dim_customers",
@@ -210,7 +210,7 @@
   {
     "id": 18,
     "category": "medium",
-    "question": "查询2025年每个客户的销售成本和毛利。",
+    "question": "查询2025年每个客户的销售成本和毛利，并换算成人民币。",
     "required_tables": [
       "sales_orders",
       "dim_customers",
@@ -238,7 +238,7 @@
   {
     "id": 20,
     "category": "medium",
-    "question": "查询2025年每个产品类别的收入和销售成本。",
+    "question": "查询2025年每个产品类别的收入和销售成本，并换算成人民币。",
     "required_tables": [
       "sales_orders",
       "dim_products",
@@ -252,7 +252,7 @@
   {
     "id": 21,
     "category": "medium",
-    "question": "查询2025年每个产品线的收入和毛利。",
+    "question": "查询2025年每个产品线的收入和毛利，并换算成人民币。",
     "required_tables": [
       "sales_orders",
       "dim_products",
@@ -314,7 +314,7 @@
   {
     "id": 26,
     "category": "medium",
-    "question": "查询2025年的收入、销售成本和毛利。",
+    "question": "查询2025年的收入、销售成本和毛利，并换算成人民币。",
     "required_tables": [
       "sales_orders",
       "dim_products",
@@ -327,7 +327,7 @@
   {
     "id": 27,
     "category": "medium",
-    "question": "查询2025年的利润，利润定义为毛利减去四项期间费用。",
+    "question": "查询2025年的利润，利润定义为毛利减去四项期间费用，并换算成人民币。",
     "required_tables": [
       "sales_orders",
       "dim_products",
@@ -343,7 +343,7 @@
   {
     "id": 28,
     "category": "medium",
-    "question": "查询2025年收入超过100万元的产品。",
+    "question": "查询2025年收入超过100万元的产品，并换算成人民币。",
     "required_tables": [
       "sales_orders",
       "dim_products",
@@ -357,7 +357,7 @@
   {
     "id": 29,
     "category": "medium",
-    "question": "查询2025年毛利率高于30%的产品。",
+    "question": "查询2025年毛利率高于30%的产品，并换算成人民币。",
     "required_tables": [
       "sales_orders",
       "dim_products",
@@ -384,7 +384,7 @@
   {
     "id": 31,
     "category": "hard",
-    "question": "查询2025年每个月的收入、销售成本、毛利、四项期间费用和利润。",
+    "question": "查询2025年每个月的收入、销售成本、毛利、四项期间费用和利润，并换算成人民币。",
     "required_tables": [
       "sales_orders",
       "dim_products",
@@ -401,7 +401,7 @@
   {
     "id": 32,
     "category": "hard",
-    "question": "查询2025年每个月的收入环比增长率，并显示当月收入和上月收入。",
+    "question": "查询2025年每个月的收入环比增长率，并显示当月收入和上月收入，并换算成人民币。",
     "required_tables": [
       "sales_orders",
       "exchange_rates"
@@ -415,7 +415,7 @@
   {
     "id": 33,
     "category": "hard",
-    "question": "查询2025年每个产品类别的收入、销售成本、毛利和毛利率，并按照毛利率从高到低排名。",
+    "question": "查询2025年每个产品类别的收入、销售成本、毛利和毛利率，并按照毛利率从高到低排名，并换算成人民币。",
     "required_tables": [
       "sales_orders",
       "dim_products",
@@ -430,7 +430,7 @@
   {
     "id": 34,
     "category": "hard",
-    "question": "查询2025年每个产品类别收入最高的产品，并显示该产品的收入、成本和毛利。",
+    "question": "查询2025年每个产品类别收入最高的产品，并显示该产品的收入、成本和毛利，并换算成人民币。",
     "required_tables": [
       "sales_orders",
       "dim_products",
@@ -445,7 +445,7 @@
   {
     "id": 35,
     "category": "hard",
-    "question": "查询2025年每个销售区域收入最高的客户，并显示该客户的收入和毛利。",
+    "question": "查询2025年每个销售区域收入最高的客户，并显示该客户的收入和毛利，并换算成人民币。",
     "required_tables": [
       "sales_orders",
       "dim_customers",
@@ -461,7 +461,7 @@
   {
     "id": 36,
     "category": "hard",
-    "question": "查询2025年每个客户的收入，并计算该客户收入占公司总收入的比例，只保留收入占比超过5%的客户。",
+    "question": "查询2025年每个客户的收入，并计算该客户收入占公司总收入的比例，只保留收入占比超过5%的客户，并换算成人民币。",
     "required_tables": [
       "sales_orders",
       "dim_customers",
@@ -476,7 +476,7 @@
   {
     "id": 37,
     "category": "hard",
-    "question": "查询2025年每个产品的毛利率，并找出每个产品类别毛利率最高的产品。",
+    "question": "查询2025年每个产品的毛利率，并找出每个产品类别毛利率最高的产品，并换算成人民币。",
     "required_tables": [
       "sales_orders",
       "dim_products",
@@ -491,7 +491,7 @@
   {
     "id": 38,
     "category": "hard",
-    "question": "查询2025年每个月的利润，并计算利润环比增长率。",
+    "question": "查询2025年每个月的利润，并计算利润环比增长率，并换算成人民币。",
     "required_tables": [
       "sales_orders",
       "dim_products",
@@ -508,7 +508,7 @@
   {
     "id": 39,
     "category": "hard",
-    "question": "查询2025年每个产品类别的收入，并计算每个类别收入占公司总收入的比例，同时按照收入排名。",
+    "question": "查询2025年每个产品类别的收入，并计算每个类别收入占公司总收入的比例，同时按照收入排名，并换算成人民币。",
     "required_tables": [
       "sales_orders",
       "dim_products",
@@ -523,7 +523,7 @@
   {
     "id": 40,
     "category": "hard",
-    "question": "查询2025年收入最高的10个客户，并显示每个客户的收入、销售成本、毛利、毛利率以及收入排名。",
+    "question": "查询2025年收入最高的10个客户，并显示每个客户的收入、销售成本、毛利、毛利率以及收入排名，并换算成人民币。",
     "required_tables": [
       "sales_orders",
       "dim_customers",

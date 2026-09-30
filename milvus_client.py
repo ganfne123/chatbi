@@ -1,10 +1,12 @@
+from typing import Any
 from pathlib import Path
 from pydantic import BaseModel, Field
 from pymilvus import MilvusClient, DataType
 from embedding_clinet import EmbeddingClient
 import json
 import re
-
+from json_schema.scheam_field import FIELD_METADATA
+from json_schema.table_scheam import TABLE_METADATA
 
 class TableDesSchema(BaseModel):
     table_name: str = Field(..., description="表名")
@@ -19,6 +21,7 @@ class fieldDesSchema(BaseModel):
     vector: list[float] = Field(..., description="字段描述的向量")
     page_content: str = Field(..., description="字段描述的原文本")
     from_table: str = Field(...,description="来自哪张表")
+    domain: str = Field(...,description="表的分类")
 
 
 path_table=Path("json_schema/table_scheam.json")
@@ -82,6 +85,7 @@ class ClientMilvus:
             schema.add_field("vector", DataType.FLOAT_VECTOR, dim=1024)
             schema.add_field("page_content", DataType.VARCHAR, max_length=8192)
             schema.add_field("from_table", DataType.VARCHAR, max_length=256)
+            schema.add_field("domain",DataType.VARCHAR, max_length=256)
 
     
             index_params.add_index("vector", "AUTOINDEX", metric_type="COSINE")
@@ -98,27 +102,21 @@ class ClientMilvus:
 
     
 
-    def insert_table_data(self, path_table: Path=Path("json_schema/table_scheam.json"), collection_name: str = COLLECTION_TABLE_NAME):
+    def insert_table_data(self, collection_name: str = COLLECTION_TABLE_NAME):
         """
         把表结构描述批量向量化后插入 Milvus。
 
         :param table_list: teble_schema 这样的列表
         :param collection_name: 目标集合名
         """
-        data={}
-        with open(path_table,"r", encoding="utf-8") as file:
-            test=file.read()
-        data=json.loads(test)
-
-
-        
+        data=TABLE_METADATA  
         rows = []
-        for chunk in data:
-            emd = self.embedding.get_embedding(chunk["page_content"])
+        for key,chunk in data.items():
+            emd = self.embedding.get_embedding(chunk["description"])
             data = TableDesSchema(
-                table_name=chunk["table_name"],
+                table_name=key,
                 vector=emd,
-                page_content=chunk["page_content"],
+                page_content=chunk["description"],
                 domain=chunk["domain"],
                 key_fields=",".join(chunk["key_fields"]),
             )
@@ -127,7 +125,7 @@ class ClientMilvus:
         res = self.client.insert(collection_name=collection_name, data=rows)
         return res
     
-    def insert_field_data(self,  Path=Path("json_schema/scheam_field.json"), collection_name: str = COLLECTION_FIELD_NAME):
+    def insert_field_data(self, collection_name: str = COLLECTION_FIELD_NAME):
             """
             把表结构描述批量向量化后插入 Milvus。
     
@@ -136,21 +134,16 @@ class ClientMilvus:
             """
             data={}
             rows=[]
-            with open(path_field,"rb") as file:
-                data=file.read()
-            text=data.decode("utf-8")
-            dict=json.loads(text)
+            dict=FIELD_METADATA
             for key, value in dict.items():
-                match= re.search(r"\.([^.]+)$", key)
-                if not match:
-                    continue
-                field_table = match.group(1)
+                field_table = value["field"]
                 emd=self.embedding.get_embedding(value["description"])
                 field=fieldDesSchema(
                     field_name=field_table,
                     vector=emd,
                     page_content=value["description"],
-                    from_table=value["table"]
+                    from_table=value["table"],
+                    domain=value["domain"]
                 )
                 rows.append(field.model_dump())
     
@@ -209,10 +202,10 @@ def match_rules(query: str) -> list[dict]:
     for rule in BUSINESS_RULES:
         for keyword in rule["trigger_keywords"]:
             if keyword in query:
-                results.append({
-                    "whitelist": [parse_field(f) for f in rule["force_include"]],
-                    "blacklist": [parse_field(f) for f in rule["force_exclude"]],
-                })
+                if rule["type"] =="whitelist":
+                    results.append({rule["type"]: [parse_field(f) for f in rule["force_include"]]})
+                if rule["type"] =="blacklist":
+                    results.append({rule["type"]: [parse_field(f) for f in rule["force_exclude"]]})
                 break   # ← 加这一行，命中就跳出，避免重复 append
     return results
 
