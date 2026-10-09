@@ -57,8 +57,8 @@ TABLE_METADATA = {
             "人力考勤表：记录员工每日上下班打卡、请假、加班、排班班次和异常考勤。"
             "用于 HR 出勤统计、缺勤分析和薪资核算，不参与销售收入或产品利润分析。"
         ),
-        "domain": "HR系统",
-        "key_fields": "record_id, employee_id, check_in_time, check_out_time, attendance_status, shift_type",
+        "domain": "事实表",
+        "key_fields": "record_id, employee_id, check_in_time, check_out_time, attendance_status, shift_type"
     },
     "iot_device_alerts": {
         "description": (
@@ -66,23 +66,23 @@ TABLE_METADATA = {
             "震动异常、离线告警和维护工单。用于设备运维监控与预测性维护，"
             "不用于客户、订单、费用或汇率分析。"
         ),
-        "domain": "设备运维",
-        "key_fields": "alert_id, device_id, alert_type, severity, alert_time, resolution_status",
+        "domain": "事实表",
+        "key_fields": "alert_id, device_id, alert_type, severity, alert_time, resolution_status"
     },
     "legal_contract_archive": {
         "description": (
             "法务合同档案表：存储合同编号、签署主体、法务审核意见、诉讼状态、"
             "保密条款和履约风险评级。用于合同管理与法务合规，不用于销售分析。"
         ),
-        "domain": "法务系统",
-        "key_fields": "contract_id, contract_no, party_name, legal_opinion, litigation_status, risk_rating",
+        "domain": "维度表",
+        "key_fields": "contract_id, contract_no, party_name, legal_opinion, litigation_status, risk_rating"
     },
     "warehouse_temperature_logs": {
         "description": (
             "仓储温湿度日志表：记录仓库各货位每小时温度、湿度、冷链设备状态和巡检结果。"
             "用于仓储环境监控和质量追溯，不用于收入、毛利、客户或费用统计。"
         ),
-        "domain": "仓储管理",
-        "key_fields": "log_id, warehouse_id, location_code, temperature, humidity, equipment_status",
-    },
+        "domain": "事实表",
+        "key_fields": "log_id, warehouse_id, location_code, temperature, humidity, equipment_status"
+    }
 }
