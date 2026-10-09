@@ -1,0 +1,168 @@
+{
+  "metadata": {
+    "case_count": 40,
+    "model": "qwen3.7-plus"
+  },
+  "cases": {
+    "1": {
+      "generated_sql": "SELECT customer_id, customer_name, customer_type, industry, country FROM dim_customers;",
+      "error": null
+    },
+    "2": {
+      "generated_sql": "SELECT product_name, product_line, category, tech_route FROM dim_products;",
+      "error": null
+    },
+    "3": {
+      "generated_sql": "SELECT order_no, customer_id, product_id, order_date, net_amount FROM sales_orders WHERE order_status = '已完成';",
+      "error": null
+    },
+    "4": {
+      "generated_sql": "SELECT product_name, material_cost, labor_cost FROM dim_products;",
+      "error": null
+    },
+    "5": {
+      "generated_sql": "SELECT product_id, product_name, material_cost + labor_cost AS unit_actual_cost FROM dim_products;",
+      "error": null
+    },
+    "6": {
+      "generated_sql": "SELECT country, COUNT(customer_id) AS customer_count FROM dim_customers GROUP BY country;",
+      "error": null
+    },
+    "7": {
+      "generated_sql": "SELECT category, COUNT(product_id) AS product_count FROM dim_products GROUP BY category;",
+      "error": null
+    },
+    "8": {
+      "generated_sql": "SELECT SUM(quantity) AS total_quantity FROM sales_orders WHERE order_status = '已完成';",
+      "error": null
+    },
+    "9": {
+      "generated_sql": "SELECT COUNT(order_id) FROM sales_orders WHERE YEAR(order_date) = 2025 AND order_status = '已完成';",
+      "error": null
+    },
+    "10": {
+      "generated_sql": "SELECT MONTH(order_date) AS month, COUNT(order_id) AS order_count\nFROM sales_orders\nWHERE YEAR(order_date) = 2025 AND order_status = '已完成'\nGROUP BY MONTH(order_date)\nORDER BY month;",
+      "error": null
+    },
+    "11": {
+      "generated_sql": "SELECT SUM(o.net_amount * r.rate_to_cny) AS total_revenue\nFROM sales_orders o\nJOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency\nWHERE o.order_date >= '2025-01-01' AND o.order_date <= '2025-12-31'\n  AND o.order_status = 'completed';",
+      "error": null
+    },
+    "12": {
+      "generated_sql": "SELECT o.region, SUM(o.net_amount * r.rate_to_cny) AS revenue FROM sales_orders o JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency WHERE o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01' AND o.order_status = 'completed' GROUP BY o.region;",
+      "error": null
+    },
+    "13": {
+      "generated_sql": "SELECT\n  p.product_name,\n  SUM(o.net_amount * r.rate_to_cny) AS sales_revenue\nFROM sales_orders o\nJOIN dim_products p\n  ON o.product_id = p.product_id\nJOIN exchange_rates r\n  ON o.order_date = r.rate_date AND o.currency = r.currency\nWHERE\n  YEAR(o.order_date) = 2025 AND o.order_status = 'completed'\nGROUP BY\n  p.product_name;",
+      "error": null
+    },
+    "14": {
+      "generated_sql": "SELECT p.product_id, p.product_name, SUM((p.material_cost + p.labor_cost) * o.quantity) AS sales_cost FROM sales_orders o JOIN dim_products p ON o.product_id = p.product_id WHERE o.order_status = 'completed' AND YEAR(o.order_date) = 2025 GROUP BY p.product_id, p.product_name;",
+      "error": null
+    },
+    "15": {
+      "generated_sql": "SELECT \n    p.product_id,\n    p.product_name,\n    SUM(o.net_amount * r.rate_to_cny) AS revenue,\n    SUM(o.net_amount * r.rate_to_cny) - SUM((p.material_cost + p.labor_cost) * o.quantity) AS gross_profit\nFROM sales_orders o\nJOIN dim_products p ON o.product_id = p.product_id\nJOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency\nWHERE o.order_status = 'completed'\n  AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01'\nGROUP BY \n    p.product_id,\n    p.product_name;",
+      "error": null
+    },
+    "16": {
+      "generated_sql": "SELECT \n    p.product_name,\n    (SUM(o.net_amount * r.rate_to_cny) - SUM((p.material_cost + p.labor_cost) * o.quantity)) / NULLIF(SUM(o.net_amount * r.rate_to_cny), 0) AS gross_margin_rate\nFROM sales_orders o\nJOIN dim_products p ON o.product_id = p.product_id\nJOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency\nWHERE o.order_status = 'completed' \n  AND o.order_date >= '2025-01-01' \n  AND o.order_date <= '2025-12-31'\nGROUP BY p.product_id, p.product_name;",
+      "error": null
+    },
+    "17": {
+      "generated_sql": "SELECT c.customer_id, c.customer_name, SUM(o.net_amount * r.rate_to_cny) AS sales_revenue FROM sales_orders o JOIN dim_customers c ON o.customer_id = c.customer_id JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency WHERE o.order_status = 'completed' AND YEAR(o.order_date) = 2025 GROUP BY c.customer_id, c.customer_name;",
+      "error": null
+    },
+    "18": {
+      "generated_sql": "SELECT \n    c.customer_name,\n    SUM((p.material_cost + p.labor_cost) * o.quantity) AS sales_cost,\n    SUM(o.net_amount * r.rate_to_cny) - SUM((p.material_cost + p.labor_cost) * o.quantity) AS gross_profit\nFROM sales_orders o\nJOIN dim_customers c ON o.customer_id = c.customer_id\nJOIN dim_products p ON o.product_id = p.product_id\nJOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency\nWHERE o.order_status = 'completed'\n  AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01'\nGROUP BY c.customer_id, c.customer_name;",
+      "error": null
+    },
+    "19": {
+      "generated_sql": "SELECT c.customer_type, SUM(o.net_amount * r.rate_to_cny) AS revenue FROM sales_orders o JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency JOIN dim_customers c ON o.customer_id = c.customer_id WHERE o.order_status = 'completed' AND YEAR(o.order_date) = 2025 GROUP BY c.customer_type;",
+      "error": null
+    },
+    "20": {
+      "generated_sql": "SELECT\n  p.category,\n  SUM(o.net_amount * r.rate_to_cny) AS revenue,\n  SUM((p.material_cost + p.labor_cost) * o.quantity) AS sales_cost\nFROM sales_orders o\nJOIN exchange_rates r\n  ON o.order_date = r.rate_date AND o.currency = r.currency\nJOIN dim_products p\n  ON o.product_id = p.product_id\nWHERE\n  o.order_status = 'completed' AND YEAR(o.order_date) = 2025\nGROUP BY\n  p.category;",
+      "error": null
+    },
+    "21": {
+      "generated_sql": "SELECT \n    p.product_line,\n    SUM(o.net_amount * r.rate_to_cny) AS revenue,\n    SUM(o.net_amount * r.rate_to_cny) - SUM((p.material_cost + p.labor_cost) * o.quantity) AS gross_profit\nFROM sales_orders o\nJOIN dim_products p ON o.product_id = p.product_id\nJOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency\nWHERE o.order_date >= '2025-01-01' AND o.order_date <= '2025-12-31'\n  AND o.order_status = 'completed'\nGROUP BY p.product_line;",
+      "error": null
+    },
+    "22": {
+      "generated_sql": "SELECT c.country, SUM(o.net_amount * r.rate_to_cny) AS revenue FROM sales_orders o JOIN dim_customers c ON o.customer_id = c.customer_id JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency WHERE YEAR(o.order_date) = 2025 AND o.order_status = 'completed' GROUP BY c.country;",
+      "error": null
+    },
+    "23": {
+      "generated_sql": "SELECT SUM(rd_expense + selling_expense + admin_expense + finance_expense) AS total_period_expense FROM finance_expenses WHERE YEAR(expense_date) = 2025;",
+      "error": null
+    },
+    "24": {
+      "generated_sql": "SELECT\n  DATE_FORMAT(expense_date, '%Y-%m') AS month,\n  SUM(rd_expense + selling_expense + admin_expense + finance_expense) AS period_expense\nFROM finance_expenses\nWHERE YEAR(expense_date) = 2025\nGROUP BY DATE_FORMAT(expense_date, '%Y-%m')\nORDER BY month;",
+      "error": null
+    },
+    "25": {
+      "generated_sql": "SELECT department, SUM(rd_expense + selling_expense + admin_expense + finance_expense) AS period_expense FROM finance_expenses WHERE YEAR(expense_date) = 2025 GROUP BY department;",
+      "error": null
+    },
+    "26": {
+      "generated_sql": "SELECT \n    SUM(o.net_amount * r.rate_to_cny) AS revenue,\n    SUM((p.material_cost + p.labor_cost) * o.quantity) AS cost,\n    SUM(o.net_amount * r.rate_to_cny) - SUM((p.material_cost + p.labor_cost) * o.quantity) AS gross_profit\nFROM sales_orders o\nJOIN dim_products p ON o.product_id = p.product_id\nJOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency\nWHERE o.order_status = 'completed' \n  AND YEAR(o.order_date) = 2025;",
+      "error": null
+    },
+    "27": {
+      "generated_sql": "SELECT (SELECT SUM(o.net_amount * r.rate_to_cny - (p.material_cost + p.labor_cost) * o.quantity) FROM sales_orders o JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency JOIN dim_products p ON o.product_id = p.product_id WHERE o.order_status = 'completed' AND YEAR(o.order_date) = 2025) - (SELECT SUM(rd_expense + selling_expense + admin_expense + finance_expense) FROM finance_expenses WHERE YEAR(expense_date) = 2025) AS profit;",
+      "error": null
+    },
+    "28": {
+      "generated_sql": "SELECT p.product_name, SUM(o.net_amount * r.rate_to_cny) AS total_revenue\nFROM sales_orders o\nJOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency\nJOIN dim_products p ON o.product_id = p.product_id\nWHERE o.order_status = 'completed' AND YEAR(o.order_date) = 2025\nGROUP BY p.product_id, p.product_name\nHAVING SUM(o.net_amount * r.rate_to_cny) > 1000000;",
+      "error": null
+    },
+    "29": {
+      "generated_sql": "SELECT \n    p.product_name \nFROM sales_orders o \nJOIN dim_products p ON o.product_id = p.product_id \nJOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency \nWHERE o.order_status = 'completed' \n  AND o.order_date BETWEEN '2025-01-01' AND '2025-12-31' \nGROUP BY \n    p.product_id, \n    p.product_name \nHAVING \n    (SUM(o.net_amount * r.rate_to_cny) - SUM((p.material_cost + p.labor_cost) * o.quantity)) / SUM(o.net_amount * r.rate_to_cny) > 0.3;",
+      "error": null
+    },
+    "30": {
+      "generated_sql": "SELECT p.product_id, p.product_name, SUM(s.quantity) AS total_quantity FROM sales_orders s JOIN dim_products p ON s.product_id = p.product_id WHERE YEAR(s.order_date) = 2025 GROUP BY p.product_id, p.product_name ORDER BY total_quantity DESC LIMIT 10;",
+      "error": null
+    },
+    "31": {
+      "generated_sql": "WITH monthly_sales AS (\n    SELECT \n        DATE_FORMAT(o.order_date, '%Y-%m') AS sales_month,\n        SUM(o.net_amount * r.rate_to_cny) AS revenue,\n        SUM((p.material_cost + p.labor_cost) * o.quantity) AS cost\n    FROM sales_orders o\n    JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency\n    JOIN dim_products p ON o.product_id = p.product_id\n    WHERE o.order_status = 'completed' \n      AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01'\n    GROUP BY DATE_FORMAT(o.order_date, '%Y-%m')\n),\nmonthly_expenses AS (\n    SELECT \n        DATE_FORMAT(expense_date, '%Y-%m') AS expense_month,\n        SUM(rd_expense + selling_expense + admin_expense + finance_expense) AS total_expense\n    FROM finance_expenses\n    WHERE expense_date >= '2025-01-01' AND expense_date < '2026-01-01'\n    GROUP BY DATE_FORMAT(expense_date, '%Y-%m')\n),\nall_months AS (\n    SELECT sales_month AS month FROM monthly_sales\n    UNION\n    SELECT expense_month AS month FROM monthly_expenses\n)\nSELECT \n    m.month,\n    COALESCE(s.revenue, 0) AS revenue,\n    COALESCE(s.cost, 0) AS cost,\n    COALESCE(s.revenue, 0) - COALESCE(s.cost, 0) AS gross_profit,\n    COALESCE(e.total_expense, 0) AS total_expense,\n    (COALESCE(s.revenue, 0) - COALESCE(s.cost, 0)) - COALESCE(e.total_expense, 0) AS profit\nFROM all_months m\nLEFT JOIN monthly_sales s ON m.month = s.sales_month\nLEFT JOIN monthly_expenses e ON m.month = e.expense_month\nORDER BY m.month;",
+      "error": null
+    },
+    "32": {
+      "generated_sql": "WITH MonthlyRevenue AS (\n    SELECT \n        DATE_FORMAT(o.order_date, '%Y-%m') AS order_month,\n        SUM(o.net_amount * r.rate_to_cny) AS current_revenue\n    FROM sales_orders o\n    JOIN exchange_rates r \n        ON o.order_date = r.rate_date \n        AND o.currency = r.currency\n    WHERE o.order_status = 'completed' \n      AND YEAR(o.order_date) = 2025\n    GROUP BY DATE_FORMAT(o.order_date, '%Y-%m')\n),\nRevenueWithLag AS (\n    SELECT \n        order_month,\n        current_revenue,\n        LAG(current_revenue) OVER (ORDER BY order_month) AS prev_revenue\n    FROM MonthlyRevenue\n)\nSELECT \n    order_month,\n    current_revenue,\n    prev_revenue,\n    CASE \n        WHEN prev_revenue IS NULL OR prev_revenue = 0 THEN NULL \n        ELSE (current_revenue - prev_revenue) / prev_revenue \n    END AS mom_growth_rate\nFROM RevenueWithLag\nORDER BY order_month;",
+      "error": null
+    },
+    "33": {
+      "generated_sql": "SELECT \n    p.category AS 产品类别,\n    SUM(o.net_amount * r.rate_to_cny) AS 收入,\n    SUM((p.material_cost + p.labor_cost) * o.quantity) AS 销售成本,\n    SUM(o.net_amount * r.rate_to_cny) - SUM((p.material_cost + p.labor_cost) * o.quantity) AS 毛利,\n    (SUM(o.net_amount * r.rate_to_cny) - SUM((p.material_cost + p.labor_cost) * o.quantity)) / NULLIF(SUM(o.net_amount * r.rate_to_cny), 0) AS 毛利率\nFROM sales_orders o\nJOIN dim_products p ON o.product_id = p.product_id\nJOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency\nWHERE o.order_status = 'completed' \n  AND o.order_date >= '2025-01-01' AND o.order_date <= '2025-12-31'\nGROUP BY p.category\nORDER BY 毛利率 DESC;",
+      "error": null
+    },
+    "34": {
+      "generated_sql": "WITH ProductMetrics AS (\n    SELECT \n        p.category,\n        p.product_name,\n        SUM(o.net_amount * r.rate_to_cny) AS revenue,\n        SUM((p.material_cost + p.labor_cost) * o.quantity) AS cost,\n        SUM(o.net_amount * r.rate_to_cny) - SUM((p.material_cost + p.labor_cost) * o.quantity) AS gross_profit,\n        ROW_NUMBER() OVER(PARTITION BY p.category ORDER BY SUM(o.net_amount * r.rate_to_cny) DESC) AS rn\n    FROM sales_orders o\n    JOIN dim_products p ON o.product_id = p.product_id\n    JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency\n    WHERE o.order_status = 'completed'\n      AND o.order_date >= '2025-01-01'\n      AND o.order_date <= '2025-12-31'\n    GROUP BY p.category, p.product_name\n)\nSELECT \n    category,\n    product_name,\n    revenue,\n    cost,\n    gross_profit\nFROM ProductMetrics\nWHERE rn = 1;",
+      "error": null
+    },
+    "35": {
+      "generated_sql": "WITH CustomerMetrics AS (\n    SELECT \n        o.region AS sales_region,\n        c.customer_id,\n        c.customer_name,\n        SUM(o.net_amount * r.rate_to_cny) AS revenue,\n        SUM(o.net_amount * r.rate_to_cny) - SUM((p.material_cost + p.labor_cost) * o.quantity) AS gross_profit\n    FROM sales_orders o\n    JOIN dim_customers c ON o.customer_id = c.customer_id\n    JOIN dim_products p ON o.product_id = p.product_id\n    JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency\n    WHERE o.order_status = 'completed'\n      AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01'\n    GROUP BY o.region, c.customer_id, c.customer_name\n),\nRankedCustomers AS (\n    SELECT \n        sales_region,\n        customer_id,\n        customer_name,\n        revenue,\n        gross_profit,\n        ROW_NUMBER() OVER(PARTITION BY sales_region ORDER BY revenue DESC) as rn\n    FROM CustomerMetrics\n)\nSELECT \n    sales_region,\n    customer_id,\n    customer_name,\n    revenue,\n    gross_profit\nFROM RankedCustomers\nWHERE rn = 1;",
+      "error": null
+    },
+    "36": {
+      "generated_sql": "SELECT \n    c.customer_id,\n    c.customer_name,\n    SUM(o.net_amount * r.rate_to_cny) AS customer_revenue,\n    SUM(o.net_amount * r.rate_to_cny) / (\n        SELECT SUM(o2.net_amount * r2.rate_to_cny)\n        FROM sales_orders o2\n        JOIN exchange_rates r2 ON o2.order_date = r2.rate_date AND o2.currency = r2.currency\n        WHERE YEAR(o2.order_date) = 2025 AND o2.order_status = 'completed'\n    ) AS revenue_ratio\nFROM dim_customers c\nJOIN sales_orders o ON c.customer_id = o.customer_id\nJOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency\nWHERE YEAR(o.order_date) = 2025 AND o.order_status = 'completed'\nGROUP BY c.customer_id, c.customer_name\nHAVING revenue_ratio > 0.05;",
+      "error": null
+    },
+    "37": {
+      "generated_sql": "WITH ProductMetrics AS (\n    SELECT \n        p.category,\n        p.product_id,\n        p.product_name,\n        SUM(o.net_amount * r.rate_to_cny) AS revenue,\n        SUM((p.material_cost + p.labor_cost) * o.quantity) AS cost,\n        (SUM(o.net_amount * r.rate_to_cny) - SUM((p.material_cost + p.labor_cost) * o.quantity)) AS gross_profit,\n        (SUM(o.net_amount * r.rate_to_cny) - SUM((p.material_cost + p.labor_cost) * o.quantity)) / NULLIF(SUM(o.net_amount * r.rate_to_cny), 0) AS gross_margin\n    FROM sales_orders o\n    JOIN dim_products p ON o.product_id = p.product_id\n    JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency\n    WHERE o.order_status = 'completed'\n      AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01'\n    GROUP BY p.category, p.product_id, p.product_name\n),\nRankedProducts AS (\n    SELECT \n        category,\n        product_id,\n        product_name,\n        revenue,\n        cost,\n        gross_profit,\n        gross_margin,\n        RANK() OVER (PARTITION BY category ORDER BY gross_margin DESC) as rnk\n    FROM ProductMetrics\n)\nSELECT \n    category,\n    product_id,\n    product_name,\n    revenue,\n    cost,\n    gross_profit,\n    gross_margin\nFROM RankedProducts\nWHERE rnk = 1;",
+      "error": null
+    },
+    "38": {
+      "generated_sql": "WITH MonthlyGrossProfit AS (\n    SELECT \n        DATE_FORMAT(o.order_date, '%Y-%m') AS month,\n        SUM(o.net_amount * r.rate_to_cny) - SUM((p.material_cost + p.labor_cost) * o.quantity) AS gross_profit\n    FROM sales_orders o\n    JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency\n    JOIN dim_products p ON o.product_id = p.product_id\n    WHERE o.order_status = 'completed'\n      AND YEAR(o.order_date) = 2025\n    GROUP BY DATE_FORMAT(o.order_date, '%Y-%m')\n),\nMonthlyExpense AS (\n    SELECT \n        DATE_FORMAT(expense_date, '%Y-%m') AS month,\n        SUM(rd_expense + selling_expense + admin_expense + finance_expense) AS total_expense\n    FROM finance_expenses\n    WHERE YEAR(expense_date) = 2025\n    GROUP BY DATE_FORMAT(expense_date, '%Y-%m')\n),\nMonthlyProfit AS (\n    SELECT \n        COALESCE(g.month, e.month) AS month,\n        COALESCE(g.gross_profit, 0) - COALESCE(e.total_expense, 0) AS profit\n    FROM MonthlyGrossProfit g\n    LEFT JOIN MonthlyExpense e ON g.month = e.month\n    UNION\n    SELECT \n        e.month,\n        -e.total_expense\n    FROM MonthlyExpense e\n    LEFT JOIN MonthlyGrossProfit g ON e.month = g.month\n    WHERE g.month IS NULL\n)\nSELECT \n    month,\n    profit,\n    LAG(profit) OVER (ORDER BY month) AS prev_month_profit,\n    (profit - LAG(profit) OVER (ORDER BY month)) / NULLIF(LAG(profit) OVER (ORDER BY month), 0) AS mom_growth_rate\nFROM MonthlyProfit\nORDER BY month;",
+      "error": null
+    },
+    "39": {
+      "generated_sql": "WITH CategoryRevenue AS (\n    SELECT \n        p.category,\n        SUM(o.net_amount * r.rate_to_cny) AS category_revenue\n    FROM sales_orders o\n    JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency\n    JOIN dim_products p ON o.product_id = p.product_id\n    WHERE YEAR(o.order_date) = 2025\n      AND o.order_status = 'completed'\n    GROUP BY p.category\n)\nSELECT \n    category,\n    category_revenue,\n    SUM(category_revenue) OVER () AS total_revenue,\n    category_revenue / SUM(category_revenue) OVER () AS revenue_ratio,\n    RANK() OVER (ORDER BY category_revenue DESC) AS revenue_rank\nFROM CategoryRevenue\nORDER BY revenue_rank;",
+      "error": null
+    },
+    "40": {
+      "generated_sql": "WITH CustomerMetrics AS (\n    SELECT \n        c.customer_id,\n        c.customer_name,\n        SUM(o.net_amount * r.rate_to_cny) AS revenue,\n        SUM((p.material_cost + p.labor_cost) * o.quantity) AS cost\n    FROM sales_orders o\n    JOIN dim_customers c ON o.customer_id = c.customer_id\n    JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency\n    JOIN dim_products p ON o.product_id = p.product_id\n    WHERE o.order_status = 'completed'\n      AND o.order_date >= '2025-01-01' AND o.order_date <= '2025-12-31'\n    GROUP BY c.customer_id, c.customer_name\n)\nSELECT \n    customer_name,\n    ROUND(revenue, 2) AS revenue,\n    ROUND(cost, 2) AS cost,\n    ROUND(revenue - cost, 2) AS gross_profit,\n    ROUND((revenue - cost) / NULLIF(revenue, 0), 4) AS gross_margin,\n    RANK() OVER (ORDER BY revenue DESC) AS revenue_rank\nFROM CustomerMetrics\nORDER BY revenue_rank\nLIMIT 10;",
+      "error": null
+    }
+  }
+}

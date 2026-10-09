@@ -1,0 +1,529 @@
+第 17 课：多表 Join 路径自动推理
+课程定位与目标
+课程定位：
+1. 所处阶段：第四阶段《让系统"理解业务"——Schema Linking + RAG》第五节
+1. 本课核心问题：第 14-16 课解决了"选对表"和"选对字段"，但表之间怎么连、哪张表放在
+FROM 子句，仍然会让模型犯错；本课通过查询意图理解 + 图算法自动推导 Join 路径和条件。
+本节课目标：
+1. 理解锚表选择在 SQL 生成中的重要性
+1. 能根据用户问题意图判断合理的锚表
+1. 掌握 BFS 最短路径算法在 Join 推导中的应用
+1. 实现 join_resolver.py 模块，支持两表/三表/多表的 Join 自动生成
+注意：本课不使用 Embedding，Join 路径推导是纯图算法；锚表选择使用轻量规则做查询意
+图识别。二者与第 14-16 课的语义匹配形成互补——语义匹配解决"选什么"，意图识别解
+决"主语是谁"，图算法解决"怎么连"。
+
+开场引入
+回顾当前系统已经具备的能力：
+用户问题："按客户类型统计各产品线的收入，需要换算成人民币"
+表召回（第 15 课）
+1. sales_orders
+1. dim_customers
+
+1. dim_products
+1. exchange_rates
+字段匹配（第 16 课）
+1. net_amount
+1. customer_type
+1. product_line
+1. rate_to_cny
+但 SQL 的 FROM 子句该写哪张表？这四张表又该如何 Join？
+
+如果让模型自己推断 Join 关系，常见错误不止漏 Join 或 Join 条件写反，还包括更隐蔽的锚
+表选错：
+sql
+-- 错误 1：漏 Join（忘了关联 exchange_rates）
+SELECT ... FROM sales_orders
+JOIN dim_customers ON ...
+JOIN dim_products ON ...
+-- 没有汇率换算
+-- 错误 2：Join 条件错误
+JOIN exchange_rates ON sales_orders.currency = exchange_rates.rate_date
+-- currency 和 rate_date 类型都对不上
+-- 错误 3：锚表选错
+FROM dim_customers
+JOIN sales_orders ON ...
+-- 聚合维度变成了客户，语义中心变成了"客户"而不是"收入"
+
+锚表选错比漏 Join 更隐蔽，因为生成的 SQL 往往能执行，只是结果不是用户想要的。
+例如"列出所有客户"和"按客户类型统计收入"都涉及 sales_orders 和 dim_customers，但主
+
+表完全不同：
+问题
+
+正确锚表
+
+原因
+
+按客户类型统计收入
+
+sales_orders
+
+问题的主体是"收入"这个指标
+
+哪些客户没有下过订单
+
+dim_customers
+
+问题的主体是"客户"这个实体
+
+锚表 = SQL 中 FROM 后面的第一张表，它必须对应用户问题的语义主体。
+
+一、锚表选择：先理解用户在问什么
+1.1 为什么"事实表优先"不够
+在星型模型中，SQL 的惯用写法是 FROM 事实表 JOIN 维度表，所以很多实现会简单粗暴地
+优先选事实表。
+但这只在问题是指标型时成立。如果问题是实体型，把事实表当主表会过滤掉没有事实记录的
+实体。
+
+问题：列出所有客户
+sql
+-- 错误写法
+FROM sales_orders
+JOIN dim_customers ON sales_orders.customer_id =
+dim_customers.customer_id
+这种写法只返回下过订单的客户；没有订单的客户被 INNER JOIN 过滤掉了，与"列出所有客
+户"的语义不符。
+
+问题：哪些客户没有下过订单
+
+sql
+-- 错误写法
+FROM sales_orders
+JOIN dim_customers ON sales_orders.customer_id =
+dim_customers.customer_id
+这种写法永远找不到"没有订单的客户"。正确写法应该以 dim_customers 为主表，再用
+LEFT JOIN 关联订单：
+sql
+FROM dim_customers
+LEFT JOIN sales_orders ON dim_customers.customer_id =
+sales_orders.customer_id
+WHERE sales_orders.order_id IS NULL
+
+1.2 查询意图：指标型 vs 实体型
+判断锚表之前，先判断用户问题的意图：
+1. 指标型问题：用户在问收入、费用、毛利、数量等可聚合的数值
+1. 实体型问题：用户在问客户、产品、订单、汇率等具体对象
+问题
+
+意图
+
+正确锚表
+
+按客户类型统计收入
+
+指标型
+
+sales_orders
+
+列出所有客户
+
+实体型
+
+dim_customers
+
+哪些客户没有下过订单
+
+实体型
+
+dim_customers
+
+各产品线的毛利率
+
+指标型
+
+sales_orders
+
+上个月的研发费用
+
+指标型
+
+finance_expenses
+
+查询汇率历史
+
+实体型
+
+exchange_rates
+
+1.3 轻量意图识别规则
+对于当前这个 5 张表的模型，可以用一组轻量规则做意图识别：
+1. 指标信号词：统计、多少、总计、平均、占比、总和、额、量
+1. 实体信号词：列出、哪些、所有、没有、明细、每个
+1. 强指标词：收入、销售额、费用、毛利、利润、金额、数量
+当问题里出现强指标词时，优先判为指标型；出现实体信号词时，优先判为实体型。
+
+判断完意图后，再把问题中的词和每张表的业务关键词做匹配：
+表
+
+类型
+
+关键词
+
+sales_orders
+
+事实表
+
+收入、销售额、订单、销售、数量、金
+额、毛利、利润
+
+finance_expenses
+
+事实表
+
+费用、研发、销售费用、管理费用、财
+务费用、期间费用
+
+dim_customers
+
+维度表
+
+客户、客户类型、OEM、储能集成商、
+电网集团
+
+dim_products
+
+维度表
+
+产品、产品线、型号、SKU
+
+exchange_rates
+
+参考表
+
+汇率、币种、人民币、美元、欧元
+
+1.4 锚表选择策略
+python
+
+def select_anchor(query, candidate_tables):
+intent = classify_intent(query)
+
+# 指标型 / 实体型 / 模糊型
+
+scores = score_tables_by_keywords(query) # 每张表的关键词匹配分
+if intent == "metric":
+# 在事实表中选分数最高的
+return max(fact_tables, key=lambda t: scores[t])
+elif intent == "entity":
+# 在维度/参考表中选分数最高的
+return max(dim_tables, key=lambda t: scores[t])
+else:
+# 意图模糊时，选子图中心性最高的表
+return most_central_table(candidate_tables)
+
+选好锚表后，还要做一步连通性校验：如果锚表无法到达某个目标表，说明这组表本身不应该
+被 Join 在一起。
+最典型的例子是 sales_orders 和 finance_expenses：两张都是事实表，业务上独立，无法
+连通。此时正确的处理不是硬连，而是提示"这些表需要独立查询"。
+
+二、表关联图构建
+2.1 概念模型
+确定锚表之后，剩下的问题是：从锚表出发，如何把其他目标表连进来？
+把数据库的表间关系看作一张有向图：
+
+1. 节点 = 表
+
+1. 边 = Join 关系，包含 Join 条件
+1. 边的方向 = 从一个表指向另一个表
+1. 边的属性 = 外键列、主键列、Join 类型
+
+注意：Join 类型与方向有关。
+1. 从事实表到维度表用 JOIN：每条事实记录都有对应的维度值
+1. 从维度表到事实表用 LEFT JOIN：不是所有维度值都有事实记录
+这种方向性直接影响"哪些客户没有订单"这类存在性查询的正确性。
+
+2.2 数据结构设计
+用 Python 字典表示邻接表：
+python
+TABLE_RELATIONSHIPS = {
+"sales_orders": [
+{
+"target": "dim_customers",
+"fk_col": "customer_id",
+"pk_col": "customer_id",
+"join_type": "JOIN",
+},
+{
+"target": "dim_products",
+"fk_col": "product_id",
+"pk_col": "product_id",
+"join_type": "JOIN",
+},
+{
+"target": "exchange_rates",
+"fk_col": "order_date, currency",
+"pk_col": "rate_date, currency",
+"join_type": "LEFT JOIN",
+
+},
+],
+"dim_customers": [
+{
+"target": "sales_orders",
+"fk_col": "customer_id",
+"pk_col": "customer_id",
+"join_type": "LEFT JOIN",
+},
+],
+...
+}
+
+2.3 为什么用手动配置而非自动从 information_schema 提取
+方式
+
+优势
+
+劣势
+
+手动 JSON
+
+精确控制、可标注 Join 类型、
+
+新增表需手动维护
+
+配置
+
+支持复合键、可配置优先级
+
+自动从 FK
+
+零维护成本
+
+提取
+
+很多业务关系不建外键、无法区
+分 JOIN/LEFT JOIN、不支持复
+合键
+
+本课程选择手动配置，因为：
+1. 企业数据库经常不建外键约束，只在数据层面保持关系
+1. 需要标注 Join 类型，例如从维度表到事实表必须 LEFT JOIN
+1. 支持复合键，例如 order_date + currency 关联 rate_date + currency
+
+2.4 独立表的处理
+finance_expenses 在当前模型中与 sales_orders 没有直接关联关系。这不是 Bug——费用
+
+数据是独立的期间汇总，不能和订单明细直接 Join。
+当系统检测到目标表中包含无法连通的表时，应该：
+1. 标记为"无法连通"
+1. 建议独立查询
+1. 或提示用户这可能是两个不同的分析问题
+
+三、BFS 最短路径 Join 推导
+3.1 算法概述
+已知锚表和目标表集合后，Join 推导分三步：
+1. 选锚表：根据查询意图确定 FROM 子句主表
+1. 找路径：从锚表出发，用 BFS 找到达每个目标表的最短路径
+1. 合并去重：将所有路径合并，去除重复的 Join 边
+
+3.2 BFS 最短路径
+标准 BFS：
+python
+from collections import deque
+def _bfs_shortest_path(start, end, relationships):
+if start == end:
+return [start]
+queue = deque([(start, [start])])
+visited = {start}
+while queue:
+current, path = queue.popleft()
+for edge in relationships.get(current, []):
+
+next_table = edge["target"]
+if next_table in visited:
+continue
+new_path = path + [next_table]
+if next_table == end:
+return new_path
+visited.add(next_table)
+queue.append((next_table, new_path))
+return None # 不可达
+BFS 保证找到的是最短路径（经过的表最少），对应最少的 Join 数量。
+
+3.3 合并路径生成 Join 序列
+python
+for target in target_tables:
+if target == anchor:
+continue
+path = _bfs_shortest_path(anchor, target)
+if path is None:
+unreachable.append(target)
+continue
+for i in range(len(path) - 1):
+from_t, to_t = path[i], path[i + 1]
+edge_key = (from_t, to_t)
+if edge_key in visited_edges:
+continue # 去重：同一条边不重复 Join
+visited_edges.add(edge_key)
+join_info = get_join_info(from_t, to_t)
+joins.append(join_info)
+
+关键：visited_edges 去重机制。当多个目标表的路径共享中间节点时，不会产生
+重复 Join。
+
+3.4 复合键 Join
+exchange_rates 需要通过两个字段同时匹配：
+python
+{
+"target": "exchange_rates",
+"fk_col": "order_date, currency",
+"pk_col": "rate_date, currency",
+"join_type": "LEFT JOIN",
+}
+生成的 ON 子句：
+sql
+sales_orders.order_date = exchange_rates.rate_date
+AND sales_orders.currency = exchange_rates.currency
+处理逻辑：
+python
+def _build_on_clause(from_table, to_table, edge):
+fk_cols = [c.strip() for c in edge["fk_col"].split(",")]
+pk_cols = [c.strip() for c in edge["pk_col"].split(",")]
+conditions = []
+for fk, pk in zip(fk_cols, pk_cols):
+conditions.append(f"{from_table}.{fk} = {to_table}.{pk}")
+return " AND ".join(conditions)
+
+四、完整场景验证
+场景 1：指标型两表 Join
+问题：按客户类型统计收入
+候选表：[sales_orders, dim_customers]
+
+意图：指标型
+锚表：sales_orders
+路径：sales_orders → dim_customers
+生成 SQL：
+sql
+sales_orders
+JOIN dim_customers ON sales_orders.customer_id =
+dim_customers.customer_id
+
+场景 2：实体型查询
+问题：列出所有客户
+候选表：[dim_customers]
+意图：实体型
+锚表：dim_customers
+生成 SQL：
+sql
+dim_customers
+
+场景 3：存在性查询（LEFT JOIN 的关键作用）
+问题：哪些客户没有下过订单
+候选表：[dim_customers, sales_orders]
+意图：实体型
+锚表：dim_customers
+路径：dim_customers → sales_orders
+生成 SQL：
+
+sql
+dim_customers
+LEFT JOIN sales_orders ON dim_customers.customer_id =
+sales_orders.customer_id
+注意这里使用了 LEFT JOIN，因为从维度表到事实表不是所有维度值都有事实记录。
+
+场景 4：三表 Join
+问题：各产品线的毛利率
+候选表：[sales_orders, dim_products]
+意图：指标型
+锚表：sales_orders
+路径：sales_orders → dim_products
+生成 SQL：
+sql
+sales_orders
+JOIN dim_products ON sales_orders.product_id = dim_products.product_id
+
+场景 5：四表 Join + 复合键（最大复杂度）
+问题：按客户类型统计各产品线的收入，需要换算成人民币
+候选表：[sales_orders, dim_customers, dim_products, exchange_rates]
+意图：指标型
+锚表：sales_orders
+生成 SQL：
+sql
+sales_orders
+JOIN dim_customers ON sales_orders.customer_id =
+
+dim_customers.customer_id
+JOIN dim_products ON sales_orders.product_id = dim_products.product_id
+LEFT JOIN exchange_rates ON sales_orders.order_date =
+exchange_rates.rate_date
+AND sales_orders.currency = exchange_rates.currency
+
+场景 6：独立表不可连通
+问题：销售收入和期间费用对比
+候选表：[sales_orders, finance_expenses]
+锚表：sales_orders
+BFS 结果：finance_expenses 不可达
+输出：
+
+⚠ 无法连通的表：['finance_expenses']
+→ 这些表需要独立查询，不能通过 Join 关联
+这是预期行为。销售收入和期间费用是不同粒度、不同业务含义的数据，强行 Join 没有业务
+意义。
+
+五、运行演示
+bash
+uv run join_resolver.py
+输出（节选）：
+=================================================================
+=====
+多表 Join 路径自动推理演示
+=================================================================
+=====
+
+问题：按客户类型统计收入
+候选表：['sales_orders', 'dim_customers']
+锚表：sales_orders（问题询问指标，在事实表中选择最相关的 'sales_orders' 作
+为锚表）
+生成 SQL 片段：
+sales_orders
+JOIN dim_customers ON sales_orders.customer_id =
+dim_customers.customer_id
+问题：哪些客户没有下过订单
+候选表：['dim_customers', 'sales_orders']
+锚表：dim_customers（问题询问实体，在维度/参考表中选择最相关的
+'dim_customers' 作为锚表）
+生成 SQL 片段：
+dim_customers
+LEFT JOIN sales_orders ON dim_customers.customer_id =
+sales_orders.customer_id
+问题：按客户类型统计各产品线的收入，需要换算成人民币
+候选表：['sales_orders', 'dim_customers', 'dim_products', 'exchange_rates']
+锚表：sales_orders（问题询问指标，在事实表中选择最相关的 'sales_orders' 作
+为锚表）
+生成 SQL 片段：
+sales_orders
+JOIN dim_customers ON sales_orders.customer_id =
+dim_customers.customer_id
+JOIN dim_products ON sales_orders.product_id = dim_products.product_id
+LEFT JOIN exchange_rates ON sales_orders.order_date =
+exchange_rates.rate_date AND sales_orders.currency =
+exchange_rates.currency
+问题：销售收入和期间费用对比
+
+候选表：['sales_orders', 'finance_expenses']
+锚表：sales_orders（问题询问指标，在事实表中选择最相关的 'sales_orders' 作
+为锚表）
+
+⚠ 无法连通的表：['finance_expenses']
+这些表需要独立查询，不能通过 Join 关联
+
+六、与表召回、字段匹配的关系
+三个模块各司其职，串联后形成完整的 Schema Linking：
+
+1. table_retriever（第 15 课）：输入用户问题 → 输出相关表列表
+1. select_anchor（本课）：输入用户问题 + 候选表 → 输出锚表
+1. field_matcher（第 16 课）：输入用户问题 + 候选表 → 输出相关字段列表
+1. join_resolver（本课）：输入锚表 + 候选表 → 输出 Join 路径和 SQL 片段
+1. schema_linker（第 18 课）：将三者串联，输出完整的动态 Schema
+
+小结
+本节课实现了 Schema Linking 的第三步——Join 路径推理，并补上了关键的第一步：锚表选
+择。
+
+下一课将把表召回、字段匹配、Join 推理三个模块整合为完整的 Schema Linking Pipeline。
+
+附录：完整代码
+完整代码文件路径：code/chatbi_mvp/join_resolver.py
+
+

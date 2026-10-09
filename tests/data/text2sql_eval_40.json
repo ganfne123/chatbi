@@ -1,0 +1,404 @@
+[
+  {
+    "id": 1,
+    "category": "medium",
+    "question": "查询所有客户的客户编号、客户名称、客户类型、所属行业和国家。",
+    "expected_sql": "SELECT customer_id, customer_name, customer_type, industry, country FROM dim_customers;",
+    "test_points": [
+      "基础字段查询"
+    ]
+  },
+  {
+    "id": 2,
+    "category": "medium",
+    "question": "查询所有产品的产品名称、产品线、类别和技术路线。",
+    "expected_sql": "SELECT product_name, product_line, category, tech_route FROM dim_products;",
+    "test_points": [
+      "基础字段查询"
+    ]
+  },
+  {
+    "id": 3,
+    "category": "medium",
+    "question": "查询所有已完成订单的订单号、客户编号、产品编号、订单日期和订单金额。",
+    "expected_sql": "SELECT order_no, customer_id, product_id, order_date, net_amount FROM sales_orders WHERE order_status = 'completed';",
+    "test_points": [
+      "订单状态过滤"
+    ]
+  },
+  {
+    "id": 4,
+    "category": "medium",
+    "question": "查询每种产品的材料成本和人工成本。",
+    "expected_sql": "SELECT product_name, material_cost, labor_cost FROM dim_products;",
+    "test_points": [
+      "产品成本字段"
+    ]
+  },
+  {
+    "id": 5,
+    "category": "medium",
+    "question": "查询每种产品的单位实际成本，实际成本定义为材料成本加人工成本。",
+    "expected_sql": "SELECT product_name, material_cost + labor_cost AS unit_actual_cost FROM dim_products;",
+    "test_points": [
+      "成本公式"
+    ]
+  },
+  {
+    "id": 6,
+    "category": "medium",
+    "question": "查询每个国家有多少客户。",
+    "expected_sql": "SELECT country, COUNT(*) AS customer_count FROM dim_customers GROUP BY country ORDER BY customer_count DESC;",
+    "test_points": [
+      "客户维度分组",
+      "COUNT"
+    ]
+  },
+  {
+    "id": 7,
+    "category": "medium",
+    "question": "查询每个产品类别有多少种产品。",
+    "expected_sql": "SELECT category, COUNT(*) AS product_count FROM dim_products GROUP BY category ORDER BY product_count DESC;",
+    "test_points": [
+      "产品维度分组"
+    ]
+  },
+  {
+    "id": 8,
+    "category": "medium",
+    "question": "查询已完成订单的总销售数量。",
+    "expected_sql": "SELECT SUM(quantity) AS total_quantity FROM sales_orders WHERE order_status = 'completed';",
+    "test_points": [
+      "订单数量聚合"
+    ]
+  },
+  {
+    "id": 9,
+    "category": "medium",
+    "question": "查询2025年的已完成订单数量。",
+    "expected_sql": "SELECT COUNT(*) AS order_count FROM sales_orders WHERE order_status = 'completed' AND order_date >= '2025-01-01' AND order_date < '2026-01-01';",
+    "test_points": [
+      "时间过滤",
+      "状态过滤"
+    ]
+  },
+  {
+    "id": 10,
+    "category": "medium",
+    "question": "查询2025年每个月的已完成订单数量。",
+    "expected_sql": "SELECT DATE_FORMAT(order_date, '%Y-%m') AS month, COUNT(*) AS order_count FROM sales_orders WHERE order_status = 'completed' AND order_date >= '2025-01-01' AND order_date < '2026-01-01' GROUP BY DATE_FORMAT(order_date, '%Y-%m') ORDER BY month;",
+    "test_points": [
+      "月度分组"
+    ]
+  },
+  {
+    "id": 11,
+    "category": "medium",
+    "question": "查询2025年的销售收入，收入按照不含税销售收入计算，并统一换算成人民币。",
+    "expected_sql": "SELECT SUM(o.net_amount * r.rate_to_cny) AS revenue FROM sales_orders o JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency WHERE o.order_status = 'completed' AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01';",
+    "test_points": [
+      "收入指标",
+      "汇率转换",
+      "完成订单过滤"
+    ]
+  },
+  {
+    "id": 12,
+    "category": "medium",
+    "question": "查询2025年每个销售区域的收入。",
+    "expected_sql": "SELECT o.region, SUM(o.net_amount * r.rate_to_cny) AS revenue FROM sales_orders o JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency WHERE o.order_status = 'completed' AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01' GROUP BY o.region ORDER BY revenue DESC;",
+    "test_points": [
+      "收入",
+      "区域分组",
+      "汇率转换"
+    ]
+  },
+  {
+    "id": 13,
+    "category": "medium",
+    "question": "查询2025年每个产品的销售收入。",
+    "expected_sql": "SELECT p.product_name, SUM(o.net_amount * r.rate_to_cny) AS revenue FROM sales_orders o JOIN dim_products p ON o.product_id = p.product_id JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency WHERE o.order_status = 'completed' AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01' GROUP BY p.product_id, p.product_name ORDER BY revenue DESC;",
+    "test_points": [
+      "产品维度收入"
+    ]
+  },
+  {
+    "id": 14,
+    "category": "medium",
+    "question": "查询2025年每个产品的销售成本，销售成本定义为材料成本加人工成本后乘以销售数量。",
+    "expected_sql": "SELECT p.product_name, SUM((p.material_cost + p.labor_cost) * o.quantity) AS cost FROM sales_orders o JOIN dim_products p ON o.product_id = p.product_id WHERE o.order_status = 'completed' AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01' GROUP BY p.product_id, p.product_name ORDER BY cost DESC;",
+    "test_points": [
+      "销售成本公式",
+      "成本字段识别"
+    ]
+  },
+  {
+    "id": 15,
+    "category": "medium",
+    "question": "查询2025年每个产品的收入和毛利。",
+    "expected_sql": "SELECT p.product_name, SUM(o.net_amount * r.rate_to_cny) AS revenue, SUM(o.net_amount * r.rate_to_cny) - SUM((p.material_cost + p.labor_cost) * o.quantity) AS gross_profit FROM sales_orders o JOIN dim_products p ON o.product_id = p.product_id JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency WHERE o.order_status = 'completed' AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01' GROUP BY p.product_id, p.product_name ORDER BY gross_profit DESC;",
+    "test_points": [
+      "毛利",
+      "收入",
+      "销售成本"
+    ]
+  },
+  {
+    "id": 16,
+    "category": "medium",
+    "question": "查询2025年每个产品的毛利率。",
+    "expected_sql": "SELECT  p.product_name, (SUM(o.net_amount * r.rate_to_cny) - SUM((p.material_cost + p.labor_cost) * o.quantity)) / NULLIF(SUM(o.net_amount * r.rate_to_cny), 0) AS gross_margin FROM sales_orders o JOIN dim_products p ON o.product_id = p.product_id JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency WHERE o.order_status = 'completed' AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01' GROUP BY p.product_id, p.product_name ORDER BY gross_margin DESC;",
+    "test_points": [
+      "毛利率",
+      "除零处理"
+    ]
+  },
+  {
+    "id": 17,
+    "category": "medium",
+    "question": "查询2025年每个客户的销售收入。",
+    "expected_sql": "SELECT c.customer_name, SUM(o.net_amount * r.rate_to_cny) AS revenue FROM sales_orders o JOIN dim_customers c ON o.customer_id = c.customer_id JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency WHERE o.order_status = 'completed' AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01' GROUP BY c.customer_id, c.customer_name ORDER BY revenue DESC;",
+    "test_points": [
+      "客户收入"
+    ]
+  },
+  {
+    "id": 18,
+    "category": "medium",
+    "question": "查询2025年每个客户的销售成本和毛利。",
+    "expected_sql": "SELECT c.customer_name, SUM((p.material_cost + p.labor_cost) * o.quantity) AS cost, SUM(o.net_amount * r.rate_to_cny) - SUM((p.material_cost + p.labor_cost) * o.quantity) AS gross_profit FROM sales_orders o JOIN dim_customers c ON o.customer_id = c.customer_id JOIN dim_products p ON o.product_id = p.product_id JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency WHERE o.order_status = 'completed' AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01' GROUP BY c.customer_id, c.customer_name ORDER BY gross_profit DESC;",
+    "test_points": [
+      "客户成本",
+      "客户毛利"
+    ]
+  },
+  {
+    "id": 19,
+    "category": "medium",
+    "question": "查询2025年每个客户类型的收入。",
+    "expected_sql": "SELECT c.customer_type, SUM(o.net_amount * r.rate_to_cny) AS revenue FROM sales_orders o JOIN dim_customers c ON o.customer_id = c.customer_id JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency WHERE o.order_status = 'completed' AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01' GROUP BY c.customer_type ORDER BY revenue DESC;",
+    "test_points": [
+      "客户类型分析"
+    ]
+  },
+  {
+    "id": 20,
+    "category": "medium",
+    "question": "查询2025年每个产品类别的收入和销售成本。",
+    "expected_sql": "SELECT p.category, SUM(o.net_amount * r.rate_to_cny) AS revenue, SUM((p.material_cost + p.labor_cost) * o.quantity) AS cost FROM sales_orders o JOIN dim_products p ON o.product_id = p.product_id JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency WHERE o.order_status = 'completed' AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01' GROUP BY p.category ORDER BY revenue DESC;",
+    "test_points": [
+      "类别收入",
+      "类别成本"
+    ]
+  },
+  {
+    "id": 21,
+    "category": "medium",
+    "question": "查询2025年每个产品线的收入和毛利。",
+    "expected_sql": "SELECT p.product_line, SUM(o.net_amount * r.rate_to_cny) AS revenue, SUM(o.net_amount * r.rate_to_cny) - SUM((p.material_cost + p.labor_cost) * o.quantity) AS gross_profit FROM sales_orders o JOIN dim_products p ON o.product_id = p.product_id JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency WHERE o.order_status = 'completed' AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01' GROUP BY p.product_line ORDER BY gross_profit DESC;",
+    "test_points": [
+      "产品线分析"
+    ]
+  },
+  {
+    "id": 22,
+    "category": "medium",
+    "question": "查询2025年每个国家的销售收入。",
+    "expected_sql": "SELECT c.country, SUM(o.net_amount * r.rate_to_cny) AS revenue FROM sales_orders o JOIN dim_customers c ON o.customer_id = c.customer_id JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency WHERE o.order_status = 'completed' AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01' GROUP BY c.country ORDER BY revenue DESC;",
+    "test_points": [
+      "国家收入"
+    ]
+  },
+  {
+    "id": 23,
+    "category": "medium",
+    "question": "查询2025年期间费用总额，期间费用包括研发、销售、管理和财务四项费用。",
+    "expected_sql": "SELECT SUM(rd_expense + selling_expense + admin_expense + finance_expense) AS total_expense FROM finance_expenses WHERE expense_date >= '2025-01-01' AND expense_date < '2026-01-01';",
+    "test_points": [
+      "四项期间费用",
+      "费用口径"
+    ]
+  },
+  {
+    "id": 24,
+    "category": "medium",
+    "question": "查询2025年每个月的期间费用。",
+    "expected_sql": "SELECT DATE_FORMAT(expense_date, '%Y-%m') AS month, SUM(rd_expense + selling_expense + admin_expense + finance_expense) AS total_expense FROM finance_expenses WHERE expense_date >= '2025-01-01' AND expense_date < '2026-01-01' GROUP BY DATE_FORMAT(expense_date, '%Y-%m') ORDER BY month;",
+    "test_points": [
+      "月度费用",
+      "四项费用"
+    ]
+  },
+  {
+    "id": 25,
+    "category": "medium",
+    "question": "查询2025年每个部门的期间费用。",
+    "expected_sql": "SELECT department, SUM(rd_expense + selling_expense + admin_expense + finance_expense) AS total_expense FROM finance_expenses WHERE expense_date >= '2025-01-01' AND expense_date < '2026-01-01' GROUP BY department ORDER BY total_expense DESC;",
+    "test_points": [
+      "部门费用",
+      "四项费用"
+    ]
+  },
+  {
+    "id": 26,
+    "category": "medium",
+    "question": "查询2025年的收入、销售成本和毛利。",
+    "expected_sql": "SELECT SUM(o.net_amount * r.rate_to_cny) AS revenue, SUM((p.material_cost + p.labor_cost) * o.quantity) AS cost, SUM(o.net_amount * r.rate_to_cny) - SUM((p.material_cost + p.labor_cost) * o.quantity) AS gross_profit FROM sales_orders o JOIN dim_products p ON o.product_id = p.product_id JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency WHERE o.order_status = 'completed' AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01';",
+    "test_points": [
+      "核心三大指标"
+    ]
+  },
+  {
+    "id": 27,
+    "category": "medium",
+    "question": "查询2025年的利润，利润定义为毛利减去四项期间费用。",
+    "expected_sql": "WITH sales AS (SELECT SUM(o.net_amount * r.rate_to_cny) AS revenue, SUM((p.material_cost + p.labor_cost) * o.quantity) AS cost FROM sales_orders o JOIN dim_products p ON o.product_id = p.product_id JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency WHERE o.order_status = 'completed' AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01'), expenses AS (SELECT SUM(rd_expense + selling_expense + admin_expense + finance_expense) AS total_expense FROM finance_expenses WHERE expense_date >= '2025-01-01' AND expense_date < '2026-01-01') SELECT s.revenue - s.cost - e.total_expense AS profit FROM sales s CROSS JOIN expenses e;",
+    "test_points": [
+      "利润",
+      "跨表指标",
+      "四项费用"
+    ]
+  },
+  {
+    "id": 28,
+    "category": "medium",
+    "question": "查询2025年收入超过100万元的产品。",
+    "expected_sql": "SELECT p.product_name FROM sales_orders o JOIN dim_products p ON o.product_id = p.product_id JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency WHERE o.order_status = 'completed' AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01' GROUP BY p.product_id, p.product_name HAVING SUM(o.net_amount * r.rate_to_cny) > 1000000 ORDER BY SUM(o.net_amount * r.rate_to_cny) DESC;",
+    "test_points": [
+      "HAVING",
+      "收入筛选"
+    ]
+  },
+  {
+    "id": 29,
+    "category": "medium",
+    "question": "查询2025年毛利率高于30%的产品。",
+    "expected_sql": "SELECT p.product_name FROM sales_orders o JOIN dim_products p ON o.product_id = p.product_id JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency WHERE o.order_status = 'completed' AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01' GROUP BY p.product_id, p.product_name HAVING (SUM(o.net_amount * r.rate_to_cny) - SUM((p.material_cost + p.labor_cost) * o.quantity)) / NULLIF(SUM(o.net_amount * r.rate_to_cny), 0) > 0.30 ORDER BY (SUM(o.net_amount * r.rate_to_cny) - SUM((p.material_cost + p.labor_cost) * o.quantity)) / NULLIF(SUM(o.net_amount * r.rate_to_cny), 0) DESC;",
+    "test_points": [
+      "毛利率",
+      "HAVING"
+    ]
+  },
+  {
+    "id": 30,
+    "category": "medium",
+    "question": "查询2025年销售数量最多的前10个产品。",
+    "expected_sql": "SELECT p.product_name FROM sales_orders o JOIN dim_products p ON o.product_id = p.product_id WHERE o.order_status = 'completed' AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01' GROUP BY p.product_id, p.product_name ORDER BY SUM(o.quantity) DESC LIMIT 10;",
+    "test_points": [
+      "TOP N",
+      "数量聚合"
+    ]
+  },
+  {
+    "id": 31,
+    "category": "hard",
+    "question": "查询2025年每个月的收入、销售成本、毛利、四项期间费用和利润。",
+    "expected_sql": "WITH sales_monthly AS (SELECT DATE_FORMAT(o.order_date, '%Y-%m') AS month, SUM(o.net_amount * r.rate_to_cny) AS revenue, SUM((p.material_cost + p.labor_cost) * o.quantity) AS cost FROM sales_orders o JOIN dim_products p ON o.product_id = p.product_id JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency WHERE o.order_status = 'completed' AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01' GROUP BY DATE_FORMAT(o.order_date, '%Y-%m')), expense_monthly AS (SELECT DATE_FORMAT(expense_date, '%Y-%m') AS month, SUM(rd_expense + selling_expense + admin_expense + finance_expense) AS total_expense FROM finance_expenses WHERE expense_date >= '2025-01-01' AND expense_date < '2026-01-01' GROUP BY DATE_FORMAT(expense_date, '%Y-%m')) SELECT s.month, s.revenue, s.cost, s.revenue - s.cost AS gross_profit, COALESCE(e.total_expense, 0) AS total_expense, s.revenue - s.cost - COALESCE(e.total_expense, 0) AS profit FROM sales_monthly s LEFT JOIN expense_monthly e ON s.month = e.month ORDER BY s.month;",
+    "test_points": [
+      "CTE",
+      "跨表月度指标",
+      "四项费用",
+      "利润"
+    ]
+  },
+  {
+    "id": 32,
+    "category": "hard",
+    "question": "查询2025年每个月的收入环比增长率，并显示当月收入和上月收入。",
+    "expected_sql": "WITH monthly_revenue AS (SELECT DATE_FORMAT(o.order_date, '%Y-%m') AS month, SUM(o.net_amount * r.rate_to_cny) AS revenue FROM sales_orders o JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency WHERE o.order_status = 'completed' AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01' GROUP BY DATE_FORMAT(o.order_date, '%Y-%m')), t AS (SELECT month, revenue, LAG(revenue) OVER (ORDER BY month) AS previous_revenue FROM monthly_revenue) SELECT month, revenue, previous_revenue, (revenue - previous_revenue) / NULLIF(previous_revenue, 0) AS mom_growth_rate FROM t ORDER BY month;",
+    "test_points": [
+      "LAG",
+      "环比",
+      "窗口函数"
+    ]
+  },
+  {
+    "id": 33,
+    "category": "hard",
+    "question": "查询2025年每个产品类别的收入、销售成本、毛利和毛利率，并按照毛利率从高到低排名。",
+    "expected_sql": "WITH category_data AS (SELECT p.category, SUM(o.net_amount * r.rate_to_cny) AS revenue, SUM((p.material_cost + p.labor_cost) * o.quantity) AS cost FROM sales_orders o JOIN dim_products p ON o.product_id = p.product_id JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency WHERE o.order_status = 'completed' AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01' GROUP BY p.category) SELECT category, revenue, cost, revenue - cost AS gross_profit, (revenue - cost) / NULLIF(revenue, 0) AS gross_margin, RANK() OVER (ORDER BY (revenue - cost) / NULLIF(revenue, 0) DESC) AS margin_rank FROM category_data ORDER BY margin_rank;",
+    "test_points": [
+      "CTE",
+      "窗口排名",
+      "毛利率"
+    ]
+  },
+  {
+    "id": 34,
+    "category": "hard",
+    "question": "查询2025年每个产品类别收入最高的产品，并显示该产品的收入、成本和毛利。",
+    "expected_sql": "WITH product_data AS (SELECT p.category, p.product_id, p.product_name, SUM(o.net_amount * r.rate_to_cny) AS revenue, SUM((p.material_cost + p.labor_cost) * o.quantity) AS cost FROM sales_orders o JOIN dim_products p ON o.product_id = p.product_id JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency WHERE o.order_status = 'completed' AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01' GROUP BY p.category, p.product_id, p.product_name), ranked AS (SELECT *, ROW_NUMBER() OVER (PARTITION BY category ORDER BY revenue DESC) AS rn FROM product_data) SELECT category, product_name, revenue, cost, revenue - cost AS gross_profit FROM ranked WHERE rn = 1 ORDER BY category;",
+    "test_points": [
+      "分组TOP1",
+      "ROW_NUMBER",
+      "CTE"
+    ]
+  },
+  {
+    "id": 35,
+    "category": "hard",
+    "question": "查询2025年每个销售区域收入最高的客户，并显示该客户的收入和毛利。",
+    "expected_sql": "WITH customer_region AS (SELECT o.region, c.customer_id, c.customer_name, SUM(o.net_amount * r.rate_to_cny) AS revenue, SUM((p.material_cost + p.labor_cost) * o.quantity) AS cost FROM sales_orders o JOIN dim_customers c ON o.customer_id = c.customer_id JOIN dim_products p ON o.product_id = p.product_id JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency WHERE o.order_status = 'completed' AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01' GROUP BY o.region, c.customer_id, c.customer_name), ranked AS (SELECT *, ROW_NUMBER() OVER (PARTITION BY region ORDER BY revenue DESC) AS rn FROM customer_region) SELECT region, customer_name, revenue, revenue - cost AS gross_profit FROM ranked WHERE rn = 1 ORDER BY region;",
+    "test_points": [
+      "分组TOP1",
+      "客户区域",
+      "窗口函数"
+    ]
+  },
+  {
+    "id": 36,
+    "category": "hard",
+    "question": "查询2025年每个客户的收入，并计算该客户收入占公司总收入的比例，只保留收入占比超过5%的客户。",
+    "expected_sql": "WITH customer_revenue AS (SELECT c.customer_id, c.customer_name, SUM(o.net_amount * r.rate_to_cny) AS revenue FROM sales_orders o JOIN dim_customers c ON o.customer_id = c.customer_id JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency WHERE o.order_status = 'completed' AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01' GROUP BY c.customer_id, c.customer_name), total AS (SELECT SUM(revenue) AS total_revenue FROM customer_revenue) SELECT c.customer_name, c.revenue, c.revenue / NULLIF(t.total_revenue, 0) AS revenue_ratio FROM customer_revenue c CROSS JOIN total t WHERE c.revenue / NULLIF(t.total_revenue, 0) > 0.05 ORDER BY revenue_ratio DESC;",
+    "test_points": [
+      "总计占比",
+      "CTE",
+      "HAVING替代逻辑"
+    ]
+  },
+  {
+    "id": 37,
+    "category": "hard",
+    "question": "查询2025年每个产品的毛利率，并找出每个产品类别毛利率最高的产品。",
+    "expected_sql": "WITH product_data AS (SELECT p.category, p.product_id, p.product_name, SUM(o.net_amount * r.rate_to_cny) AS revenue, SUM((p.material_cost + p.labor_cost) * o.quantity) AS cost FROM sales_orders o JOIN dim_products p ON o.product_id = p.product_id JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency WHERE o.order_status = 'completed' AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01' GROUP BY p.category, p.product_id, p.product_name), ranked AS (SELECT *, (revenue - cost) / NULLIF(revenue, 0) AS gross_margin, ROW_NUMBER() OVER (PARTITION BY category ORDER BY (revenue - cost) / NULLIF(revenue, 0) DESC) AS rn FROM product_data) SELECT category, product_name, gross_margin FROM ranked WHERE rn = 1 ORDER BY category;",
+    "test_points": [
+      "分组最高",
+      "毛利率",
+      "ROW_NUMBER"
+    ]
+  },
+  {
+    "id": 38,
+    "category": "hard",
+    "question": "查询2025年每个月的利润，并计算利润环比增长率。",
+    "expected_sql": "WITH monthly_sales AS (SELECT DATE_FORMAT(o.order_date, '%Y-%m') AS month, SUM(o.net_amount * r.rate_to_cny) AS revenue, SUM((p.material_cost + p.labor_cost) * o.quantity) AS cost FROM sales_orders o JOIN dim_products p ON o.product_id = p.product_id JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency WHERE o.order_status = 'completed' AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01' GROUP BY DATE_FORMAT(o.order_date, '%Y-%m')), monthly_expense AS (SELECT DATE_FORMAT(expense_date, '%Y-%m') AS month, SUM(rd_expense + selling_expense + admin_expense + finance_expense) AS total_expense FROM finance_expenses WHERE expense_date >= '2025-01-01' AND expense_date < '2026-01-01' GROUP BY DATE_FORMAT(expense_date, '%Y-%m')), profit_data AS (SELECT s.month, s.revenue - s.cost - COALESCE(e.total_expense, 0) AS profit FROM monthly_sales s LEFT JOIN monthly_expense e ON s.month = e.month), result AS (SELECT month, profit, LAG(profit) OVER (ORDER BY month) AS previous_profit FROM profit_data) SELECT month, profit, (profit - previous_profit) / NULLIF(previous_profit, 0) AS mom_profit_growth FROM result ORDER BY month;",
+    "test_points": [
+      "利润",
+      "环比",
+      "四项费用",
+      "LAG"
+    ]
+  },
+  {
+    "id": 39,
+    "category": "hard",
+    "question": "查询2025年每个产品类别的收入，并计算每个类别收入占公司总收入的比例，同时按照收入排名。",
+    "expected_sql": "WITH category_revenue AS (SELECT p.category, SUM(o.net_amount * r.rate_to_cny) AS revenue FROM sales_orders o JOIN dim_products p ON o.product_id = p.product_id JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency WHERE o.order_status = 'completed' AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01' GROUP BY p.category), total AS (SELECT SUM(revenue) AS total_revenue FROM category_revenue) SELECT c.category, c.revenue, c.revenue / NULLIF(t.total_revenue, 0) AS revenue_ratio, RANK() OVER (ORDER BY c.revenue DESC) AS revenue_rank FROM category_revenue c CROSS JOIN total t ORDER BY revenue_rank;",
+    "test_points": [
+      "占比",
+      "排名",
+      "CTE"
+    ]
+  },
+  {
+    "id": 40,
+    "category": "hard",
+    "question": "查询2025年收入最高的10个客户，并显示每个客户的收入、销售成本、毛利、毛利率以及收入排名。",
+    "expected_sql": "WITH customer_data AS (SELECT c.customer_id, c.customer_name, SUM(o.net_amount * r.rate_to_cny) AS revenue, SUM((p.material_cost + p.labor_cost) * o.quantity) AS cost FROM sales_orders o JOIN dim_customers c ON o.customer_id = c.customer_id JOIN dim_products p ON o.product_id = p.product_id JOIN exchange_rates r ON o.order_date = r.rate_date AND o.currency = r.currency WHERE o.order_status = 'completed' AND o.order_date >= '2025-01-01' AND o.order_date < '2026-01-01' GROUP BY c.customer_id, c.customer_name), ranked AS (SELECT *, ROW_NUMBER() OVER (ORDER BY revenue DESC) AS revenue_rank FROM customer_data) SELECT customer_name, revenue, cost, revenue - cost AS gross_profit, (revenue - cost) / NULLIF(revenue, 0) AS gross_margin, revenue_rank FROM ranked WHERE revenue_rank <= 10 ORDER BY revenue_rank;",
+    "test_points": [
+      "TOP N",
+      "窗口函数",
+      "客户毛利"
+    ]
+  }
+]

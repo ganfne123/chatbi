@@ -1,20 +1,25 @@
 {
-    // 使用 IntelliSense 了解相关属性。 
-    // 悬停以查看现有属性的描述。
-    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        {"name":"Python 调试程序: FastAPI","type":"debugpy","request":"launch","module":"uvicorn","args":["api_server:app","--reload"],"jinja":true},
         {
-            "name": "Python 调试程序: FastAPI",
+            "name": "rag_retriever.py ",
             "type": "debugpy",
             "request": "launch",
-            "module": "uvicorn",
-            "args": [
-                "api_server:app",
-                "--reload"
-            ],
-            "jinja": true
+            "program": "${workspaceFolder}/rag_retriever.py ",
+            "python": "${workspaceFolder}/.venv/bin/python",
+            "cwd": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "rag_retriever.py (module)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "rag_retriever",
+            "python": "${workspaceFolder}/.venv/bin/python",
+            "cwd": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal"
         }
     ]
 }

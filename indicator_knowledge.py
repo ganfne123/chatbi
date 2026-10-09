@@ -19,7 +19,7 @@ class IndicatorKnowledgeError(ValueError):
 class IndicatorKnowledge:
     """从 JSON 配置中加载并检索指标知识。"""
 
-    def __init__(self, knowledge_path: str | Path ="pormpt.json") -> None:
+    def __init__(self, knowledge_path: str | Path ="json_schema/pormpt.json") -> None:
         """初始化检索器，加载并校验指标知识配置。
 
         Args:
@@ -210,7 +210,10 @@ class IndicatorKnowledge:
             名称或任一别名命中时返回 True，否则返回 False。
         """
         terms = [indicator["name"], *indicator["aliases"]]
-        return any(IndicatorKnowledge._matches_term(query, term) for term in terms)
+        for term in terms:
+            if IndicatorKnowledge._matches_term(query, term):
+                return True
+        return False
 
     @staticmethod
     def _matches_term(query: str, term: str) -> bool:
@@ -234,29 +237,29 @@ class IndicatorKnowledge:
         return term in query
 
 
-# def main() -> None:
-#     """交互式查看 query 命中的指标及其完整依赖链路。"""
-#     query = input("请输入查询: ").strip()
+def main() -> None:
+    """交互式查看 query 命中的指标及其完整依赖链路。"""
+    query = input("请输入查询: ").strip()
 
-#     try:
-#         indicators = IndicatorKnowledge().get_knowledge(query)
-#     except IndicatorKnowledgeError as exc:
-#         print(f"加载指标知识失败: {exc}")
-#         return
+    try:
+        indicators = IndicatorKnowledge().get_knowledge(query)
+    except IndicatorKnowledgeError as exc:
+        print(f"加载指标知识失败: {exc}")
+        return
 
-#     if not indicators:
-#         print("未匹配到任何指标。")
-#         return
+    if not indicators:
+        print("未匹配到任何指标。")
+        return
 
-#     print("\n依赖展开顺序：")
-#     for index, indicator in enumerate(indicators, start=1):
-#         dependencies = indicator.get("depends_on", [])
-#         dependency_text = "、".join(dependencies) if dependencies else "无"
-#         print(f"{index}. {indicator['name']}（依赖：{dependency_text}）")
+    print("\n依赖展开顺序：")
+    for index, indicator in enumerate(indicators, start=1):
+        dependencies = indicator.get("depends_on", [])
+        dependency_text = "、".join(dependencies) if dependencies else "无"
+        print(f"{index}. {indicator['name']}（依赖：{dependency_text}）")
 
-#     print("\n完整指标知识：")
-#     print(json.dumps(indicators, ensure_ascii=False, indent=2))
+    print("\n完整指标知识：")
+    print(json.dumps(indicators, ensure_ascii=False, indent=2))
 
 
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()

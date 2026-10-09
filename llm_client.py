@@ -25,10 +25,10 @@ class LlmClient:
 
     def generate_sql(self,query:str) ->str:
         print("llm开始生产sql"+datetime.now().strftime("%H:%M:%S"))
-        knowledge=self.indicator_knowledge.get_knowledge(query)
+        # knowledge=self.indicator_knowledge.get_knowledge(query)
         responses = self.client.chat.completions.create(
         model=os.getenv("LLM_MODEL",""),
-        messages=build_prompt(query,konwledge=knowledge),
+        messages=build_prompt(query),
         temperature=0.3,
     )
         print("llm生产sql完毕"+datetime.now().strftime("%H:%M:%S"))
@@ -39,10 +39,9 @@ class LlmClient:
         return content
 
     def generate_sql_stream(self,query:str) ->Generator[str, None, None]:
-        knowledge=self.indicator_knowledge.get_knowledge(query)
         responses = self.client.chat.completions.create(
         model=os.getenv("LLM_MODEL",""),
-        messages=build_prompt(query,konwledge=knowledge),
+        messages=build_prompt(query),
         temperature=0.3,
         stream=True,
     )
@@ -75,7 +74,7 @@ class LlmClient:
 
 
 if __name__=="__main__":
-    user_quert="根据客户类型查看利润"
+    user_quert="按客户类型统计各产品线的收入，需哎换算成人民币"
     llm_client=LlmClient()
-    request=llm_client.generate_sql_stream(user_quert)
+    request=llm_client.generate_sql(user_quert)
     print(request)
