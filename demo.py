@@ -1,8 +1,10 @@
-from pandas.core.ops.docstrings import key
+from tracemalloc import start
 from unicodedata import name
 import json
 from ntpath import join
 import os
+from collections import deque
+from json_schema.table_relationships import TABLE_RELATIONSHIPS
 # path=os.path.join("src","new_chatbi","_init_.py")
 # # print(path)
 
@@ -83,4 +85,37 @@ import os
 # )
 # print(res,f"res2:{res1}")
 # print(type(schema))
+
+
+#广度优先算法
+# def find_path(start_node, end_node, table_relationships=TABLE_RELATIONSHIPS):
+#     # 创建双端队列
+#     queue = deque([(start_node,[end_node])])
+#     # 创建一个集合来存储已访问的节点
+#     visited = {start_node}
+#     while len(queue) > 0:
+#         current_node, path = queue.popleft()
+#         if current_node == end_node:
+#             print(f"{current_node} 找到路径{path}")
+#             break
+#         for key,value in table_relationships.items():
+#             if key != current_node: 
+#                 continue
+#             for relationship in value:
+#                 target_node = relationship["target"]
+#                 if target_node in visited:
+#                     continue
+#                 visited.add(target_node)
+#                 new_path = path + [target_node]
+#                 queue.append((target_node,new_path))
+#                 if target_node == end_node:
+#                     return target_node,new_path
+
+path=['dim_customers', 'sales_orders', 'dim_products']
+table_relationships=TABLE_RELATIONSHIPS
+for i, anchor_path in enumerate(path[:-1]):
+    for table in table_relationships[anchor_path]:
+        if table["target"] == path[i + 1]:
+            print(f"{anchor_path} {table['join_type']} {table['target']} on {anchor_path}.{table['fk_col']}={table['target']}.{table['pk_col']}")
+            continue
 

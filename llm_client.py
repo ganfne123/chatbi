@@ -39,10 +39,9 @@ class LlmClient:
         return content
 
     def generate_sql_stream(self,query:str) ->Generator[str, None, None]:
-        knowledge=self.indicator_knowledge.get_knowledge(query)
         responses = self.client.chat.completions.create(
         model=os.getenv("LLM_MODEL",""),
-        messages=build_prompt(query,konwledge=knowledge),
+        messages=build_prompt(query),
         temperature=0.3,
         stream=True,
     )

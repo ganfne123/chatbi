@@ -31,7 +31,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from json_schema.table_scheam import TABLE_METADATA
-from milvus_client import ClientMilvus
+from rag_retriever import ClientMilvus
 
 
 CASE_PATH = Path(__file__).resolve().parent / "data" / "milvus_table_recall_40.json"
