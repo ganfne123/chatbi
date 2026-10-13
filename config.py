@@ -16,7 +16,19 @@ database_config = {
 
 # LLM configuration
 llm_config = {
-    "api_key": os.getenv("OPENAI_API_KEY"),
+    "api_key": os.getenv("OPENAI_API_KEY",""),
     "base_url": os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1"),
-    "model": os.getenv("LLM_MODEL", "gpt-4o")
+    "model": os.getenv("LLM_MODEL", "qwen3.7-plus")
+}
+# embedding
+emd_congif ={
+    "api_key": os.getenv("EMD_API_KEY",""),
+    "base_url": os.getenv("EMD_BASE_URL", "https://api.openai.com/v1"),
+    "model": os.getenv("EMD_LLM_MODEL", "text-embedding-v3")
+}
+
+milvus_config = {
+    "uri": os.getenv("MILVUS_URI", "http://localhost:19530"),
+    "user": os.getenv("MILVUS_USER", "root"),
+    "password": os.getenv("MILVUS_PASSWORD", ""),   # ✅ 加默认值，返回 str
 }

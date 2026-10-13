@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 load_dotenv()
 import os
 from openai import OpenAI
+from config import emd_congif
 TABLE_DESCRIPTIONS = {
     # ============ 真实业务表 ============
     "dim_customers": (
@@ -72,14 +73,14 @@ class EmbeddingClient:
     def __init__(self):
         
         self.client = OpenAI(
-            api_key=os.getenv("EMBEDDING_TOKEN",""), 
-            base_url="https://dashscope.aliyuncs.com/compatible-mode/v1" 
+            api_key=emd_congif["api_key"], 
+            base_url=emd_congif["base_url"]
         )
 
     # 关键：调用正确的模型名称
     def get_embedding(self,text: str) ->list[float]:
         resp =self.client.embeddings.create(
-            model=os.getenv("EMBEDDING_MODEL_NAME",""),
+            model=emd_congif["model"],
             input=text,
         )
         return resp.data[0].embedding
@@ -92,7 +93,7 @@ class EmbeddingClient:
             index[name]=vector
         return index
 
-# if __name__=="__main__":
-#     client=EmbeddingClient()
-#     resp=client.get_embedding("中国")
-#     print(resp)
+if __name__=="__main__":
+    client=EmbeddingClient()
+    resp=client.get_embedding("中国")
+    print(resp)
