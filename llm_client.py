@@ -32,7 +32,7 @@ class LlmClient:
             use_indicator=True,
             use_schema_linking=True
             )
-        responses = self.llm_generate_text(system_prompt,user_prompt)
+        responses = self.llm_generate_text(system_prompt,user_prompt,temperature=0.3)
         sql=self.sql_parse(responses)
         return sql
 
@@ -74,7 +74,7 @@ class LlmClient:
         return sql
 
 
-    def llm_generate_text(self, system_msg: str, prompt: str) -> str:
+    def llm_generate_text(self, system_msg: str, prompt: str ,temperature: float | None=None) -> str:
         """
         调用 LLM 生成普通文本（同步，一次性返回）
 
@@ -91,7 +91,7 @@ class LlmClient:
                 {"role": "system", "content": system_msg},
                 {"role": "user", "content": prompt}
             ],
-            temperature=self.temperature
+            temperature=temperature if temperature is None else self.temperature
         )
         llm_content=response.choices[0].message.content
         if llm_content is None:

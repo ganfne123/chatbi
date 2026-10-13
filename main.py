@@ -26,7 +26,6 @@ class ChatBiSystem:
             }
 
         try:
-            print("开始生产sql"+datetime.now().strftime("%H:%M:%S"))
             request=self.llm_client.generate_sql(query)
             sql=self.llm_client.sql_parse(request)
             sql_generation_ms = round(
@@ -54,6 +53,7 @@ class ChatBiSystem:
             "question": query,
             "sql": sql,
             "columns": columns,
+            "data": data,
             "formatted": result,
             "metadata": {
                 "sql_generation_ms": sql_generation_ms,

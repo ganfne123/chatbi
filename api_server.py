@@ -1,3 +1,5 @@
+"""pastAPI服务"""
+
 from pydantic import BaseModel,Field
 from datetime import datetime
 from fastapi.middleware.cors import CORSMiddleware

@@ -2,10 +2,30 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "rag_retriever.py ",
+            "name": "agnet_planner.py",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/rag_retriever.py ",
+            "program": "${workspaceFolder}/agnet_planner.py",
+            "python": "${workspaceFolder}/.venv/bin/python",
+            "cwd": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "query_decomposer.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/query_decomposer.py",
+            "python": "${workspaceFolder}/.venv/bin/python",
+            "cwd": "${workspaceFolder}",
+            "envFile": "${workspaceFolder}/.env",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "main.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
             "python": "${workspaceFolder}/.venv/bin/python",
             "cwd": "${workspaceFolder}",
             "envFile": "${workspaceFolder}/.env",

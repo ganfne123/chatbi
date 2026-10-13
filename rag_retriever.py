@@ -1,3 +1,7 @@
+"""
+RAG检索模块
+schema linking + indicator 
+"""
 import json
 
 from pymilvus import MilvusClient
@@ -268,7 +272,7 @@ def run_schema_linking(
 
 
 def run_indicator_search(
-    user_query: str = "查询已完成订单的总数量",
+    user_query: str ,
     top_k: int = 5,
 ) -> list[dict]:
     """指标召回，封装成结构化列表返回，方便拼进 prompt。

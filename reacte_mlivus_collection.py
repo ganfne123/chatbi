@@ -1,3 +1,9 @@
+"""milvus表创建模块
+创建这三张表：
+table_schema_docs,
+field_schema_docs,
+indicator_knowledge
+"""
 from pymilvus import MilvusClient,DataType
 from config import milvus_config
 from embedding_clinet import EmbeddingClient

@@ -1,4 +1,6 @@
-from typing import Any
+"""提示词生产模块"""
+
+from typing import Any, Tuple
 SYSTEM_PROMPT = """你是一个数据分析助手，根据用户的自然语言查询生成对应的 MySQL SQL 语句。
 要求：
 1. 只输出一条可执行的 SQL 语句，不要输出任何解释或额外内容；
@@ -158,9 +160,9 @@ def build_prompt(
     use_few_shot: bool = True,
     use_rules: bool = False,
     use_guards: bool = False,
-    use_include_join: bool = False,
+    use_indicator: bool = False,
     use_schema_linking: bool = False,
-) -> list:
+) -> Tuple[str,str]:
     """组装最终发给大模型的消息。
 
     retrieval_context 由 rag_retriever.retrieve_context() 产出，结构：
@@ -182,14 +184,13 @@ def build_prompt(
         schema_text = format_schema_linking(run_schema_linking(user_question))
         if schema_text:
             system += f"以下是检索到的相关表结构信息，生成 SQL 时请优先使用：\n{schema_text}\n"
-    if use_include_join:
+    if use_indicator:
         from rag_retriever import run_indicator_search
         indicator_text = format_indicators(run_indicator_search(user_question))
         if indicator_text:
             system += f"以下是检索到的指标定义，计算口径请以此为准：\n{indicator_text}\n"
 
-    message = [{"role": "system", "content": system}, {"role": "user", "content": user}]
-    return message
+    return system,user
 
 
 if __name__ == "__main__":
@@ -201,7 +202,7 @@ if __name__ == "__main__":
         use_few_shot=True,
         use_rules=True,
         use_guards=True,
-        use_include_join=True,
+        use_indicator=True,
         use_schema_linking=True,
     )
     print(json.dumps(prompt, ensure_ascii=False, indent=2))

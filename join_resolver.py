@@ -1,4 +1,7 @@
-"""意图识别最小 MVP：用 json_schema 约束 LLM 输出，把 query 归到 anchor / dimension / fuzzy。"""
+"""
+1.意图识别最小选择锚表
+2.用广度优先算法返回锚表与其他表的join
+"""
 
 import json
 import os
@@ -53,12 +56,18 @@ class IntentResult:
 def recognize_intent(query: str) -> IntentResult:
     """调用 LLM 识别查询意图，返回值由 INTENT_SCHEMA 保证结构。"""
     client = OpenAI(api_key=llm_config["api_key"], base_url=llm_config["base_url"])
+    # 注意：部分 OpenAI 兼容网关（如当前 deepseek 网关）不支持 json_schema，
+    # 只支持 json_object，因此这里用 json_object 并把格式要求写进 system prompt。
+    json_hint = (
+        "\n只输出一个 JSON 对象，不要输出任何解释，格式为："
+        '{"table_type":"anchor|dimension|fuzzy","reason":"...","fuzzy_fields":[]}'
+    )
     response = client.chat.completions.create(
         model=llm_config["model"],
-        messages=[{"role": "system", "content": SYSTEM_PROMPT},
+        messages=[{"role": "system", "content": SYSTEM_PROMPT + json_hint},
                   {"role": "user", "content": f"待识别的用户查询：{query}"}],
         temperature=0,
-        response_format=INTENT_SCHEMA,
+        response_format={"type": "json_object"},
     )
     data = json.loads(response.choices[0].message.content)
 
