@@ -9,34 +9,51 @@ from dotenv import load_dotenv
 
 from build_prompt import build_prompt
 from indicator_knowledge import IndicatorKnowledge
-from config import llm_config
+from config import llm_config,switch
 from typing import Generator
 
 load_dotenv()  # 读取当前目录下的 .env 文件
 
 class LlmClient:
     def __init__(self):
-        self.config=llm_config
+        self.llm_config=llm_config
+        self.switch=switch
         self.client = OpenAI(
-            api_key=self.config.get("api_key",""),
-            base_url=self.config["base_url"]
+            api_key=self.llm_config.get("api_key",""),
+            base_url=self.llm_config["base_url"]
         )
         self.temperature= 0.5 
         self.max_tokens=4000
         self.indicator_knowledge=IndicatorKnowledge()
 
-    def generate_sql(self,query:str) ->str:
-        system_prompt,user_prompt=build_prompt(
-            query,
-            use_few_shot=True,
-            use_indicator=True,
-            use_schema_linking=True
-            )
-        responses = self.llm_generate_text(system_prompt,user_prompt,temperature=0.3)
+    def generate_sql(self,query:str,error_info: dict | None=None) ->str:
+        # 注意：build_prompt 的形参是 use_xxx，而 config.switch 的 key 是 xxx，
+        # 不能直接 **switch（会 TypeError: unexpected keyword argument 'few_shot'）。这里显式映射。
+        if error_info:
+            system_prompt,user_prompt=build_prompt(
+                query,
+                use_few_shot=switch["few_shot"],
+                use_rules=switch["rules"],
+                use_guards=switch["guards"],
+                use_indicator=switch["indicator_knowledge"],
+                use_schema_linking=switch["schema_linking"],
+                use_error_info=True,
+                error_info=error_info
+                )
+        else:
+            system_prompt,user_prompt=build_prompt(
+                query,
+                use_few_shot=switch["few_shot"],
+                use_rules=switch["rules"],
+                use_guards=switch["guards"],
+                use_indicator=switch["indicator_knowledge"],
+                use_schema_linking=switch["schema_linking"],
+                )
+        responses = self.llm_generate_text(system_prompt,user_prompt,temperature=0.0 if error_info else 0.3)
         sql=self.sql_parse(responses)
         return sql
 
-    def generate_sql_stream(self, system_msg: str, prompt: str , temperature: float | None=None) -> Generator[str, None, None]:
+    def generate_sql_stream(self,query:str ,temperature: float |None=None) -> Generator[str, None, None]:
         """
         调用 LLM 流式生成 SQL（逐 chunk 产出）
 
@@ -50,13 +67,19 @@ class LlmClient:
         Yields:
             增量文本片段（可能包含 markdown 代码块标记，需在完整拼接后统一清理）
         """
+        system_prompt,user_prompt=build_prompt(
+                    query,
+                    use_few_shot=True,
+                    use_indicator=True,
+                    use_schema_linking=True
+                    )
         stream = self.client.chat.completions.create(
-            model=self.config["model"],
+            model=self.llm_config["model"],
             messages=[
-                {"role": "system", "content": system_msg},
-                {"role": "user", "content": prompt}
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt}
             ],
-            temperature=temperature if temperature is None else self.temperature,
+            temperature=self.temperature if temperature is None else temperature,
             max_tokens=self.max_tokens,
             stream=True,
         )
@@ -86,12 +109,12 @@ class LlmClient:
             模型返回的原始文本内容
         """
         response = self.client.chat.completions.create(
-            model=self.config["model"],
+            model=self.llm_config["model"],
             messages=[
                 {"role": "system", "content": system_msg},
                 {"role": "user", "content": prompt}
             ],
-            temperature=temperature if temperature is None else self.temperature
+            temperature=self.temperature if temperature is None else temperature
         )
         llm_content=response.choices[0].message.content
         if llm_content is None:
@@ -103,7 +126,7 @@ class LlmClient:
         """通过最小对话请求检查大模型连接，返回状态和原始错误信息。"""
         try:
             self.client.chat.completions.create(
-                model=self.config.get("model") or os.getenv("LLM_MODEL",""),
+                model=self.llm_config.get("model") or os.getenv("LLM_MODEL",""),
                 messages=[{"role": "user", "content": "ping"}],
                 max_tokens=1,
                 temperature=0,

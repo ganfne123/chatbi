@@ -155,6 +155,29 @@ def format_indicators(indicators: list[dict] | None) -> str:
     return "\n".join(lines)
 
 
+def build_repair_block(error_info: dict) -> str:
+    """把上一轮的失败信息整理成结构化的修复指令。
+
+    不要直接把整个 dict dump 进 prompt（会带上 success/error_type 等噪声），
+    这里只保留模型修复真正需要的三件事：上一轮的 SQL、数据库报错、错误类型。
+    """
+    info = error_info or {}
+    bad_sql = info.get("sql") or "（上一轮没能拿到 SQL）"
+    error = info.get("error") or "（无报错详情）"
+    error_type = info.get("error_type") or "unknown"
+    return (
+        "你是 SQL 修复器。上一轮生成的 SQL 执行失败了，请只修正导致失败的那一处问题，"
+        "其余业务口径必须保持不变。\n"
+        f"上一轮的 SQL：{bad_sql}\n"
+        f"数据库报错：{error}\n"
+        f"错误类型：{error_type}\n"
+        "要求：1) 只输出一条可执行的 SELECT，不要输出解释或 markdown；"
+        "2) 不得改变聚合方式、分组维度、过滤条件和时间范围；"
+        "3) 只能使用系统提示中给出的表名和字段名；"
+        "4) 若无法在不改变业务口径的前提下修复，只输出 CANNOT_REPAIR。\n"
+    )
+
+
 def build_prompt(
     user_question: str,
     use_few_shot: bool = True,
@@ -162,6 +185,8 @@ def build_prompt(
     use_guards: bool = False,
     use_indicator: bool = False,
     use_schema_linking: bool = False,
+    use_error_info: bool = False,
+    error_info: dict={}
 ) -> Tuple[str,str]:
     """组装最终发给大模型的消息。
 
@@ -171,7 +196,10 @@ def build_prompt(
         "indicators": [{name, level, definition, score}, ...],
     }
     """
+    # 注意：SYSTEM_PROMPT 必须先赋值，否则修复指令会被下一行覆盖掉（原来的 bug）
     system = f"{SYSTEM_PROMPT} "
+    if use_error_info:
+        system += build_repair_block(error_info)
     user = f"用户问题为：{user_question}\n"
 
     if use_few_shot:
