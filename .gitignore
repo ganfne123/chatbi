@@ -17,3 +17,6 @@ wheels/
 .env
 .env.*
 !.env.example
+
+# Local backup files
+*.bak
