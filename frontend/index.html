@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ChatBI · 智能问数</title>
+<!-- 本地化的依赖，不走外网 CDN：由 api_server.py 的 /static 挂载提供 -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E%F0%9F%93%8A%3C/text%3E%3C/svg%3E" />
+<script src="/static/vendor/tailwind.js"></script>
+<script src="/static/vendor/vue.global.prod.js"></script>
+<script src="/static/vendor/echarts.min.js"></script>
+<style>
+  :root { color-scheme: dark; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+  .glass { background: rgba(255,255,255,.06); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,.10); }
+  .glow { box-shadow: 0 14px 40px -14px rgba(99,102,241,.9); }
+  .blink::after { content: '▍'; animation: inline 1s steps(2, start) infinite; }
+  @keyframes inline { to { visibility: hidden; } }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.18); border-radius: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  .fade-enter-active, .fade-leave-active { transition: all .25s ease; }
+  .fade-enter-from, .fade-leave-to { opacity: 0; transform: translateY(8px); }
+  [v-cloak] { display: none; }
+  pre { tab-size: 2; }
+</style>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100 antialiased">
+<div id="app" v-cloak class="relative min-h-screen overflow-hidden">
+
+  <!-- 背景光斑 -->
+  <div class="pointer-events-none absolute inset-0 overflow-hidden">
+    <div class="absolute -left-32 -top-40 h-96 w-96 rounded-full bg-indigo-600/30 blur-3xl"></div>
+    <div class="absolute -right-32 top-1/3 h-96 w-96 rounded-full bg-fuchsia-600/20 blur-3xl"></div>
+    <div class="absolute -bottom-40 left-1/3 h-96 w-96 rounded-full bg-cyan-500/20 blur-3xl"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.06),transparent_60%)]"></div>
+  </div>
+
+  <!-- ==================== 登录页 ==================== -->
+  <div v-if="view === 'login'" class="relative z-10 flex min-h-screen items-center justify-center p-4">
+    <div class="w-full max-w-md">
+      <div class="mb-8 text-center">
+        <div class="glow mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-fuchsia-500 text-2xl">📊</div>
+        <h1 class="text-2xl font-semibold tracking-tight">ChatBI 智能问数</h1>
+        <p class="mt-1 text-sm text-slate-400">用自然语言查询业务数据</p>
+      </div>
+
+      <form class="glass rounded-2xl p-6 shadow-2xl" @submit.prevent="doLogin">
+        <label class="mb-1 block text-sm text-slate-300">用户名</label>
+        <input v-model.trim="form.user_name" :disabled="loginLoading" autocomplete="username"
+               class="mb-4 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none transition placeholder:text-slate-500 focus:border-indigo-400/60 focus:bg-white/10"
+               placeholder="请输入用户名" />
+
+        <label class="mb-1 block text-sm text-slate-300">密码</label>
+        <input v-model="form.password" type="password" :disabled="loginLoading" autocomplete="current-password"
+               class="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none transition placeholder:text-slate-500 focus:border-indigo-400/60 focus:bg-white/10"
+               placeholder="请输入密码" />
+
+        <transition name="fade">
+          <div v-if="loginError" class="mt-4 flex items-start gap-2 rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-200">
+            <span>⚠️</span><span>{{ loginError }}</span>
+          </div>
+        </transition>
+
+        <button type="submit" :disabled="loginLoading"
+                class="glow mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 px-4 py-3 text-sm font-medium transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60">
+          <svg v-if="loginLoading" class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+          </svg>
+          <span>{{ loginLoading ? '登录中…' : '登 录' }}</span>
+        </button>
+
+        <div class="mt-4 flex items-center justify-between text-xs text-slate-500">
+          <span>token 有效期 1 天</span>
+          <span :class="health ? 'text-emerald-400' : 'text-slate-500'">
+            <span class="mr-1 inline-block h-1.5 w-1.5 rounded-full"
+                  :class="health ? 'bg-emerald-400' : 'bg-slate-500'"></span>{{ healthText() }}
+          </span>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== 聊天页 ==================== -->
+  <div v-else class="relative z-10 mx-auto flex h-screen max-w-4xl flex-col">
+    <header class="glass m-3 flex items-center justify-between rounded-2xl px-4 py-3">
+      <div class="flex items-center gap-3">
+        <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-fuchsia-500 text-lg">📊</div>
+        <div>
+          <div class="text-sm font-medium leading-tight">ChatBI 智能问数</div>
+          <div class="text-xs text-slate-400">你好，{{ userName }}</div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="hidden items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1 text-xs text-slate-300 sm:flex">
+          <span class="inline-block h-1.5 w-1.5 rounded-full"
+                :class="health === false ? 'bg-rose-400' : 'bg-emerald-400'"></span>{{ healthText() }}
+        </span>
+        <button @click="clearChat" class="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-300 transition hover:bg-white/10">清空</button>
+        <button @click="logout('')" class="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-300 transition hover:bg-white/10">退出</button>
+      </div>
+    </header>
+
+    <main ref="scroller" class="flex-1 space-y-4 overflow-y-auto px-3 pb-2">
+      <!-- 空状态 -->
+      <div v-if="!messages.length" class="flex h-full flex-col items-center justify-center gap-4 text-center">
+        <div class="text-5xl">💬</div>
+        <div>
+          <div class="text-lg font-medium">开始你的第一次数据提问</div>
+          <div class="mt-1 text-sm text-slate-400">用一句话描述你想看的指标，我会生成 SQL 并返回结果</div>
+        </div>
+        <div class="flex flex-wrap justify-center gap-2">
+          <button v-for="q in samples" :key="q" @click="question = q; ask()"
+                  class="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-slate-300 transition hover:border-indigo-400/40 hover:bg-white/10">{{ q }}</button>
+        </div>
+      </div>
+
+      <!-- 消息列表 -->
+      <div v-for="m in messages" :key="m.id" class="flex" :class="m.role === 'user' ? 'justify-end' : 'justify-start'">
+        <div :class="m.role === 'user' ? 'max-w-[85%] rounded-2xl rounded-br-md bg-gradient-to-br from-indigo-500 to-fuchsia-500 px-4 py-2.5 text-sm shadow-lg' : 'glass w-full rounded-2xl rounded-bl-md p-4'">
+          <!-- 用户消息 -->
+          <div v-if="m.role === 'user'" class="whitespace-pre-wrap break-words">{{ m.text }}</div>
+
+          <!-- 助手消息 -->
+          <template v-else>
+            <div class="mb-3 flex items-center gap-2 text-xs text-slate-400">
+              <span class="flex h-5 w-5 items-center justify-center rounded-md bg-gradient-to-br from-indigo-500 to-fuchsia-500 text-[10px]">AI</span>
+              <span>{{ m.streaming ? (m.kind === 'report' ? m.stage : '正在生成…') : (m.error ? '执行失败' : (m.kind === 'report' ? '分析完成' : '查询完成')) }}</span>
+              <span v-if="m.streaming" class="text-slate-500">· 已等待 {{ (m.elapsed || 0).toFixed(0) }}s</span>
+              <span v-else-if="m.ms" class="text-slate-500">· 耗时 {{ (m.ms / 1000).toFixed(1) }}s</span>
+              <span v-if="m.rowCount != null && !m.streaming" class="text-slate-500">· 共 {{ m.rowCount }} 行</span>
+            </div>
+
+            <!-- 实时 SQL 输出（仅极速问数模式） -->
+            <div v-if="m.kind !== 'report' && (m.sql || m.streaming)" class="group relative">
+              <div class="mb-1 flex items-center justify-between text-xs text-slate-400">
+                <span>生成的 SQL</span>
+                <button v-if="m.sql" @click="copy(m.sql, m)" class="rounded-md border border-white/10 px-2 py-0.5 text-[11px] transition hover:bg-white/10">
+                  {{ m.copied ? '已复制' : '复制' }}
+                </button>
+              </div>
+              <pre class="max-h-56 overflow-auto rounded-xl border border-white/10 bg-slate-950/60 p-3 text-xs leading-relaxed text-indigo-200"><code :class="m.streaming && !m.sqlDone ? 'blink' : ''">{{ m.sql || m.pendingSql }}</code></pre>
+            </div>
+
+            <!-- 分析报告（分析报告模式） -->
+            <div v-if="m.report" class="space-y-4">
+              <div class="rounded-xl border border-indigo-400/20 bg-indigo-400/[0.06] p-4">
+                <div class="mb-1.5 text-xs font-medium text-indigo-300">总体结论</div>
+                <p class="text-sm leading-relaxed text-slate-100">{{ m.report.conclusion || '（模型未给出结论）' }}</p>
+              </div>
+
+              <div v-if="m.report.insights.length">
+                <div class="mb-2 text-xs font-medium text-slate-400">关键发现</div>
+                <ul class="space-y-2">
+                  <li v-for="(it, i) in m.report.insights" :key="i" class="flex gap-2 text-sm leading-relaxed text-slate-200">
+                    <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gradient-to-br from-indigo-400 to-fuchsia-400"></span>
+                    <span>{{ it }}</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div v-if="m.report.recommendations.length">
+                <div class="mb-2 text-xs font-medium text-slate-400">行动建议</div>
+                <div class="space-y-2">
+                  <div v-for="(rec, i) in m.report.recommendations" :key="i" class="flex gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">
+                    <span class="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-indigo-500/20 text-[11px] text-indigo-300">{{ i + 1 }}</span>
+                    <span class="text-sm leading-relaxed text-slate-200">{{ rec }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div v-if="m.report.parseError" class="rounded-xl border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-200">
+                ⚠️ 报告解析降级（下方为模型原始输出）：{{ m.report.parseError }}
+              </div>
+
+              <details v-if="m.report.rawContent" class="text-xs text-slate-400">
+                <summary class="cursor-pointer select-none hover:text-slate-200">查看模型原始输出</summary>
+                <pre class="mt-2 max-h-64 overflow-auto rounded-xl border border-white/10 bg-slate-950/60 p-3 text-[11px] leading-relaxed text-slate-300">{{ m.report.rawContent }}</pre>
+              </details>
+            </div>
+
+            <!-- 错误 -->
+            <div v-if="m.error" class="mt-3 flex items-start gap-2 rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm text-rose-200">
+              <span>⚠️</span>
+              <div>
+                <div>{{ m.error }}</div>
+                <div v-if="m.errorType" class="mt-0.5 text-xs text-rose-300/70">错误类型：{{ m.errorType }}</div>
+              </div>
+            </div>
+
+            <!-- 结果表格 -->
+            <div v-if="m.table && m.table.columns.length" class="mt-3">
+              <div class="mb-1 text-xs text-slate-400">查询结果</div>
+              <div class="max-h-80 overflow-auto rounded-xl border border-white/10">
+                <table class="w-full border-collapse text-left text-xs">
+                  <thead class="sticky top-0 bg-slate-900/95 backdrop-blur">
+                    <tr>
+                      <th v-for="c in m.table.columns" :key="c" class="whitespace-nowrap border-b border-white/10 px-3 py-2 font-medium text-slate-300">{{ c }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(row, i) in m.table.rows" :key="i" :class="i % 2 ? 'bg-white/[0.02]' : ''">
+                      <td v-for="(cell, j) in row" :key="j"
+                          class="whitespace-nowrap border-b border-white/5 px-3 py-1.5"
+                          :class="j === 0 ? 'text-slate-200' : 'font-mono text-indigo-200'">{{ display(cell) }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 图表 -->
+            <div v-if="m.table && m.chartable" class="mt-3">
+              <div class="mb-1 text-xs text-slate-400">可视化</div>
+              <div :id="'chart-' + m.id" class="h-72 w-full rounded-xl border border-white/10 bg-slate-950/40 p-1"></div>
+            </div>
+
+            <!-- 格式化文本（可选查看） -->
+            <details v-if="m.raw" class="mt-3 text-xs text-slate-400">
+              <summary class="cursor-pointer select-none hover:text-slate-200">查看原始输出</summary>
+              <pre class="mt-2 max-h-64 overflow-auto rounded-xl border border-white/10 bg-slate-950/60 p-3 text-[11px] leading-relaxed text-slate-300">{{ m.raw }}</pre>
+            </details>
+          </template>
+        </div>
+      </div>
+    </main>
+
+    <footer class="p-3">
+      <div class="mb-2 flex flex-wrap items-center gap-2">
+        <div class="flex items-center gap-0.5 rounded-xl border border-white/10 bg-white/5 p-0.5 text-xs">
+          <button @click="setMode('fast')" class="rounded-lg px-3 py-1.5 transition"
+                  :class="mode === 'fast' ? 'bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white shadow' : 'text-slate-400 hover:text-slate-200'">⚡ 极速问数</button>
+          <button @click="setMode('agent')" class="rounded-lg px-3 py-1.5 transition"
+                  :class="mode === 'agent' ? 'bg-gradient-to-r from-indigo-500 to-fuchsia-500 text-white shadow' : 'text-slate-400 hover:text-slate-200'">🧠 分析报告</button>
+        </div>
+        <span class="text-[11px] text-slate-500">{{ mode === 'agent' ? '多步拆解 + 归因建议，耗时较长（约 10~60s）' : '流式返回 SQL 与结果表格' }}</span>
+      </div>
+      <div class="glass flex items-end gap-2 rounded-2xl p-2">
+        <textarea v-model="question" rows="1" :disabled="asking" :placeholder="mode === 'agent' ? '描述要分析的问题，例如：为什么华东的销售额偏低' : '例如：各大区的销售额是多少'"
+                  @keydown.enter.exact.prevent="ask"
+                  class="max-h-32 flex-1 resize-none bg-transparent px-3 py-2 text-sm outline-none placeholder:text-slate-500"></textarea>
+        <button @click="ask" :disabled="asking || !question.trim()"
+                class="glow flex h-10 items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 to-fuchsia-500 px-4 text-sm font-medium transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50">
+          <svg v-if="asking" class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+          </svg>
+          <span>{{ asking ? '查询中' : '发送' }}</span>
+        </button>
+      </div>
+      <div class="mt-2 text-center text-[11px] text-slate-500">Enter 发送 · 刷新页面会清空当前对话（历史会话接口待开发）</div>
+    </footer>
+  </div>
+</div>
+
+<script>
+const { createApp, ref, reactive, nextTick, onMounted } = Vue;
+const LS = { token: 'chatbi.token', user: 'chatbi.user', expires: 'chatbi.expires', mode: 'chatbi.mode' };
+// agent 模式是同步长任务，用阶段文案安抚等待
+const AGENT_STAGES = ['正在拆解问题…', '正在规划分析步骤…', '正在执行数据查询…', '正在汇总分析…', '正在撰写报告…'];
+
+/** 带 token 的 JSON 请求（同源，直接走相对路径） */
+async function request(path, { method = 'POST', body, token, signal } = {}) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = 'Bearer ' + token;   // ← 每个接口都带上 token
+  const res = await fetch(path, {
+    method, headers, signal,
+    body: body === undefined ? undefined : JSON.stringify(body),
+  });
+  const text = await res.text();
+  let data = null;
+  try { data = text ? JSON.parse(text) : null; } catch (e) { /* 非 JSON 响应 */ }
+  return { ok: res.ok, status: res.status, data, text };
+}
+
+/** 判断单元格是否为数值 */
+function isNum(v) {
+  if (v === null || v === undefined) return false;
+  const s = String(v).trim();
+  return s !== '' && !isNaN(Number(s.replace(/,/g, '')));
+}
+
+createApp({
+  setup() {
+    const view = ref(localStorage.getItem(LS.token) ? 'chat' : 'login');
+    const token = ref(localStorage.getItem(LS.token) || '');
+    const userName = ref(localStorage.getItem(LS.user) || '');
+    const form = ref({ user_name: '', password: '' });
+    const loginError = ref('');
+    const loginLoading = ref(false);
+    const health = ref(null);
+    const messages = ref([]);
+    const question = ref('');
+    const asking = ref(false);
+    const scroller = ref(null);
+    const samples = ['各大区的销售额是多少', '销量前 10 的商品有哪些'];
+    const mode = ref(localStorage.getItem(LS.mode) || 'fast');   // fast | agent
+    const charts = {};
+    let seq = 0;
+
+    const healthText = () => (health.value === null ? '检测中…' : health.value ? '服务正常' : '服务异常');
+
+    async function checkHealth() {
+      try {
+        const r = await request('/health', { method: 'GET' });
+        health.value = r.ok && r.data && r.data.database_health && r.data.llm_health;
+      } catch (e) { health.value = false; }
+    }
+
+    function persist(t, u, exp) {
+      t ? localStorage.setItem(LS.token, t) : localStorage.removeItem(LS.token);
+      u ? localStorage.setItem(LS.user, u) : localStorage.removeItem(LS.user);
+      exp ? localStorage.setItem(LS.expires, exp) : localStorage.removeItem(LS.expires);
+    }
+
+    async function doLogin() {
+      loginError.value = '';
+      if (!form.value.user_name || !form.value.password) {
+        loginError.value = '请输入用户名和密码';
+        return;
+      }
+      loginLoading.value = true;
+      try {
+        const r = await request('/api/v1/login', { body: { user_name: form.value.user_name, password: form.value.password } });
+        const payload = r.data && r.data.data;   // { code, message, data: { user_name, token, expires_at } }
+        if (r.ok && payload && payload.token) {
+          token.value = payload.token;
+          userName.value = payload.user_name || form.value.user_name;
+          persist(token.value, userName.value, payload.expires_at || '');
+          form.value.password = '';
+          view.value = 'chat';                   // 认证成功 → 跳转聊天页
+          checkHealth();
+        } else {
+          loginError.value = (r.data && r.data.error) || '登录失败（HTTP ' + r.status + '）';
+        }
+      } catch (e) {
+        loginError.value = '网络异常：' + e.message;
+      } finally {
+        loginLoading.value = false;
+      }
+    }
+
+    function logout(reason) {
+      token.value = '';
+      userName.value = '';
+      persist('', '', '');
+      messages.value = [];
+      Object.keys(charts).forEach(k => { charts[k].dispose(); delete charts[k]; });
+      view.value = 'login';
+      loginError.value = reason || '';
+    }
+
+    function clearChat() {
+      messages.value = [];
+      Object.keys(charts).forEach(k => { charts[k].dispose(); delete charts[k]; });
+    }
+
+    async function scrollDown() {
+      await nextTick();
+      const el = scroller.value;
+      if (el) el.scrollTop = el.scrollHeight;
+    }
+
+    function display(v) {
+      if (v === null || v === undefined) return '';
+      if (isNum(v)) {
+        const n = Number(String(v).replace(/,/g, ''));
+        return Number.isInteger(n) ? n.toLocaleString() : n.toLocaleString(undefined, { maximumFractionDigits: 2 });
+      }
+      return String(v);
+    }
+
+    /** 把后端 result_formater 生成的文本表格还原成二维数组 */
+    function parseFormatted(text) {
+      const lines = String(text).split('\n').filter(l => l.trim() !== '');
+      if (!lines.length) return { columns: [], rows: [] };
+      const isSep = l => /^[-+\s]+$/.test(l);
+      const body = lines.filter(l => !isSep(l)).map(l => l.split('|').map(c => c.trim()));
+      if (!body.length) return { columns: [], rows: [] };
+      const columns = body[0];
+      const rows = body.slice(1).map(r => {
+        const out = r.slice(0, columns.length);
+        while (out.length < columns.length) out.push('');
+        return out;
+      });
+      return { columns, rows };
+    }
+
+    function normalize(payload) {
+      const columns = payload.columns || [];
+      const rows = payload.rows;
+      if (Array.isArray(rows) && rows.length && Array.isArray(rows[0])) {
+        return { columns, rows: rows.map(r => r.map(v => (v === null || v === undefined ? '' : v))) };
+      }
+      if (typeof rows === 'string') return parseFormatted(rows);
+      if (Array.isArray(rows)) return { columns, rows: rows.map(r => [r]) };
+      return { columns, rows: [] };
+    }
+
+    /** 选第一个非数值列做 X 轴，其余数值列画柱状图 */
+    function buildOption(table) {
+      const { columns, rows } = table;
+      if (!rows.length || !columns.length) return null;
+      const labelIdx = columns.findIndex((_, i) => !rows.every(r => isNum(r[i])));
+      const numIdx = columns.map((c, i) => i).filter(i => rows.some(r => isNum(r[i])) && rows.every(r => !String(r[i]).trim() || isNum(r[i])));
+      if (!numIdx.length) return null;
+      const labels = rows.map((r, i) => (labelIdx >= 0 ? String(r[labelIdx]) : '第 ' + (i + 1) + ' 行'));
+      return {
+        backgroundColor: 'transparent',
+        tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' }, valueFormatter: v => display(v) },
+        legend: { top: 4, textStyle: { color: '#cbd5e1' } },
+        grid: { left: 12, right: 16, bottom: numIdx.length ? 28 : 8, top: 40, containLabel: true },
+        xAxis: { type: 'category', data: labels, axisLabel: { color: '#94a3b8', interval: 0, rotate: labels.length > 6 ? 30 : 0 }, axisLine: { lineStyle: { color: 'rgba(255,255,255,.2)' } } },
+        yAxis: { type: 'value', axisLabel: { color: '#94a3b8', formatter: v => display(v) }, splitLine: { lineStyle: { color: 'rgba(255,255,255,.07)' } } },
+        series: numIdx.map((i, k) => ({
+          name: columns[i],
+          type: 'bar',
+          barMaxWidth: 42,
+          itemStyle: {
+            borderRadius: [6, 6, 0, 0],
+            color: ['#818cf8', '#e879f9', '#22d3ee', '#fbbf24'][k % 4],
+          },
+          data: rows.map(r => (isNum(r[i]) ? Number(String(r[i]).replace(/,/g, '')) : null)),
+        })),
+      };
+    }
+
+    function renderChart(m, retry = 0) {
+      nextTick(() => {
+        const el = document.getElementById('chart-' + m.id);
+        if (!el || !window.echarts) {
+          if (retry < 10) setTimeout(() => renderChart(m, retry + 1), 80);   // 容器还没挂上，稍后重试
+          return;
+        }
+        if (charts[m.id]) { charts[m.id].dispose(); }
+        const c = echarts.init(el, null, { renderer: 'canvas' });
+        charts[m.id] = c;
+        c.setOption(buildOption(m.table));
+        window.addEventListener('resize', () => c.resize());
+      });
+    }
+
+    /** 发送入口：按当前模式分流到流式问数 / agent 分析报告 */
+    async function ask() {
+      const q = question.value.trim();
+      if (!q || asking.value) return;
+      question.value = '';
+      asking.value = true;
+      messages.value.push(reactive({ id: ++seq, role: 'user', text: q }));
+      scrollDown();
+      const startedAt = performance.now();
+      if (mode.value === 'agent') await askAgent(q, startedAt);
+      else await askStream(q, startedAt);
+    }
+
+    /** 模式一：POST /api/v1/query/stream，带 token，按 SSE 分帧解析 */
+    async function askStream(q, startedAt) {
+      // 注意：必须用 reactive() 包一层。直接 push 普通对象后再 m.xxx = ... 改的是原始
+      // 对象，绕过了 Proxy，不会触发视图更新（图表容器会晚于 renderChart 出现）。
+      const m = reactive({
+        id: ++seq, role: 'assistant', kind: 'sql', streaming: true, pendingSql: '', sql: '', sqlDone: false,
+        table: null, chartable: false, error: '', errorType: '', raw: '', rowCount: null,
+        ms: 0, copied: false,
+      });
+      messages.value.push(m);
+      scrollDown();
+
+      let res;
+      try {
+        res = await fetch('/api/v1/query/stream', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token.value },
+          body: JSON.stringify({ query: q }),
+        });
+      } catch (e) {
+        m.error = '网络异常：' + e.message; m.streaming = false; asking.value = false; return;
+      }
+      if (res.status === 401 || res.status === 403) {
+        asking.value = false;
+        logout('登录已失效，请重新登录');
+        return;
+      }
+      if (!res.ok || !res.body) {
+        let msg = 'HTTP ' + res.status;
+        try { const j = JSON.parse(await res.text()); if (j && j.error) msg = j.error; } catch (e) {}
+        m.error = msg; m.streaming = false; asking.value = false; return;
+      }
+
+      let reader;
+      if (window.TextDecoderStream) {
+        reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
+      } else {
+        const raw = res.body.getReader();
+        const decoder = new TextDecoder();
+        reader = { read: async () => { const r = await raw.read(); return { value: r.done ? undefined : decoder.decode(r.value, { stream: true }), done: r.done }; } };
+      }
+      let buf = '';
+      try {
+        for (;;) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          buf += value;
+          let idx;
+          while ((idx = buf.indexOf('\n\n')) >= 0) {
+            const frame = buf.slice(0, idx);
+            buf = buf.slice(idx + 2);
+            let event = 'message', data = '';
+            for (const line of frame.split('\n')) {
+              if (line.startsWith('event:')) event = line.slice(6).trim();
+              else if (line.startsWith('data:')) data += line.slice(5).trimStart();
+            }
+            if (!data) continue;
+            let p = null;
+            try { p = JSON.parse(data); } catch (e) { continue; }
+
+            if (event === 'chunk') {
+              m.pendingSql += (p.content || '');
+              scrollDown();
+            } else if (event === 'complete_sql') {
+              m.sql = p.sql || m.pendingSql;
+              m.sqlDone = true;
+            } else if (event === 'result') {
+              m.table = normalize(p);
+              m.rowCount = p.row_count;
+              m.raw = typeof p.rows === 'string' ? p.rows : (p.formatted || '');
+              m.chartable = !!buildOption(m.table);
+              renderChart(m);
+              scrollDown();
+            } else if (event === 'error') {
+              m.error = p.error || '执行失败';
+              m.errorType = p.error_type || '';
+            }
+          }
+        }
+      } catch (e) {
+        m.error = '流式读取中断：' + e.message;
+      } finally {
+        m.ms = performance.now() - startedAt;
+        m.streaming = false;
+        m.sql = m.sql || m.pendingSql;
+        asking.value = false;
+        scrollDown();
+      }
+    }
+
+    /** 模式二：POST /api/v1/agnet_plan，agent 多步执行后返回结构化报告（非流式，较慢） */
+    async function askAgent(q, startedAt) {
+      const m = reactive({
+        id: ++seq, role: 'assistant', kind: 'report', streaming: true,
+        stage: AGENT_STAGES[0], elapsed: 0, report: null,
+        error: '', errorType: '', ms: 0,
+      });
+      messages.value.push(m);
+      scrollDown();
+
+      // 非流式接口，用一个阶段文案 + 计时器让用户知道没卡死
+      const timer = setInterval(() => {
+        m.elapsed = (performance.now() - startedAt) / 1000;
+        m.stage = AGENT_STAGES[Math.min(AGENT_STAGES.length - 1, Math.floor(m.elapsed / 3))];
+      }, 500);
+
+      try {
+        const res = await fetch('/api/v1/agnet_plan', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token.value },
+          body: JSON.stringify({ query: q }),
+        });
+        if (res.status === 401 || res.status === 403) { logout('登录已失效，请重新登录'); return; }
+
+        let payload = null;
+        try { payload = await res.json(); } catch (e) { /* 非 JSON */ }
+        if (!res.ok) {
+          m.error = (payload && payload.error) || ('HTTP ' + res.status);
+          m.errorType = (payload && payload.error_type) || '';
+          return;
+        }
+        const report = payload && payload.data;
+        if (!report) { m.error = '返回内容为空'; return; }
+        m.report = {
+          question: report.question || q,
+          conclusion: report.conclusion || '',
+          insights: report.insights || [],
+          recommendations: report.recommendations || [],
+          parseError: report.parse_error || '',
+          rawContent: report.raw_content || '',
+        };
+      } catch (e) {
+        m.error = '网络异常：' + e.message;
+      } finally {
+        clearInterval(timer);
+        m.ms = performance.now() - startedAt;
+        m.stage = '';
+        m.streaming = false;
+        asking.value = false;
+        scrollDown();
+      }
+    }
+
+    function setMode(next) {
+      mode.value = next;
+      localStorage.setItem(LS.mode, next);
+    }
+
+    async function copy(text, m) {
+      try {
+        await navigator.clipboard.writeText(text);
+        m.copied = true;
+        setTimeout(() => { m.copied = false; }, 1500);
+      } catch (e) { /* 非 https 环境 clipboard 不可用 */ }
+    }
+
+    onMounted(() => {
+      checkHealth();
+      if (view.value === 'chat') scrollDown();
+    });
+
+    return {
+      view, token, userName, form, loginError, loginLoading, health, messages, question, asking,
+      scroller, samples, healthText, doLogin, logout, clearChat, ask, display, copy,
+      mode, setMode,
+    };
+  },
+}).mount('#app');
+</script>
+</body>
+</html>
