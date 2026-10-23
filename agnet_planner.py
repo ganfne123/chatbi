@@ -1,8 +1,9 @@
+from security import UserContext
 from typing import Any, Literal, Tuple
 from pydantic import BaseModel,Field
 from main import ChatBiSystem
 from query_decomposer import DecompositionPlan,QureyAnalyse
-from report_generat import ReportGenerat
+from report_generat import ReportGenerat, Report
 
 class PlanStep(BaseModel):
     step_id: str
@@ -59,7 +60,7 @@ class StepExecute:
          self.retry_num=3
 
 
-    def run(self,steps: list[PlanStep]) -> dict:
+    def run(self,steps: list[PlanStep],user_context: UserContext) -> dict:
         # 已经执行过的步骤，用于组装依赖上下文
         visited_step: dict={}
         # 用于存储个步骤的主要信息
@@ -90,7 +91,7 @@ class StepExecute:
             question = self._bulid_depends_prompt(
                 step.question, step.depends_on, visited_step
             )
-            sql_response,trynum = self.run_with_chatbi_retry(question,self.retry_num)
+            sql_response,trynum = self.run_with_chatbi_retry(question,self.retry_num,user_context)
 
             if sql_response.get("success"):
 
@@ -116,7 +117,7 @@ class StepExecute:
                     step_id=step.step_id,
                     task_id=step.task_id,
                     status="failed",
-                    success=sql_response.get("success","False"),
+                    success=bool(sql_response.get("success", False)),
                     step_name=step.step_name,
                     attempts=trynum,
                     task_type=step.task_type,
@@ -124,7 +125,7 @@ class StepExecute:
                     description=step.description,
                     depends_on=step.depends_on,
                     metrics=step.metrics,
-                    error=sql_response["error"]
+                    error=str(sql_response.get("error", ""))
                 )
 
             visited_step[step.step_id] = res
@@ -145,13 +146,31 @@ class StepExecute:
         return query
 
 
-    def run_with_chatbi_retry(self, question: str, trynum: int) -> Tuple[dict, int] :
-        for attempt in range(1, trynum + 1):        # 1 ~ trynum
-            sql_res = self.chatbi.run(question)
-            if sql_res["success"]:
-                return sql_res, attempt             
-        # 所有尝试都失败
-        return sql_res, trynum                      # 或抛异常 / 返回 (None, trynum)
+    def run_with_chatbi_retry(self, question: str, trynum: int, user_context: UserContext) -> Tuple[dict, int]:
+        """执行一步；失败就把失败信息回喂给模型重试。
+
+        :param trynum: 最多尝试次数（含首次），至少执行 1 次
+        :return: (最后一次结果, 实际尝试次数)
+        """
+        max_attempts = max(1, trynum)
+        attempts = 0
+        last: dict | None = None
+        seen: set[tuple] = set()
+        while attempts < max_attempts:
+            attempts += 1
+            # 第一次不带 error_info；之后把上一轮结果（含失败的 sql 与报错）传回去
+            last = self.chatbi.run(question, user_context, error_info=last if attempts > 1 else None)
+            if last.get("success"):
+                return last, attempts
+            # 输入非法这类错误重试没有意义
+            if last.get("error_type") == "validation":
+                break
+            # 模型这一轮没产出任何变化（SQL 与报错都一样），再重试只是白烧 token
+            fingerprint = (last.get("sql") or "", last.get("error") or "")
+            if fingerprint in seen:
+                break
+            seen.add(fingerprint)
+        return last, attempts
 
     
     def check_depends(self,step_id: str,depend_on: list, steps: dict) ->bool:
@@ -269,23 +288,8 @@ class ResultSummarizer:
             summary_text=summary_text
         )
 
-class PlanAndExecuteAgnet:
-    def __init__(self):
-        self.query_analyse=QureyAnalyse()
-        self.plan_generate=PlanGenerate()
-        self.step_execute=StepExecute()
-        self.result_summarizer=ResultSummarizer()
-        self.report_generat=ReportGenerat()
 
-    def agnet_run(self,query: str):
-        decomposition_plan=self.query_analyse.run_retry(query)
-        plan_step=self.plan_generate.PlanGenerate(decomposition_plan.subtasks)
-        step_results=self.step_execute.run(plan_step)
-        summary=self.result_summarizer.summarize(query,decomposition_plan,step_results)
-        report=self.report_generat.peport_generat(summary)
-        print(report)
-
-if __name__=="__main__":
-    query="前年利润怎么样"
-    agent=PlanAndExecuteAgnet()
-    agent.agnet_run(query)
+# if __name__=="__main__":
+#     query="前年利润怎么样"
+#     agent=PlanAndExecuteAgnet()
+#     agent.agnet_run(query)
