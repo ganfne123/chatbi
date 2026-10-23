@@ -8,8 +8,10 @@ authors = [
 ]
 requires-python = ">=3.12"
 dependencies = [
+    "bcrypt==4.0.1",
     "fastapi>=0.141.1",
     "openai>=3.13.0",
+    "passlib>=1.7.4",
     "pymilvus>=3.0.2",
     "pymysql>=1.2.0",
     "python-dotenv>=1.2.3",
@@ -24,3 +26,6 @@ new-chatbi = "new_chatbi:main"
 [build-system]
 requires = ["uv_build>=0.12.3,<0.13.0"]
 build-backend = "uv_build"
+
+[tool.uv]
+package = false
