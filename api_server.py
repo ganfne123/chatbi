@@ -1,18 +1,43 @@
 """pastAPI服务"""
+from security import UserContext
+
 
 from pydantic import BaseModel,Field
 from datetime import datetime
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import JSONResponse, StreamingResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from typing import Any
-from collections.abc import Iterator
+from pathlib import Path
+from utils import authenticate_user, create_token,verify_token
 from main import ChatBiSystem
+from agnet_main import PlanAndExecuteAgnet
 
+
+class FastAPIRequest(BaseModel):
+    code: int
+    message: str
+    data: Any
 class QueryRequest(BaseModel):
     """请求类"""
-    query:str =Field(...,description="用户问题")
+    query: str = Field(..., min_length=1, description="业务人员的自然语言问题")
+    use_few_shot: bool | None = Field(default=None, description="是否启用 Few-shot 示例")
+    use_rules: bool | None = Field(default=None, description="是否启用业务规则约束")
+    use_guards: bool | None = Field(default=None, description="是否启用错误防护")
+    use_schema_linking: bool | None = Field(default=None, description="是否启用 Schema Linking")
+    use_indicator: bool | None = Field(default=None, description="是否启用指标 RAG")
+
+class UserLogin(BaseModel):
+    """用户登入"""
+    user_name: str
+    password: str
+
+class LoginResponse(BaseModel):
+    user_name: str
+    token: str
+    expires_at: datetime
 
 
 class QuerySuccessResponse(BaseModel):
@@ -106,13 +131,14 @@ def health_check() -> HealthSuccessResponse:
     response_model=QuerySuccessResponse,
     responses={
         400: {"model": ErrorResponse, "description": "输入问题不合法"},
+        401: {"model": ErrorResponse, "description": "用户名或密码错误"},
         502: {"model": ErrorResponse, "description": "LLM 调用失败"},
         500: {"model": ErrorResponse, "description": "数据库或服务内部异常"},}
     )
-def query_chatbi(payload: QueryRequest) ->QuerySuccessResponse:
-    print("开始时间"+datetime.now().strftime("%H:%M:%S"))
-
-    result=bi_server.run(payload.query)
+def query_chatbi(payload: QueryRequest , request:Request) ->QuerySuccessResponse:
+    token=request.headers.get("authorization","")
+    user_context=verify_token(token)
+    result=bi_server.run(payload.query,user_context)
     if not result["success"]:
         if result["error_type"] == "validation":
             raise HTTPException(400,detail=result["error"])
@@ -120,17 +146,45 @@ def query_chatbi(payload: QueryRequest) ->QuerySuccessResponse:
             raise HTTPException(502,detail=result["error"])
         if result["error_type"] == "database_execute_error":
             raise HTTPException(500,detail=result["error"])
-    print("结束时间"+datetime.now().strftime("%H:%M:%S"))
     return QuerySuccessResponse(**result)
 
 
+
+@app.post("/api/v1/agnet_plan")
+def agent_plan(payload: QueryRequest ,request: Request):
+    token=request.headers.get("authorization"," ")
+    user_context=verify_token(token)
+    plan_and_execute_agnet=PlanAndExecuteAgnet()
+    report=plan_and_execute_agnet.agnet_run(payload.query,user_context)
+    return success_response("成功",report)
+
+
+
+@app.post("/api/v1/login")
+def user_login(user: UserLogin) ->FastAPIRequest:
+    account=authenticate_user(user.user_name,user.password)
+    if account is None:
+        raise HTTPException(
+                    status_code=401,
+                    detail="用户名或密码错误",
+                )
+    token,time=create_token(account.username)
+    login_response=LoginResponse(
+                user_name=account.username,
+                token=token,
+                expires_at=time,
+            )
+    return success_response("登入成功",login_response)
+
+
+
 @app.post("/api/v1/query/stream")
-async def query_chatbi_stream(payload: QueryRequest) -> StreamingResponse:
-    print("开始时间"+datetime.now().strftime("%H:%M:%S"))
+async def query_chatbi_stream(payload: QueryRequest, request: Request) -> StreamingResponse:
+    token=request.headers.get("authorization","")
+    user_context=verify_token(token)
 
     def event_generator():
         yield from bi_server.run_stream(payload.query)
-    print("结束时间"+datetime.now().strftime("%H:%M:%S"))
 
     return StreamingResponse(
         event_generator(),
@@ -141,3 +195,20 @@ async def query_chatbi_stream(payload: QueryRequest) -> StreamingResponse:
             "X-Accel-Buffering": "no",
         },
     )
+
+
+def success_response(message: str , data=None):
+    return FastAPIRequest(code=200,message=message,data=data)
+
+# ---------------------- 前端页面（单文件，同源，无需构建） ----------------------
+FRONTEND_DIR = Path(__file__).resolve().parent / "frontend"
+FRONTEND_INDEX = FRONTEND_DIR / "index.html"
+
+# /static/vendor/*.js 是本地化的 vue / echarts / tailwind，不依赖外网 CDN
+app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="frontend")
+
+
+@app.get("/", include_in_schema=False)
+def index() -> FileResponse:
+    """返回前端单页（登录 + ChatBI 聊天）。"""
+    return FileResponse(FRONTEND_INDEX)
