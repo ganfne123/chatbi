@@ -2,11 +2,16 @@
 RAG检索模块
 schema linking + indicator 
 """
+from typing import List
 import json
 
 from pymilvus import MilvusClient
 from embedding_clinet import EmbeddingClient
 from config import milvus_config
+from pydantic import BaseModel
+
+
+
 
 
 class ClientMilvus:
@@ -22,7 +27,7 @@ class ClientMilvus:
         )
         self.embedding = EmbeddingClient()
 
-    def table_search(self, query: str, collection_name: str ,top_k: int =3) -> list[list[dict]]:
+    def table_search(self, query: str, collection_name: str ,top_k: int =3) -> List[List[dict]]:
         """表召回：把用户问题转成向量，在表集合里检索最相似的 top_k 张表。"""
         # 1. 问题 -> 向量（1024 维，与集合里 vector 字段的 dim 一致）
         emd = self.embedding.get_embedding(query)
@@ -194,7 +199,7 @@ def fuse_scores(embedding_hits, rule_hits, alpha=0.3, top_k=None) -> list[dict]:
     return kept
 
 def run_schema_linking(
-    user_query: str = "查询各大区的销售额",
+    user_query: str ,
     alpha: float = 0.2,
     top_k: int = 12,
 ) -> dict:
@@ -222,6 +227,7 @@ def run_schema_linking(
         collection_name=client.COLLECTION_TABLE_NAME,
         top_k=5,
     )
+
     recalled_tables: list[str] = []
     table_page_content: dict[str, str] = {}
     # table_search 返回嵌套的 [[hit, ...]]；每个 hit 里有 distance、table_name 和 page_content
@@ -260,7 +266,7 @@ def run_schema_linking(
         item["page_content"] = field_page_content.get((item["table"], item["field"]), "")
     # 5. 根据表召回结果和规则召回结果，生成 join 语句
     from join_resolver import fetch_join_run
-    join_results = fetch_join_run(client, user_query)
+    join_results = fetch_join_run(user_query,table_res)
 
     return {
         "query": user_query,
@@ -329,8 +335,8 @@ def run_indicator_search(
 if __name__ == "__main__":
     import json
 
-    indicator_context = run_indicator_search("查询各大区的销售额")
-    schema_context = run_schema_linking("查询各大区的销售额")
+    indicator_context = run_indicator_search("最经三个月利润为什么下降")
+    schema_context = run_schema_linking("最经三个月利润为什么下降")
 
     print(json.dumps(indicator_context, ensure_ascii=False, indent=2))
     print(json.dumps(schema_context, ensure_ascii=False, indent=2))
